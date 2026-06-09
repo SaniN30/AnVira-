@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AnVira — Private Estates</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@100;200;300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
+
+    :root {
+      --bg:          #F7F4EF;
+      --surface:     #FFFFFF;
+      --text:        #1A1614;
+      --mid:         #524E4A;
+      --faint:       #BCB6B0;
+      --gold:        #B8946A;
+      --gold-light:  rgba(184,148,106,0.10);
+      --border:      rgba(26,22,20,0.08);
+      --border-mid:  rgba(26,22,20,0.14);
+      --lux:         cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-mid); }
+
+    /* ── Cursor ──────────────────────────────────────────────── */
+    #cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(26,22,20,0.22);
+      border-radius: 50%; pointer-events: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: width .35s var(--lux), height .35s var(--lux),
+                  border-color .3s ease, background .3s ease,
+                  margin .35s var(--lux);
+      will-change: transform;
+    }
+    #cursor-ring.on {
+      width: 54px; height: 54px; margin: -9px 0 0 -9px;
+      border-color: var(--gold);
+      background: var(--gold-light);
+    }
+    #cursor-label {
+      font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold); opacity: 0; font-weight: 300;
+      transition: opacity .3s ease;
+    }
+    #cursor-ring.on #cursor-label { opacity: 1; }
+    #cursor-dot {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 4px; height: 4px;
+      background: var(--text); border-radius: 50%;
+      pointer-events: none; will-change: transform;
+    }
+
+    /* ── Intro (dark, high-contrast reveal) ─────────────────── */
+    #intro {
+      position: fixed; inset: 0; z-index: 200;
+      background: #1A1614;
+      display: flex; align-items: center; justify-content: center;
+      transition: opacity 1s var(--lux);
+    }
+    #intro.out { opacity: 0; pointer-events: none; }
+
+    #intro-word {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 7vw, 6rem);
+      font-weight: 300; letter-spacing: .14em;
+      color: var(--bg);
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .8s ease, transform .8s var(--lux);
+    }
+    #intro-word .iv { font-style: italic; color: var(--gold); }
+    #intro-word.show { opacity: 1; transform: translateY(0); }
+    #intro-word.hide { opacity: 0; transform: translateY(-20px) scale(.96); }
+
+    #intro-line {
+      position: absolute; bottom: 0; left: 0;
+      height: 1px; background: rgba(247,244,239,0.07);
+      width: 0; transition: width 1.9s var(--lux) .1s;
+    }
+    #intro-line.full { width: 100%; }
+
+    /* ── Navigation ──────────────────────────────────────────── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.4rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background .5s ease, backdrop-filter .5s ease;
+    }
+    #nav.scrolled {
+      background: rgba(247,244,239,0.88);
+      backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* AnVira wordmark — shared across nav, hero, footer */
+    .av {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300; letter-spacing: .12em; line-height: 1;
+      color: var(--text); display: inline-block;
+      transition: letter-spacing .4s ease;
+    }
+    .av-an { font-style: normal; }
+    .av-vira { font-style: italic; position: relative; display: inline-block; }
+    /* Gold underline that grows with scroll */
+    .av-line {
+      position: absolute; bottom: -2px; left: 0;
+      height: 1px; width: 100%;
+      background: var(--gold);
+      transform: scaleX(0); transform-origin: left;
+    }
+
+    #nav-logo { font-size: 1.22rem; }
+
+    #burger {
+      background: none; border: none;
+      display: flex; flex-direction: column; gap: 5px; padding: 4px;
+    }
+    .bl {
+      display: block; height: 1px; background: rgba(26,22,20,0.5);
+      transition: transform .35s var(--lux), opacity .25s ease;
+    }
+    .bl:nth-child(1) { width: 22px; }
+    .bl:nth-child(2) { width: 14px; }
+    #burger.open .bl:nth-child(1) { transform: rotate(45deg) translate(3px, 3px); }
+    #burger.open .bl:nth-child(2) { opacity: 0; }
+
+    /* ── Full-screen menu (light) ────────────────────────────── */
+    #menu {
+      position: fixed; inset: 0; z-index: 90;
+      background: rgba(247,244,239,0.97);
+      backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 8%;
+      opacity: 0; pointer-events: none;
+      transition: opacity .45s var(--lux);
+    }
+    #menu.open { opacity: 1; pointer-events: all; }
+    #menu nav { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 4rem; }
+    .mwrap { overflow: hidden; }
+    .mlink {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.4rem, 6vw, 5.5rem);
+      font-weight: 300; line-height: 1.15;
+      color: var(--text); text-decoration: none;
+      transform: translateY(110%);
+      transition: transform .6s var(--lux), color .25s ease;
+    }
+    .mlink:hover { color: var(--gold); font-style: italic; }
+    #menu.open .mlink { transform: translateY(0); }
+    #menu.open .mlink:nth-child(1) { transition-delay:   0ms; }
+    #menu.open .mlink:nth-child(2) { transition-delay:  70ms; }
+    #menu.open .mlink:nth-child(3) { transition-delay: 140ms; }
+    #menu.open .mlink:nth-child(4) { transition-delay: 210ms; }
+    #menu-foot {
+      position: absolute; bottom: 3rem; right: 3rem;
+      font-size: 9px; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--faint); opacity: 0; transition: opacity .6s ease .4s;
+    }
+    #menu.open #menu-foot { opacity: 1; }
+
+    /* ── Page reveal ─────────────────────────────────────────── */
+    #page {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 1s ease .15s, transform 1s var(--lux) .15s;
+    }
+    #page.show { opacity: 1; transform: translateY(0); }
+
+    /* ── Hero ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      padding: clamp(110px,14vh,160px) clamp(1.5rem,5vw,3.5rem) clamp(4rem,8vh,6rem);
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(26,22,20,0.04) 1px, transparent 1px);
+      background-size: 46px 46px;
+    }
+
+    /* Hero wordmark — large, centered, parallaxes on scroll */
+    #hwrap {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding-bottom: 2rem;
+    }
+    #hwm { text-align: center; will-change: transform, opacity; }
+    #hwm .av { font-size: clamp(4rem, 11vw, 9.5rem); letter-spacing: .065em; }
+    #hwm .tagline {
+      font-family: 'Inter', sans-serif; font-size: 9px;
+      letter-spacing: .48em; text-transform: uppercase;
+      color: var(--mid); opacity: .75; margin-top: 1.1rem; font-weight: 300;
+    }
+
+    /* Hero bottom: editorial + stats */
+    .hero-btm { max-width: 880px; margin: 0 auto; width: 100%; text-align: center; }
+    .eyebrow {
+      font-size: 9px; letter-spacing: .52em; text-transform: uppercase;
+      color: var(--mid); opacity: .7; margin-bottom: 2rem; font-weight: 300;
+    }
+    h1.ed {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 2.8vw, 2.3rem);
+      font-weight: 300; line-height: 1.62; letter-spacing: .012em;
+      color: var(--mid); margin-bottom: 4rem;
+    }
+    h1.ed .hi { color: var(--text); font-style: italic; }
+    h1.ed .lo { color: var(--mid); font-style: normal; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem;
+      border-top: 1px solid var(--border); padding-top: 2.6rem;
+    }
+    .sn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5rem);
+      font-weight: 300; letter-spacing: -.01em; line-height: 1;
+      margin-bottom: .4rem; color: var(--text);
+    }
+    .sl {
+      font-size: 8.5px; letter-spacing: .36em; text-transform: uppercase;
+      color: var(--mid); font-weight: 300;
+    }
+
+    /* ── Gallery ─────────────────────────────────────────────── */
+    #gal-sec { padding: 5rem 0 4rem; }
+    .sec-bar {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      padding: 0 clamp(1.5rem,5vw,3.5rem); margin-bottom: 2rem;
+    }
+    .sec-bar-left { display: flex; flex-direction: column; gap: 5px; }
+    .sec-bar-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem,2.2vw,1.6rem); font-weight: 300;
+      color: var(--text); letter-spacing: .025em;
+    }
+    .sec-bar-sub { font-size: 9px; letter-spacing: .42em; text-transform: uppercase; color: var(--mid); font-weight: 300; }
+    .sec-bar-hint { font-size: 8.5px; letter-spacing: .34em; text-transform: uppercase; color: var(--mid); font-weight: 300; }
+
+    #accordion {
+      display: flex; width: 100%;
+      height: clamp(420px, 72vh, 800px);
+      gap: 3px; padding: 0 clamp(1.5rem,5vw,3.5rem);
+    }
+    .acol {
+      position: relative; overflow: hidden; border-radius: 3px;
+      flex-grow: 1;
+      transition: flex-grow 700ms var(--lux);
+    }
+    /* stacked images — crossfade on cycle, zoom on hover */
+    .acol-imgs { position: absolute; inset: 0; transition: transform 800ms var(--lux); }
+    .acol:hover .acol-imgs { transform: scale(1.1); }
+    .acol-img  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; }
+    .acol-img.active { opacity: 1; }
+    /* rich gradient — denser at base for legibility */
+    .acol-g {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgba(0,0,0,0.90) 0%,
+        rgba(0,0,0,0.30) 40%,
+        rgba(0,0,0,0.06) 68%,
+        transparent 100%
+      );
+      transition: opacity .6s ease;
+    }
+    /* property number — top left, always subtle */
+    .acol-num {
+      position: absolute; top: 1.1rem; left: 1.3rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: .95rem; font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.30);
+      transition: color .5s ease;
+      pointer-events: none;
+    }
+    .acol:hover .acol-num { color: rgba(255,255,255,0.65); }
+    /* image counter — top right, fades in on hover */
+    .acol-counter {
+      position: absolute; top: 1.1rem; right: 1.3rem;
+      font-size: 8px; letter-spacing: .24em; color: rgba(255,255,255,0.45);
+      opacity: 0; transition: opacity .45s ease;
+      pointer-events: none;
+    }
+    .acol:hover .acol-counter { opacity: 1; }
+    /* main info — slides up from bottom on hover */
+    .acol-info {
+      position: absolute; bottom: 1.8rem; left: 1.5rem; right: 1.5rem;
+      opacity: 0; transform: translateY(22px); pointer-events: none;
+      transition: opacity .52s ease .06s, transform .52s var(--lux) .06s;
+    }
+    .acol:hover .acol-info { opacity: 1; transform: translateY(0); }
+    .acol-type { font-size: 8px; letter-spacing: .4em; text-transform: uppercase; color: rgba(255,255,255,0.72); margin-bottom: 6px; }
+    .acol-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; font-style: italic; color: #fff; line-height: 1.2; }
+    .acol-loc  { font-size: 9px; letter-spacing: .22em; color: rgba(255,255,255,0.68); margin-top: 5px; }
+    /* gold bar — grows on hover */
+    .acol-bar  { width: 0; height: 1px; background: var(--gold); margin-top: 13px; transition: width .75s var(--lux) .18s; }
+    .acol:hover .acol-bar { width: 38px; }
+    /* explore hint */
+    .acol-hint {
+      font-size: 7.5px; letter-spacing: .36em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42); margin-top: 10px;
+    }
+    /* progress dots — bottom right */
+    .acol-dots {
+      position: absolute; bottom: 1.2rem; right: 1.3rem;
+      display: flex; gap: 5px; pointer-events: none;
+      opacity: 0; transition: opacity .45s ease;
+    }
+    .acol:hover .acol-dots { opacity: 1; }
+    .acol-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.28); transition: background .4s ease, transform .35s var(--lux); }
+    .acol-dot.on { background: var(--gold); transform: scale(1.5); }
+    /* vertical label on collapsed columns */
+    .acol-vert {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: 7.5px; letter-spacing: .36em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      writing-mode: vertical-rl; text-orientation: mixed;
+      opacity: 0.22; transition: opacity .4s ease;
+      pointer-events: none; white-space: nowrap;
+    }
+
+    /* ── Property section ────────────────────────────────────── */
+    #listings { padding: clamp(4rem,8vh,6.5rem) clamp(1.5rem,5vw,3.5rem); }
+    .sec-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; margin-bottom: 2.8rem;
+    }
+    .sec-ey { font-size: 9px; letter-spacing: .42em; text-transform: uppercase; color: var(--faint); margin-bottom: .7rem; font-weight: 300; }
+    h2.st {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 300; letter-spacing: .01em;
+    }
+    .ghost {
+      font-size: 8.5px; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--mid); background: none; border: none;
+      border-bottom: 1px solid var(--border-mid); padding-bottom: 3px;
+      transition: color .3s ease, border-color .3s ease;
+    }
+    .ghost:hover { color: var(--text); border-color: var(--mid); }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: 2.5rem; }
+
+    /* Real card */
+    .prop-card .ci-wrap { overflow: hidden; border-radius: 2px; aspect-ratio: 4/3; margin-bottom: .9rem; }
+    .prop-card .ci {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 700ms var(--lux);
+    }
+    .prop-card:hover .ci { transform: scale(1.06); }
+    .ctag { font-size: 8.5px; letter-spacing: .38em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+    .crow { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .cname { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 300; font-style: italic; color: var(--text); }
+    .cloc  { font-size: 9.5px; letter-spacing: .2em; color: var(--mid); margin-top: 3px; }
+    .cdesc { font-size: 10px; line-height: 1.7; color: var(--mid); margin: 9px 0 13px; font-weight: 300; }
+    .cprice { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 300; color: var(--text); white-space: nowrap; padding-left: .5rem; }
+    .cfoot { display: flex; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
+    .cm { margin-right: 16px; }
+    .cm-n { font-size: .82rem; font-weight: 300; color: var(--text); }
+    .cm-l { font-size: 8px; letter-spacing: .3em; text-transform: uppercase; color: var(--mid); margin-top: 2px; }
+    .enq {
+      margin-left: auto; font-size: 8px; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--mid); background: none;
+      border: 1px solid var(--border-mid); padding: 7px 12px;
+      transition: color .3s ease, border-color .3s ease;
+    }
+    .enq:hover { color: var(--text); border-color: var(--mid); }
+
+    /* ── Skeleton card ───────────────────────────────────────────
+       To populate: replace null in PROPERTIES array with:
+       { img, name, loc, price, beds, area, tag }
+       Add/remove nulls to change the number of visible slots.
+    ─────────────────────────────────────────────────────────── */
+    .skel .si {
+      aspect-ratio: 4/3; margin-bottom: .9rem; border-radius: 2px;
+      border: 1px dashed rgba(26,22,20,0.13);
+      background: #EEEBe5;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    }
+    .skel .si-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid rgba(26,22,20,0.16);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .skel .si-plus { font-size: 13px; color: rgba(26,22,20,0.22); font-weight: 100; line-height: 1; }
+    .skel .si-hint { font-size: 8px; letter-spacing: .28em; text-transform: uppercase; color: rgba(26,22,20,0.2); font-weight: 300; }
+    .skel .sl-line { height: 1px; background: rgba(26,22,20,0.09); border-radius: 1px; }
+    .skel .sl-a { width: 34%; margin-bottom: 10px; }
+    .skel .sl-b { width: 63%; margin-bottom: 6px; }
+    .skel .sl-c { width: 28%; margin-bottom: 14px; }
+    .skel .sf { display: flex; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
+    .skel .sf-blk { width: 24px; height: 1px; background: rgba(26,22,20,0.09); margin-right: 14px; }
+    .skel .sf-btn { margin-left: auto; font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: var(--faint); background: none; border: 1px solid var(--border); padding: 7px 12px; }
+
+    /* ── Inquiry ─────────────────────────────────────────────── */
+    #inquiry {
+      margin: 0 clamp(1.5rem,5vw,3.5rem) clamp(4rem,8vh,6.5rem);
+      padding: clamp(2.5rem,6vh,4.5rem) clamp(1.5rem,5vw,4rem);
+      border: 1px solid var(--border-mid); border-radius: 2px;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;
+    }
+    #inquiry h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.3rem, 2.7vw, 2.3rem);
+      font-weight: 300; font-style: italic; line-height: 1.45;
+      max-width: 440px; margin-top: .55rem; color: var(--text);
+    }
+    .cta {
+      font-size: 9px; letter-spacing: .28em; text-transform: uppercase;
+      background: var(--text); color: var(--bg); border: none;
+      padding: 14px 32px; font-weight: 300;
+      transition: background .3s ease;
+      white-space: nowrap;
+    }
+    .cta:hover { background: var(--gold); }
+
+    /* ── Footer ──────────────────────────────────────────────── */
+    footer {
+      padding: clamp(2rem,4vh,3.5rem) clamp(1.5rem,5vw,3.5rem);
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;
+    }
+    .fl { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .fa {
+      font-size: 8.5px; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none; transition: color .3s ease;
+    }
+    .fa:hover { color: var(--text); }
+    .fc { font-size: 8.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--mid); }
+
+    /* ── Scroll fade-in ──────────────────────────────────────── */
+    .fi { opacity: 0; transform: translateY(24px); transition: opacity .9s ease, transform .9s var(--lux); }
+    .fi.vis { opacity: 1; transform: translateY(0); }
+
+    /* ── Property detail overlay ──────────────────────────────── */
+    #detail {
+      position: fixed; inset: 0; z-index: 150;
+      background: var(--bg); overflow-y: auto; overflow-x: hidden;
+      opacity: 0; pointer-events: none;
+      transform: translateY(28px);
+      transition: opacity .5s var(--lux), transform .5s var(--lux);
+    }
+    #detail.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+    #pd-bar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(247,244,239,0.92);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem clamp(1.5rem,5vw,3.5rem);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    #pd-back {
+      font-size: 8.5px; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--mid); background: none; border: none;
+      display: flex; align-items: center; gap: 10px;
+      transition: color .3s ease;
+    }
+    #pd-back:hover { color: var(--text); }
+
+    #pd-hero { position: relative; height: clamp(340px,56vh,700px); overflow: hidden; }
+    #pd-hero-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    #pd-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,22,20,.75) 0%, rgba(26,22,20,.06) 55%, transparent 100%);
+    }
+    #pd-hero-caption {
+      position: absolute; bottom: 2.5rem;
+      left: clamp(1.5rem,5vw,3.5rem); right: clamp(1.5rem,5vw,3.5rem);
+    }
+    #pd-hero-tag  { font-size: 8px; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: .5rem; }
+    #pd-hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem,5.5vw,5rem); font-weight: 300; font-style: italic;
+      color: #fff; line-height: 1.1;
+    }
+    #pd-hero-loc { font-size: 9.5px; letter-spacing: .26em; color: rgba(255,255,255,.5); margin-top: .5rem; }
+
+    #pd-body { padding: clamp(2.5rem,5vh,4rem) clamp(1.5rem,5vw,3.5rem); max-width: 1440px; margin: 0 auto; }
+
+    #pd-meta {
+      display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: start;
+      margin-bottom: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border);
+    }
+    #pd-desc-text { max-width: 560px; margin-bottom: 2rem; }
+    #pd-desc-text p, #pd-desc-text li {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.05rem,1.8vw,1.45rem); font-weight: 300; line-height: 1.82;
+      color: var(--mid);
+    }
+    #pd-desc-text p { margin-bottom: 1.1em; }
+    #pd-desc-text p:last-child { margin-bottom: 0; }
+    #pd-desc-text ul { margin: .2em 0 1.1em 1.4em; }
+    #pd-desc-text li { margin-bottom: .45em; }
+    #pd-specs { display: flex; gap: 2.5rem; }
+    .pd-spec-n { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: var(--text); }
+    .pd-spec-l { font-size: 8px; letter-spacing: .32em; text-transform: uppercase; color: var(--mid); margin-top: 3px; }
+    #pd-cta-col { display: flex; flex-direction: column; align-items: flex-end; gap: 1.4rem; }
+
+    #pd-amenities { margin-bottom: 3rem; }
+    .pd-amen-title { font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.2rem; }
+    .pd-amen-grid  { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .pd-amen-tag   {
+      font-size: 8.5px; letter-spacing: .22em; text-transform: uppercase;
+      border: 1px solid var(--border-mid); padding: 6px 16px;
+      color: var(--mid); border-radius: 1px;
+    }
+
+    /* location section */
+    #pd-location { margin-bottom: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+    #pd-address { font-size: 11.5px; line-height: 1.7; letter-spacing: .06em; color: var(--mid); margin-bottom: 1.2rem; }
+    #pd-map-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 8.5px; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--text); text-decoration: none;
+      border-bottom: 1px solid var(--border-mid); padding-bottom: 3px;
+      transition: color .3s ease, border-color .3s ease;
+    }
+    #pd-map-link:hover { color: var(--gold); border-color: var(--gold); }
+    #pd-map-link svg { flex-shrink: 0; }
+    /* hero location as a map link */
+    #pd-hero-loc a {
+      color: inherit; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: color .3s ease;
+    }
+    #pd-hero-loc a:hover { color: var(--gold); }
+
+    #pd-gallery-title { font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: var(--text); margin-bottom: 1.2rem; }
+    #pd-gallery { columns: 3; column-gap: 6px; }
+    #pd-gallery img {
+      width: 100%; display: block; margin-bottom: 6px; break-inside: avoid; border-radius: 1px;
+      cursor: pointer !important;
+      transition: opacity .35s ease, transform .45s var(--lux);
+    }
+    #pd-gallery img:hover { opacity: .82; transform: scale(1.025); }
+
+    /* ── Lightbox ────────────────────────────────────────────── */
+    #lb {
+      position: fixed; inset: 0; z-index: 400;
+      background: rgba(20,17,15,0.97);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .4s var(--lux);
+    }
+    #lb.open { opacity: 1; pointer-events: all; }
+    #lb-img {
+      max-width: 88vw; max-height: 86vh;
+      object-fit: contain; border-radius: 2px;
+      transition: opacity .25s ease;
+      user-select: none; -webkit-user-select: none;
+    }
+    #lb-close {
+      position: absolute; top: 1.4rem; right: 1.8rem;
+      font-size: 1.8rem; line-height: 1; font-weight: 100;
+      color: rgba(247,244,239,0.55); background: none; border: none;
+      cursor: pointer !important;
+      transition: color .2s ease;
+    }
+    #lb-close:hover { color: #fff; }
+    #lb-prev, #lb-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2rem; line-height: 1; font-weight: 100;
+      color: rgba(247,244,239,0.45); background: none; border: none;
+      padding: 1.2rem 1.4rem;
+      cursor: pointer !important;
+      transition: color .2s ease;
+    }
+    #lb-prev { left: 0; }
+    #lb-next { right: 0; }
+    #lb-prev:hover, #lb-next:hover { color: var(--gold); }
+    #lb-counter {
+      position: absolute; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
+      font-size: 8px; letter-spacing: .38em; text-transform: uppercase;
+      color: rgba(247,244,239,0.38); white-space: nowrap;
+    }
+    #lb-dots {
+      position: absolute; bottom: 3.2rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px;
+    }
+    .lb-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(247,244,239,0.22);
+      transition: background .3s ease, transform .3s var(--lux);
+    }
+    .lb-dot.on { background: var(--gold); transform: scale(1.4); }
+
+    /* ── Touch devices — remove custom cursor ─────────────── */
+    @media (hover: none) {
+      *, *::before, *::after { cursor: auto !important; }
+      #cursor-ring, #cursor-dot { display: none !important; }
+    }
+
+    /* ── Tablet ≤900px ────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #pd-meta { grid-template-columns: 1fr; gap: 2rem; }
+      #pd-cta-col { align-items: flex-start; }
+      #pd-gallery { columns: 2; }
+    }
+
+    /* ── Mobile ≤768px ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      #nav { padding: 1.1rem 1.5rem; }
+
+      /* Accordion: vertical stack */
+      #accordion {
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+        padding: 0 clamp(1rem, 4vw, 1.5rem);
+      }
+      .acol { height: 280px; border-radius: 8px; }
+      /* No image zoom on touch (no hover) */
+      .acol:hover .acol-imgs { transform: none; }
+      /* Info, dots, counter always visible on mobile */
+      .acol-info {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+        pointer-events: all;
+      }
+      .acol-bar     { width: 28px !important; transition: none; }
+      .acol-dots    { opacity: 1 !important; }
+      .acol-counter { opacity: 1 !important; }
+      .acol-vert    { display: none; }
+      /* Gradient: denser on mobile for legibility */
+      .acol-g {
+        background: linear-gradient(
+          to top,
+          rgba(0,0,0,0.92) 0%,
+          rgba(0,0,0,0.40) 38%,
+          rgba(0,0,0,0.08) 65%,
+          transparent 100%
+        );
+      }
+
+      /* Section bar: stack */
+      .sec-bar { flex-direction: column; gap: .6rem; align-items: flex-start; }
+      .sec-bar-hint { display: none; }
+
+      /* Detail page */
+      #pd-hero { height: clamp(240px, 50vh, 420px); }
+      #pd-hero-name { font-size: clamp(1.8rem, 7vw, 3rem); }
+      #pd-meta { grid-template-columns: 1fr; gap: 1.5rem; }
+      #pd-cta-col { align-items: flex-start; }
+      #pd-gallery { columns: 2; }
+
+      /* Inquiry: stack */
+      #inquiry { flex-direction: column; }
+      footer { flex-direction: column; gap: 1rem; }
+    }
+
+    /* ── Small phone ≤480px ───────────────────────────────── */
+    @media (max-width: 480px) {
+      .acol { height: 240px; }
+      .stats { gap: .75rem; }
+      .sn { font-size: 2.2rem; }
+      #hwm .av { font-size: clamp(3rem, 14vw, 5rem); }
+      .cards { grid-template-columns: 1fr; }
+      #pd-gallery { columns: 1; }
+      #pd-specs { gap: 1.5rem; }
+      .pd-spec-n { font-size: 1.7rem; }
+      .pd-amen-tag { padding: 8px 14px; font-size: 9px; }
+      .cta { width: 100%; text-align: center; padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor-ring"><span id="cursor-label">View</span></div>
+  <div id="cursor-dot"></div>
+
+  <!-- Intro overlay -->
+  <div id="intro">
+    <span id="intro-word">An<span class="iv">Vira</span></span>
+    <div id="intro-line"></div>
+  </div>
+
+  <!-- Navigation -->
+  <header id="nav">
+    <div id="nav-logo" class="av" aria-label="AnVira">
+      <span class="av-an">An</span><span class="av-vira">Vira<span class="av-line"></span></span>
+    </div>
+    <button id="burger" aria-label="Menu" data-cursor>
+      <span class="bl"></span>
+      <span class="bl"></span>
+    </button>
+  </header>
+
+  <!-- Full-screen menu -->
+  <div id="menu" role="dialog" aria-label="Navigation">
+    <nav>
+      <div class="mwrap"><a href="#" class="mlink" data-cursor>Portfolio</a></div>
+      <div class="mwrap"><a href="#" class="mlink" data-cursor>Properties</a></div>
+      <div class="mwrap"><a href="#" class="mlink" data-cursor>Locations</a></div>
+      <div class="mwrap"><a href="#" class="mlink" data-cursor>Private Inquiry</a></div>
+    </nav>
+    <div id="menu-foot">Est. 2018 &mdash; Private Estates</div>
+  </div>
+
+  <!-- Main Page -->
+  <div id="page">
+
+    <section id="hero">
+      <!-- Large AnVira wordmark — parallaxes on scroll -->
+      <div id="hwrap">
+        <div id="hwm">
+          <div class="av" aria-hidden="true">
+            <span class="av-an">An</span><span class="av-vira">Vira<span class="av-line"></span></span>
+          </div>
+          <p class="tagline">Private Estate Curation &mdash; India</p>
+        </div>
+      </div>
+
+      <!-- Editorial statement + stats -->
+      <div class="hero-btm">
+        <p class="eyebrow">A Standard Without Exception</p>
+        <h1 class="ed">
+          Each AnVira estate is hand-selected across India's most coveted landscapes —
+          chosen through a frame of <span class="hi">permanence</span>,
+          <span class="hi">refinement</span>, and
+          <span class="hi">timeless detail</span>.<br>
+          <span class="lo">Standards are not a flourish. It is our discipline.</span>
+        </h1>
+        <div class="stats">
+          <div>
+            <div class="sn" data-count="3" data-sfx="">0</div>
+            <div class="sl">Curated Estates</div>
+          </div>
+          <div>
+            <div class="sn" data-count="11" data-sfx="">0</div>
+            <div class="sl">Rooms in Portfolio</div>
+          </div>
+          <div>
+            <div class="sn" data-count="33" data-sfx="">0</div>
+            <div class="sl">Guest Capacity</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accordion gallery -->
+    <section id="gal-sec" class="fi">
+      <div class="sec-bar">
+        <div class="sec-bar-left">
+          <div class="sec-bar-title">Explore the Portfolio</div>
+          <div class="sec-bar-sub">Three curated estates across India</div>
+        </div>
+        <span class="sec-bar-hint">Hover to explore &nbsp;&middot;&nbsp; Click to view</span>
+      </div>
+      <div id="accordion"></div>
+    </section>
+
+    <!-- Property listings -->
+    <section id="listings" class="fi">
+      <div class="sec-head">
+        <div>
+          <p class="sec-ey">Estate Collection</p>
+          <h2 class="st">The Portfolio</h2>
+        </div>
+        <button class="ghost" data-cursor>View All Estates &rarr;</button>
+      </div>
+      <div class="cards" id="cards-grid"></div>
+    </section>
+
+    <!-- Inquiry strip -->
+    <div id="inquiry" class="fi">
+      <div>
+        <p class="sec-ey">Private Viewing</p>
+        <h2>Request a curated showing.<br>Discretion is our default.</h2>
+      </div>
+      <button class="cta" data-cursor>Request Viewing</button>
+    </div>
+
+    <footer>
+      <div class="av" style="font-size:1.1rem">
+        <span class="av-an">An</span><span class="av-vira" style="font-style:italic">Vira</span>
+      </div>
+      <div class="fl">
+        <a href="#" class="fa" data-cursor>Portfolio</a>
+        <a href="#" class="fa" data-cursor>Properties</a>
+        <a href="#" class="fa" data-cursor>Locations</a>
+        <a href="#" class="fa" data-cursor>Privacy</a>
+      </div>
+      <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
+    </footer>
+
+  </div>
+
+  <!-- Property detail overlay -->
+  <div id="detail">
+    <div id="pd-bar">
+      <button id="pd-back" data-cursor>&#8592; Back to Portfolio</button>
+      <div class="av" style="font-size:1.1rem">
+        <span class="av-an">An</span><span class="av-vira">Vira<span class="av-line"></span></span>
+      </div>
+    </div>
+    <div id="pd-hero">
+      <img id="pd-hero-img" src="" alt="" />
+      <div id="pd-hero-overlay"></div>
+      <div id="pd-hero-caption">
+        <div id="pd-hero-tag"></div>
+        <div id="pd-hero-name"></div>
+        <div id="pd-hero-loc"></div>
+      </div>
+    </div>
+    <div id="pd-body">
+      <div id="pd-meta">
+        <div id="pd-desc-col">
+          <div id="pd-desc-text"></div>
+          <div id="pd-specs">
+            <div><div class="pd-spec-n" id="pd-spec-rooms"></div><div class="pd-spec-l">Rooms</div></div>
+            <div><div class="pd-spec-n" id="pd-spec-guests"></div><div class="pd-spec-l">Guests</div></div>
+            <div><div class="pd-spec-n" id="pd-spec-baths"></div><div class="pd-spec-l">Baths</div></div>
+          </div>
+        </div>
+        <div id="pd-cta-col">
+          <button class="cta" data-cursor>Request a Viewing</button>
+          <div style="text-align:right">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">On Request</div>
+            <div style="font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);margin-top:3px">Nightly Rate</div>
+          </div>
+        </div>
+      </div>
+      <div id="pd-amenities">
+        <p class="pd-amen-title">Amenities &amp; Features</p>
+        <div class="pd-amen-grid" id="pd-amenities-list"></div>
+      </div>
+      <div id="pd-location">
+        <p class="pd-amen-title">Location</p>
+        <p id="pd-address"></p>
+        <a id="pd-map-link" href="#" target="_blank" rel="noopener noreferrer" data-cursor>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Get Directions on Google Maps
+        </a>
+      </div>
+      <p id="pd-gallery-title">Gallery</p>
+      <div id="pd-gallery"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div id="lb">
+    <button id="lb-close" aria-label="Close">&#xd7;</button>
+    <button id="lb-prev" aria-label="Previous">&#x2039;</button>
+    <img id="lb-img" src="" alt="" draggable="false" />
+    <button id="lb-next" aria-label="Next">&#x203a;</button>
+    <div id="lb-dots"></div>
+    <div id="lb-counter"></div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    const isTouchDevice = window.matchMedia('(hover: none)').matches;
+
+    /* ═══════════════════════════════════════════════════════════════
+       PROPERTY DATA
+       images[0..5] → accordion hover cycling
+       images (all) → detail page gallery
+    ═══════════════════════════════════════════════════════════════ */
+    const PROPERTIES = [
+      {
+        id: 'villa-anvira',
+        name: 'Villa AnVira',
+        loc: 'Chail, Himachal Pradesh',
+        tag: 'Hill Retreat',
+        desc: 'An elegant pine-framed mountain villa in Chail with sweeping valley views, a bonfire terrace, and curated hospitality — crafted for families and groups.',
+        fullDesc: 'Formerly known as Tarika Residences, Villa Anvira by GTV Estate is an elegant 7-bedroom luxury villa in Chail. Set amidst whispering pine trees and overlooking the tranquil valleys of Himachal, this private mountain retreat is thoughtfully crafted for families and large groups of friends seeking space and serenity.\n\nEach bedroom opens to a private balcony with sweeping forest or valley views, welcoming sunlit mornings, and refreshing mountain winds. Guests can spend their days exploring scenic trails around the estate and their evenings indulging in barbecue feasts and cosy bonfires under the stars. A charming gazebo, high-speed Wi-Fi, and freshly prepared meals on request elevate both leisurely escapes and peaceful workcations.\n\nLocated near Shimla\'s popular attractions yet peacefully tucked away from the crowds, Villa Anvira by GTV Estate offers quiet luxury, natural beauty, and togetherness at the heart of the Himalayas.',
+        price: 'On Request',
+        rooms: 4, guests: 12, baths: 3,
+        card: './chail/villa-anvira-by-gtv-estate-6e2617.jpg',
+        address: 'Villa AnVira, Kufri Road, Kandaghat\nChail, Himachal Pradesh — 173 217',
+        mapUrl: 'https://www.google.com/maps/dir//Villa+AnVira+,+Chail,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/@29.6872837,75.9435921,8.4z/data=!4m8!4m7!1m0!1m5!1m1!1s0x390f8162e0bd3713:0xb48395c65f24bfa9!2m2!1d77.1870428!2d30.9700264?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+        amenities: ['Private Terrace','Bonfire Pit','Valley Views','Curated Dining','Chef on Request','Gazebo','Indoor Games','24/7 Staff','Free Parking'],
+        images: [
+          './chail/anvira-terrace.webp',
+          './chail/villa-anvira-by-gtv-estate-6e2617.jpg',
+          './chail/vansh-batra-chail-0a7c5f.jpg',
+          './chail/vansh-batra-chail-3e6885.jpg',
+          './chail/vansh-batra-chail-8a6042.jpg',
+          './chail/anvira-building.webp',
+          './chail/vansh-batra-chail-4dc64f.jpg',
+          './chail/vansh-batra-chail-f8c6c6.jpg',
+          './chail/vansh-batra-chail-97c101.jpg',
+          './chail/vansh-batra-chail-dda2f6.jpg',
+          './chail/vansh-batra-chail-d1e0eb.jpg',
+          './chail/vansh-batra-chail-e3c996.jpg',
+          './chail/vansh-batra-chail-5f7c70.jpg',
+          './chail/vansh-batra-chail-f0919a.jpg',
+          './chail/vansh-batra-chail-7df5fb.jpg',
+          './chail/vansh-batra-chail-ca8eca.jpg',
+          './chail/vansh-batra-chail-ea841b.jpg',
+          './chail/vansh-batra-chail-d94e84.jpg',
+          './chail/vansh-batra-chail-a1bce5.jpg',
+          './chail/vansh-batra-chail-bb69cc.jpg',
+          './chail/vansh-batra-chail-04fcfe.jpg',
+          './chail/vansh-batra-chail-e10d4c.jpg',
+          './chail/vansh-batra-chail-04c053.jpg',
+          './chail/vansh-batra-chail-3017b9.jpg',
+          './chail/vansh-batra-chail-15789f.jpg',
+          './chail/vansh-batra-chail-bf2b8d.jpg',
+          './chail/vansh-batra-chail-0180b6.jpg',
+          './chail/vansh-batra-chail-987d3d.jpg',
+          './chail/vansh-batra-chail-3b541a.jpg',
+          './chail/vansh-batra-chail-8b689b.jpg',
+          './chail/vansh-batra-chail-7e3c7d.jpg',
+          './chail/vansh-batra-chail-c1f9e0.jpg',
+          './chail/vansh-batra-chail-36157b.jpg',
+          './chail/vansh-batra-chail-ab62a1.jpg',
+          './chail/vansh-batra-chail-901d88.jpg',
+          './chail/vansh-batra-chail-186fa6.jpg',
+          './chail/vansh-batra-chail-f4b990.jpg',
+        ],
+      },
+      {
+        id: 'estate-10',
+        name: 'Estate 10',
+        loc: 'New Delhi',
+        tag: 'Urban Estate',
+        desc: 'A luxurious urban oasis in New Delhi with a manicured acre lawn, private outdoor pool, in-house temple, and bespoke hospitality — for up to fifteen.',
+        fullDesc: 'Tucked away in a peaceful corner amidst the bustling cityscape of New Delhi lies Estate 10 by GTV Estate, a veritable oasis of calm and tranquillity. This hidden gem boasts an unparalleled location and breathtaking interiors that are sure to leave you awestruck.\n\nEstate 10 is special because of its:\nIdeal location away from the noise and bustle of the city\nBeautifully landscaped lawn up to an acre in size, ideal for holding small parties\nPrivate outdoor pool surrounded by chaise lounges and outdoor furniture\nWonderfully constructed in-house temple\nDelicious ensemble of home-cooked meals\nImmersive activities like bonfires\nClose proximity to well-known tourist destinations in Delhi',
+        price: 'On Request',
+        rooms: 4, guests: 15, baths: 4,
+        card: './Delhi/estate10-exterior.webp',
+        address: 'Estate 10, Dera Village, Dera Mandi\nNew Delhi — 110 074',
+        mapUrl: 'https://www.google.com/maps/dir/StayVista+At+Estate+10+By+Tarika+%7C+Premium+Villa+With+Private+Pool+In+New+Delhi,+Dera+Village,+Dera+Mandi,+New+Delhi,+Delhi+110074//@28.4475278,77.1686262,18.6z/data=!4m8!4m7!1m5!1m1!1s0x390d1f9265c03145:0x4075d136f2ae3942!2m2!1d77.1680222!2d28.4475384!1m0?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+        amenities: ['Private Pool','Manicured Lawn','Bonfire Area','Home Chef','Party Lawn','Indoor Lounge','24/7 Security','Concierge','Parking'],
+        images: [
+          './Delhi/estate10-exterior.webp',
+          './Delhi/estate-10-by-gtv-estate-b9e624.jpg',
+          './Delhi/estate-10-by-tarika-53ed2c.jpg',
+          './Delhi/estate10-aerial.webp',
+          './Delhi/estate-10-by-tarika-6f83a6.jpg',
+          './Delhi/estate-10-by-tarika-662fde.jpg',
+          './Delhi/estate-10-by-tarika-ddc251.jpg',
+          './Delhi/estate-10-by-gtv-estate-47400c.jpg',
+          './Delhi/estate-10-by-tarika-23ddeb.jpg',
+          './Delhi/estate-10-by-tarika-2fbb08.jpg',
+          './Delhi/estate-10-by-tarika-3bf85c.webp',
+          './Delhi/estate-10-by-tarika-b66637.webp',
+          './Delhi/estate-10-by-tarika-960bbb.webp',
+          './Delhi/estate-10-by-tarika-3e4445.webp',
+          './Delhi/estate-10-by-tarika-e44219.webp',
+          './Delhi/estate-10-by-tarika-758430.webp',
+          './Delhi/estate-10-by-tarika-9e7e42.webp',
+          './Delhi/estate-10-by-tarika-26f7e4.webp',
+          './Delhi/estate-10-by-tarika-ab104b.webp',
+          './Delhi/estate-10-by-tarika-f3164b.webp',
+          './Delhi/estate-10-by-tarika-d8b583.webp',
+          './Delhi/estate-10-by-tarika-88afd5.jpg',
+          './Delhi/estate-10-by-tarika-a4c50e.webp',
+          './Delhi/estate-10-by-tarika-a59423.jpg',
+          './Delhi/estate-10-by-tarika-3e1a70.webp',
+          './Delhi/estate-10-by-tarika-d6d4ff.webp',
+          './Delhi/estate-10-by-tarika-793d04.jpg',
+          './Delhi/estate-10-by-tarika-036fcf.jpg',
+        ],
+      },
+      {
+        id: 'tarikas-seascapes',
+        name: "Tarika's Seascapes",
+        loc: 'Mormugao, Goa',
+        tag: 'River View Villa',
+        desc: 'A bayside holiday home on the Zuari River in Goa with a private pool, river-view deck, and 3 elegant bedrooms — a breezy, private Goan escape.',
+        fullDesc: 'This charming bayside holiday home offers a breezy Goan escape with enchanting views of the Zuari River.\n\nLocated on the 2nd floor of an apartment complex, the property features 3 elegant bedrooms — 2 on the upper level and 1 on the ground level. The modern living room opens to a deck area overlooking the river, providing a serene spot for relaxation. The dining area comfortably seats 6, and guests can use the well-equipped kitchen to prepare their own meals.\n\nThe private swimming pool offers spectacular views of the river, and the pool deck is equipped with cosy seating for lounging. The spacious terrace and other common areas offer additional hangout spots to soak in the tranquil surroundings. Parking is conveniently available outside the premises.',
+        price: 'On Request',
+        rooms: 3, guests: 6, baths: 3,
+        card: './Goa/tarikas-seascapes-4c718c.webp',
+        address: 'Infiniti Bay, Holy Cross Colony\nMormugao, Ijorshi, Goa — 403 711',
+        mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/@15.3978297,73.8537601,17.6z/data=!4m13!4m12!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+        amenities: ['Private Pool','Sea View Terrace','Home Theatre','Smart TV','Full Kitchen','Workspace','2 Balconies','Private Entrance','24/7 Staff','Parking'],
+        images: [
+          './Goa/tarikas-seascapes-4c718c.webp',
+          './Goa/tarikas-seascapes-dabolim-3-bhk-villa-in-goa-with-private-pool-and-spacious-rooms-1a519f.webp',
+          './Goa/tarikas-seascapes-7f1d7d.jpg',
+          './Goa/tarikas-seascapes-79fbc7.webp',
+          './Goa/tarikas-seascapes-48e097.jpg',
+          './Goa/tarikas-seascapes-08e013.jpg',
+          './Goa/tarikas-seascapes-24f804.jpg',
+          './Goa/tarikas-seascapes-071f66.webp',
+          './Goa/tarikas-seascapes-d00853.webp',
+          './Goa/tarikas-seascapes-6729c9.webp',
+          './Goa/tarikas-seascapes-a18a09.webp',
+          './Goa/tarikas-seascapes-ac1fe6.webp',
+          './Goa/tarikas-seascapes-caeaf7.webp',
+          './Goa/tarikas-seascapes-2d5a5c.webp',
+          './Goa/tarikas-seascapes-79da66.webp',
+          './Goa/tarikas-seascapes-4a6927.webp',
+          './Goa/tarikas-seascapes-9c6688.webp',
+          './Goa/tarikas-seascapes-dd4b25.webp',
+          './Goa/tarikas-seascapes-f931e4.webp',
+          './Goa/tarikas-seascapes-df6813.webp',
+          './Goa/tarikas-seascapes-288959.webp',
+          './Goa/tarikas-seascapes-243ea1.webp',
+          './Goa/tarikas-seascapes-644930.webp',
+          './Goa/tarikas-seascapes-5fd21e.webp',
+          './Goa/tarikas-seascapes-e34f07.webp',
+          './Goa/tarikas-seascapes-75b43e.jpg',
+        ],
+      },
+    ];
+
+    /* ── Cursor ─────────────────────────────────────────────── */
+    const ring = document.getElementById('cursor-ring');
+    const dot  = document.getElementById('cursor-dot');
+    if (!isTouchDevice) {
+      document.addEventListener('mousemove', e => {
+        const x = e.clientX, y = e.clientY;
+        ring.style.transform = `translate(${x - 18}px, ${y - 18}px)`;
+        dot.style.transform  = `translate(${x - 2}px,  ${y - 2}px)`;
+        const el = document.elementFromPoint(x, y);
+        el && el.closest('[data-cursor]') ? ring.classList.add('on') : ring.classList.remove('on');
+      });
+    }
+
+    /* ── Scroll — logo + nav + parallax ────────────────────── */
+    const navEl   = document.getElementById('nav');
+    const hwm     = document.getElementById('hwm');
+    const navLogo = document.getElementById('nav-logo');
+    const avLines = document.querySelectorAll('.av-line');
+
+    function onScroll() {
+      const sy   = window.scrollY;
+      const prog = Math.min(sy / 300, 1);
+      navEl.classList.toggle('scrolled', sy > 50);
+      if (hwm) {
+        hwm.style.transform = `translateY(${sy * 0.28}px)`;
+        hwm.style.opacity   = String(Math.max(0, 1 - sy / 330));
+      }
+      avLines.forEach(l => { l.style.transform = `scaleX(${prog})`; });
+      navLogo.style.letterSpacing = `${(0.12 - prog * 0.04).toFixed(3)}em`;
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ── Burger / menu ──────────────────────────────────────── */
+    const burger = document.getElementById('burger');
+    const menu   = document.getElementById('menu');
+    let menuOpen = false;
+    burger.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      burger.classList.toggle('open', menuOpen);
+      menu.classList.toggle('open', menuOpen);
+      document.body.style.overflow = menuOpen ? 'hidden' : '';
+    });
+    menu.querySelectorAll('.mlink').forEach(a => {
+      a.addEventListener('click', () => {
+        menuOpen = false; burger.classList.remove('open'); menu.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    /* ── Intro sequence ─────────────────────────────────────── */
+    const introEl = document.getElementById('intro');
+    const word    = document.getElementById('intro-word');
+    const iLine   = document.getElementById('intro-line');
+    const page    = document.getElementById('page');
+    setTimeout(() => { word.classList.add('show'); iLine.classList.add('full'); }, 80);
+    setTimeout(() => word.classList.add('hide'), 2100);
+    setTimeout(() => { introEl.classList.add('out'); page.classList.add('show'); }, 2700);
+    setTimeout(() => introEl.remove(), 3800);
+
+    /* ── Stats count-up ─────────────────────────────────────── */
+    const cObs = new IntersectionObserver(entries => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (!isIntersecting) return;
+        cObs.unobserve(target);
+        const end = +target.dataset.count, sfx = target.dataset.sfx;
+        let t0 = null;
+        const tick = ts => {
+          if (!t0) t0 = ts;
+          const p = Math.min((ts - t0) / 2400, 1);
+          target.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * end) + sfx;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.sn').forEach(el => cObs.observe(el));
+
+    /* ── Accordion — image cycling, click/tap → detail ─────── */
+    const accord = document.getElementById('accordion');
+    let activeIdx = null;
+
+    PROPERTIES.forEach((p, i) => {
+      const col     = document.createElement('div');
+      col.className = 'acol'; col.setAttribute('data-cursor', '');
+
+      const cyclePics = p.images.slice(0, 6);
+      const imgsHTML  = cyclePics.map((url, j) =>
+        `<img class="acol-img${j === 0 ? ' active' : ''}" src="${url}" alt="${p.name}" loading="${j === 0 ? 'eager' : 'lazy'}" />`
+      ).join('');
+      const dotsHTML = cyclePics.map((_, j) =>
+        `<span class="acol-dot${j === 0 ? ' on' : ''}"></span>`
+      ).join('');
+      const num = String(i + 1).padStart(2, '0');
+
+      col.innerHTML = `
+        <div class="acol-imgs">${imgsHTML}</div>
+        <div class="acol-g"></div>
+        <div class="acol-num">${num}</div>
+        <div class="acol-counter">1 / ${cyclePics.length}</div>
+        <div class="acol-info">
+          <div class="acol-type">${p.tag}</div>
+          <div class="acol-name">${p.name}</div>
+          <div class="acol-loc">${p.loc}</div>
+          <div class="acol-bar"></div>
+          <div class="acol-hint">${isTouchDevice ? 'Tap to view' : 'Click to explore'}</div>
+        </div>
+        <div class="acol-dots">${dotsHTML}</div>
+        <div class="acol-vert">${p.name}</div>`;
+
+      const imgs    = col.querySelectorAll('.acol-img');
+      const dots    = col.querySelectorAll('.acol-dot');
+      const counter = col.querySelector('.acol-counter');
+      let cycleIdx = 0, timer = null;
+
+      function updateCycleUI() {
+        dots.forEach((d, di) => d.classList.toggle('on', di === cycleIdx));
+        if (counter) counter.textContent = `${cycleIdx + 1} / ${imgs.length}`;
+      }
+
+      function startCycle() {
+        if (timer) return;
+        timer = setInterval(() => {
+          imgs[cycleIdx].classList.remove('active');
+          cycleIdx = (cycleIdx + 1) % imgs.length;
+          imgs[cycleIdx].classList.add('active');
+          updateCycleUI();
+        }, 1800);
+      }
+
+      function stopCycle() {
+        clearInterval(timer); timer = null;
+      }
+
+      function resetToFirst() {
+        setTimeout(() => {
+          imgs[cycleIdx].classList.remove('active');
+          cycleIdx = 0;
+          imgs[0].classList.add('active');
+          updateCycleUI();
+        }, 650);
+      }
+
+      if (isTouchDevice) {
+        /* On touch: auto-cycle while card is in viewport */
+        const vObs = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if (e.isIntersecting) startCycle();
+            else { stopCycle(); resetToFirst(); }
+          });
+        }, { threshold: 0.45 });
+        vObs.observe(col);
+      } else {
+        col.addEventListener('mouseenter', () => {
+          activeIdx = i; redraw();
+          startCycle();
+        });
+        col.addEventListener('mouseleave', () => {
+          stopCycle();
+          activeIdx = null; redraw();
+          resetToFirst();
+        });
+      }
+
+      col.addEventListener('click', () => openDetail(p));
+      accord.appendChild(col);
+    });
+
+    function redraw() {
+      if (isTouchDevice) return;
+      accord.querySelectorAll('.acol').forEach((col, i) => {
+        col.style.flexGrow = activeIdx === null ? '1' : i === activeIdx ? '5.5' : '0.22';
+      });
+      accord.querySelectorAll('.acol-vert').forEach((v, i) => {
+        v.style.opacity = activeIdx === null ? '0.22'
+          : i === activeIdx ? '0'
+          : '0.5';
+      });
+    }
+
+    /* ── Property cards — click → detail ───────────────────── */
+    const grid = document.getElementById('cards-grid');
+    PROPERTIES.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'prop-card'; el.setAttribute('data-cursor', '');
+      el.innerHTML = `
+        <div class="ci-wrap"><img class="ci" src="${p.card}" alt="${p.name}" loading="lazy" /></div>
+        <div class="ctag">${p.tag}</div>
+        <div class="crow">
+          <div><div class="cname">${p.name}</div><div class="cloc">${p.loc}</div></div>
+          <div class="cprice">${p.price}</div>
+        </div>
+        <div class="cdesc">${p.desc}</div>
+        <div class="cfoot">
+          <div class="cm"><div class="cm-n">${p.rooms}</div><div class="cm-l">Rooms</div></div>
+          <div class="cm"><div class="cm-n">${p.guests}</div><div class="cm-l">Guests</div></div>
+          <div class="cm"><div class="cm-n">${p.baths}</div><div class="cm-l">Baths</div></div>
+          <button class="enq" data-cursor>View Details</button>
+        </div>`;
+      el.addEventListener('click', () => openDetail(p));
+      grid.appendChild(el);
+    });
+
+    /* ── Detail overlay ─────────────────────────────────────── */
+    const detail = document.getElementById('detail');
+    const pdBack = document.getElementById('pd-back');
+
+    function openDetail(p) {
+      document.getElementById('pd-hero-img').src          = p.images[0];
+      document.getElementById('pd-hero-img').alt          = p.name;
+      document.getElementById('pd-hero-tag').textContent  = p.tag;
+      document.getElementById('pd-hero-name').textContent = p.name;
+      document.getElementById('pd-hero-loc').innerHTML    =
+        `<a href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" data-cursor>
+           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+           ${p.loc}
+         </a>`;
+      const descEl = document.getElementById('pd-desc-text');
+      const paragraphs = (p.fullDesc || p.desc).split('\n\n');
+      descEl.innerHTML = paragraphs.map(para => {
+        if (para.includes('\n')) {
+          const lines = para.split('\n').filter(l => l.trim());
+          return `<ul>${lines.map(l => `<li>${l}</li>`).join('')}</ul>`;
+        }
+        return `<p>${para}</p>`;
+      }).join('');
+      document.getElementById('pd-spec-rooms').textContent  = p.rooms;
+      document.getElementById('pd-spec-guests').textContent = p.guests;
+      document.getElementById('pd-spec-baths').textContent  = p.baths;
+
+      document.getElementById('pd-amenities-list').innerHTML =
+        p.amenities.map(a => `<span class="pd-amen-tag">${a}</span>`).join('');
+
+      document.getElementById('pd-address').innerHTML =
+        p.address.replace(/\n/g, '<br>');
+      const mapLink = document.getElementById('pd-map-link');
+      mapLink.href = p.mapUrl;
+
+      const galEl = document.getElementById('pd-gallery');
+      galEl.innerHTML = p.images.map((url, idx) =>
+        `<img src="${url}" alt="${p.name}" loading="${idx < 4 ? 'eager' : 'lazy'}" data-idx="${idx}" />`
+      ).join('');
+      galEl.querySelectorAll('img').forEach(img => {
+        img.addEventListener('click', () => openLb(p.images, +img.dataset.idx, p.name));
+      });
+
+      detail.classList.add('open');
+      detail.scrollTop = 0;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+      detail.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    pdBack.addEventListener('click', closeDetail);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+    /* ── Scroll fade-ins ─────────────────────────────────────── */
+    const fObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); fObs.unobserve(e.target); } });
+    }, { threshold: 0.07 });
+    document.querySelectorAll('.fi').forEach(el => fObs.observe(el));
+
+    /* ── Lightbox ────────────────────────────────────────────── */
+    const lb      = document.getElementById('lb');
+    const lbImg   = document.getElementById('lb-img');
+    const lbCtr   = document.getElementById('lb-counter');
+    const lbDots  = document.getElementById('lb-dots');
+    const lbClose = document.getElementById('lb-close');
+    const lbPrev  = document.getElementById('lb-prev');
+    const lbNext  = document.getElementById('lb-next');
+    let lbImages = [], lbIdx = 0, lbName = '';
+
+    function buildLbDots() {
+      const count = Math.min(lbImages.length, 12);
+      lbDots.innerHTML = lbImages.slice(0, count).map((_, i) =>
+        `<span class="lb-dot${i === lbIdx ? ' on' : ''}"></span>`
+      ).join('');
+      lbDots.style.display = lbImages.length <= 1 ? 'none' : '';
+    }
+
+    function updateLbUI() {
+      lbCtr.textContent = `${lbIdx + 1} / ${lbImages.length}`;
+      lbDots.querySelectorAll('.lb-dot').forEach((d, i) =>
+        d.classList.toggle('on', i === lbIdx)
+      );
+    }
+
+    function showLbImg(direction) {
+      lbImg.style.opacity = '0';
+      lbImg.style.transform = direction === 1 ? 'translateX(18px)' : direction === -1 ? 'translateX(-18px)' : 'none';
+      setTimeout(() => {
+        lbImg.src = lbImages[lbIdx];
+        lbImg.alt = lbName;
+        lbImg.style.transition = 'opacity .28s ease, transform .35s var(--lux)';
+        lbImg.style.opacity = '1';
+        lbImg.style.transform = 'translateX(0)';
+        updateLbUI();
+      }, 180);
+    }
+
+    function openLb(images, idx, name) {
+      lbImages = images; lbIdx = idx; lbName = name || '';
+      lbImg.style.transition = 'none';
+      lbImg.src = lbImages[lbIdx];
+      lbImg.alt = lbName;
+      buildLbDots();
+      updateLbUI();
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLb() {
+      lb.classList.remove('open');
+      document.body.style.overflow = detail.classList.contains('open') ? 'hidden' : '';
+    }
+
+    function lbGo(dir) {
+      lbIdx = (lbIdx + dir + lbImages.length) % lbImages.length;
+      showLbImg(dir);
+    }
+
+    lbClose.addEventListener('click', closeLb);
+    lbPrev.addEventListener('click', () => lbGo(-1));
+    lbNext.addEventListener('click', () => lbGo(1));
+
+    lb.addEventListener('click', e => {
+      if (e.target === lb) closeLb();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'ArrowLeft')  lbGo(-1);
+      if (e.key === 'ArrowRight') lbGo(1);
+      if (e.key === 'Escape') closeLb();
+    });
+
+    /* Touch swipe for lightbox */
+    let lbTouchX = null;
+    lb.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+    lb.addEventListener('touchend', e => {
+      if (lbTouchX === null) return;
+      const dx = e.changedTouches[0].clientX - lbTouchX;
+      if (Math.abs(dx) > 48) lbGo(dx < 0 ? 1 : -1);
+      lbTouchX = null;
+    });
+
+  })();
+  </script>
+</body>
+</html>
