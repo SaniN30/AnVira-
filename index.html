@@ -320,9 +320,9 @@
       position: absolute; inset: 0; pointer-events: none;
       background: linear-gradient(
         to top,
-        rgba(24,24,26,0.90) 0%,
-        rgba(24,24,26,0.30) 40%,
-        rgba(24,24,26,0.06) 68%,
+        rgba(24,24,26,0.96) 0%,
+        rgba(24,24,26,0.55) 40%,
+        rgba(24,24,26,0.10) 68%,
         transparent 100%
       );
       transition: opacity .6s ease;
@@ -352,9 +352,9 @@
       transition: opacity .52s ease .06s, transform .52s var(--lux) .06s;
     }
     .acol:hover .acol-info { opacity: 1; transform: translateY(0); }
-    .acol-type { font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: rgba(255,255,255,0.72); margin-bottom: 6px; }
-    .acol-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; font-style: italic; color: #FAF8F3; line-height: 1.2; }
-    .acol-loc  { font-size: 10px; letter-spacing: .22em; color: rgba(255,255,255,0.68); margin-top: 5px; }
+    .acol-type { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: rgba(255,255,255,0.88); margin-bottom: 6px; text-shadow: 0 1px 8px rgba(24,24,26,0.7); }
+    .acol-name { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; font-style: italic; color: #FFFDF8; line-height: 1.2; text-shadow: 0 2px 14px rgba(24,24,26,0.8); }
+    .acol-loc  { font-size: 11px; letter-spacing: .22em; color: rgba(255,255,255,0.85); margin-top: 5px; text-shadow: 0 1px 8px rgba(24,24,26,0.7); }
     /* gold bar — grows on hover */
     .acol-bar  { width: 0; height: 1px; background: var(--gold); margin-top: 13px; transition: width .75s var(--lux) .18s; }
     .acol:hover .acol-bar { width: 38px; }
@@ -375,10 +375,11 @@
     /* vertical label on collapsed columns */
     .acol-vert {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-      font-size: 9px; letter-spacing: .36em; text-transform: uppercase;
-      color: rgba(255,255,255,0.55);
+      font-size: 11px; letter-spacing: .36em; text-transform: uppercase;
+      color: rgba(255,255,255,0.92);
+      text-shadow: 0 1px 10px rgba(24,24,26,0.85);
       writing-mode: vertical-rl; text-orientation: mixed;
-      opacity: 0.22; transition: opacity .4s ease;
+      opacity: 0.85; transition: opacity .4s ease;
       pointer-events: none; white-space: nowrap;
     }
 
@@ -508,7 +509,7 @@
 
     #pd-bar {
       position: sticky; top: 0; z-index: 10;
-      background: #4F5635;
+      background: rgba(245,241,232,0.92);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
       padding: 1rem clamp(1.5rem,5vw,3.5rem);
@@ -711,9 +712,9 @@
     .exp-card:hover { background: var(--surface); }
     .exp-card:nth-child(3n) { border-right: none; }
     .exp-card:nth-last-child(-n+3) { border-bottom: none; }
-    .exp-ico { width: 20px; height: 20px; margin-bottom: 1.3rem; color: var(--gold); }
-    .exp-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: .5rem; }
-    .exp-desc { font-size: 10.5px; line-height: 1.78; color: var(--mid); font-weight: 300; letter-spacing: .02em; }
+    .exp-ico { width: 26px; height: 26px; margin-bottom: 1.3rem; color: var(--gold); }
+    .exp-name { font-family: 'Cormorant Garamond', serif; font-size: 1.55rem; font-weight: 400; font-style: italic; color: var(--text); margin-bottom: .7rem; }
+    .exp-desc { font-size: 15px; line-height: 1.7; color: var(--mid); font-weight: 400; letter-spacing: .01em; }
     @media (max-width: 768px) { #exp-grid { grid-template-columns: repeat(2,1fr); } .exp-card:nth-child(3n) { border-right: 1px solid var(--border); } .exp-card:nth-child(2n) { border-right: none; } }
     @media (max-width: 480px) { #exp-grid { grid-template-columns: 1fr; } .exp-card { border-right: none !important; } }
 
@@ -954,7 +955,7 @@
     /* ── Readability — body copy raised toward 16px standard ── */
     .wlc-p   { font-size: 13.5px; }
     .cdesc   { font-size: 12px; }
-    .exp-desc{ font-size: 12px; }
+    .exp-desc{ font-size: 15px; }
     .testi-occ {
       font-family: 'Spectral', serif; font-style: italic; font-weight: 300;
       font-size: 12.5px; color: var(--mid); margin-top: 6px;
@@ -969,8 +970,6 @@
       margin: 0 auto;
       cursor: pointer;
       user-select: none;
-      /* blend the cream paper into the page background */
-      mix-blend-mode: multiply;
       opacity: 0;
       transform: translateY(16px) scale(0.97);
       transition: opacity 1.2s ease, transform 1.3s var(--lux), filter 0.7s ease;
@@ -1135,7 +1134,7 @@
       <div id="hwrap">
         <div id="hwm">
           <img id="brand-logo"
-               src="./brand/logo.png"
+               src="./brand/logo-transparent.png"
                alt="AnVira"
                draggable="false" />
           <p class="tagline" style="opacity:0;transition:opacity 0.8s ease 1.9s" id="logo-tagline">Private Estate Curation &mdash; India</p>
