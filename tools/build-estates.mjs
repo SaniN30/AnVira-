@@ -1,0 +1,458 @@
+#!/usr/bin/env node
+/* ════════════════════════════════════════════════════════════════
+   AnVira — estate page generator
+   Bakes /estates/[slug].html + /estates/index.html from
+   assets/js/data.js (single source of truth, claude.md §5 schema).
+   Run after any data change:  node tools/build-estates.mjs
+   ════════════════════════════════════════════════════════════════ */
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+/* Set the production origin before launch so OG/canonical URLs are absolute. */
+const SITE_URL = 'https://anvira.in';
+
+const ctx = {};
+vm.createContext(ctx);
+vm.runInContext(readFileSync(join(ROOT, 'assets/js/data.js'), 'utf8'), ctx);
+/* top-level consts live in the context's lexical scope, not on the object */
+const { PROPERTIES, WA_NUMBER } = vm.runInContext('({ PROPERTIES, WA_NUMBER })', ctx);
+
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const WA_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>';
+
+const PIN_SVG = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+
+const fonts = `
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&family=Spectral:ital,wght@1,300&display=swap" rel="stylesheet" />`;
+
+const chrome = {
+  nav: `
+  <div id="cursor-ring"><span id="cursor-label">View</span></div>
+  <div id="cursor-dot"></div>
+
+  <header id="nav">
+    <a id="nav-logo" class="av" href="../index.html" aria-label="AnVira — home" style="text-decoration:none" data-cursor>
+      <span class="av-an">An</span><span class="av-vira">Vira<span class="av-line"></span></span>
+    </a>
+    <button id="burger" aria-label="Menu" data-cursor>
+      <span class="bl"></span>
+      <span class="bl"></span>
+    </button>
+  </header>
+
+  <div id="menu" role="dialog" aria-label="Navigation">
+    <nav>
+      <div class="mwrap"><a href="../index.html" class="mlink" data-cursor>Home</a></div>
+      <div class="mwrap"><a href="./index.html" class="mlink" data-cursor>All Estates</a></div>
+      <div class="mwrap"><a href="#bw" class="mlink" data-cursor>Plan a Stay</a></div>
+      <div class="mwrap"><a href="https://wa.me/${WA_NUMBER}" target="_blank" rel="noopener noreferrer" class="mlink" data-cursor>Private Inquiry</a></div>
+    </nav>
+    <div id="menu-foot">Est. 2018 &mdash; Private Estates</div>
+  </div>`,
+  footer: `
+    <footer>
+      <div class="av" style="font-size:1.1rem">
+        <span class="av-an">An</span><span class="av-vira" style="font-style:italic">Vira</span>
+      </div>
+      <div class="fl">
+        <a href="../index.html#gal-sec" class="fa" data-cursor>Portfolio</a>
+        <a href="./index.html" class="fa" data-cursor>Estates</a>
+        <a href="#" class="fa" data-cursor>Privacy Policy</a>
+        <a href="#" class="fa" data-cursor>Terms</a>
+        <a href="#" class="fa" data-cursor>Cancellation Policy</a>
+      </div>
+      <div>
+        <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
+        <div class="fc-gst">GSTIN: To be updated before launch</div>
+      </div>
+    </footer>
+
+  <div id="scroll-progress" aria-hidden="true"></div>`,
+};
+
+function bookingAside(p) {
+  const inc = p.pricing.included.map(i => `<li>${esc(i)}</li>`).join('');
+  const ext = p.pricing.extra.map(i => `<li class="x">${esc(i)}</li>`).join('');
+  const amount = p.pricing.from
+    ? `From &#8377;${Number(p.pricing.from).toLocaleString('en-IN')} / night`
+    : 'Tariff on request';
+  return `
+        <aside class="ep-aside">
+          <div class="ep-price">
+            <p class="ep-price-from">Your stay</p>
+            <p class="ep-price-amt">${amount}</p>
+            <p class="ep-price-note">${esc(p.pricing.note)}</p>
+            <p class="ep-price-min">Minimum ${p.pricing.minNights} night${p.pricing.minNights > 1 ? 's' : ''}</p>
+            <div class="ep-incl">
+              <p class="ep-incl-title">Included</p>
+              <ul>${inc}</ul>
+            </div>
+            <div class="ep-incl">
+              <p class="ep-incl-title">On request</p>
+              <ul>${ext}</ul>
+            </div>
+          </div>
+          <form id="bw" novalidate>
+            <div class="bw-title">Plan your stay</div>
+            <div class="bw-row">
+              <div class="bw-field">
+                <label class="bw-label" for="bw-in">Check-in</label>
+                <input class="bw-input" type="date" id="bw-in" name="checkin" required />
+              </div>
+              <div class="bw-field">
+                <label class="bw-label" for="bw-out">Check-out</label>
+                <input class="bw-input" type="date" id="bw-out" name="checkout" required />
+              </div>
+            </div>
+            <div class="bw-row">
+              <div class="bw-field">
+                <label class="bw-label" for="bw-guests">Guests</label>
+                <input class="bw-input" type="number" id="bw-guests" name="guests" min="1" value="2" required />
+              </div>
+              <div class="bw-field">
+                <label class="bw-label" for="bw-name">Your name</label>
+                <input class="bw-input" type="text" id="bw-name" name="name" autocomplete="name" required />
+              </div>
+            </div>
+            <p class="bw-err" id="bw-err" role="alert" aria-live="polite"></p>
+            <button type="submit" class="cta" data-cursor>Preview Enquiry</button>
+            <a class="bw-call" id="bw-call" href="tel:+${WA_NUMBER}" data-cursor>Call instead</a>
+          </form>
+          <p class="ep-trust">We reply on WhatsApp <b>within 2 hours</b>, 9am&ndash;9pm IST.<br>Direct booking &mdash; no platform fees, ever.</p>
+        </aside>`;
+}
+
+function storyHTML(p) {
+  return p.fullDesc.split('\n\n').map(para => {
+    if (para.includes('\n')) {
+      const lines = para.split('\n').filter(l => l.trim());
+      return `<ul>${lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul>`;
+    }
+    return `<p>${esc(para)}</p>`;
+  }).join('\n            ');
+}
+
+function estatePage(p) {
+  const others = PROPERTIES.filter(o => o.id !== p.id);
+  const waText = encodeURIComponent(`Hello AnVira, I'd like to enquire about ${p.name}.`);
+  const canonical = `${SITE_URL}/estates/${p.id}.html`;
+
+  const jsonld = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'LodgingBusiness',
+    name: `${p.name} — AnVira Private Estates`,
+    description: p.seo.desc,
+    image: `${SITE_URL}/${p.images[0]}`,
+    priceRange: p.pricing.from ? `From ₹${p.pricing.from}/night` : 'On Request',
+    address: { '@type': 'PostalAddress', streetAddress: p.address.replace('\n', ', '), addressCountry: 'IN' },
+    url: canonical,
+    telephone: `+${WA_NUMBER}`,
+    amenityFeature: p.amenities.map(a => ({ '@type': 'LocationFeatureSpecification', name: a })),
+  }, null, 2);
+
+  const guide = p.localGuide.map(g => `
+            <div class="lg-item">
+              <div class="lg-name">${esc(g.name)}</div>
+              <p class="lg-desc">${esc(g.desc)}</p>
+              <p class="lg-meta">${g.mins} min &nbsp;&middot;&nbsp; <span>Best for:</span> ${esc(g.best)}</p>
+            </div>`).join('');
+
+  const reviews = p.reviews.map(r => `
+            <div class="testi-card">
+              <div class="testi-stars">${'<span class="testi-star">&#9733;</span>'.repeat(r.stars)}</div>
+              <p class="testi-text">&ldquo;${esc(r.text)}&rdquo;</p>
+              <div class="testi-name">${esc(r.name)}</div>
+              <div class="testi-occ">${esc(r.occ)}</div>
+            </div>`).join('');
+
+  const similar = others.map(o => `
+        <div class="prop-card" data-cursor onclick="location.href='./${o.id}.html'">
+          <div class="ci-wrap"><img class="ci" src="../${o.card}" alt="${esc(o.name)}" loading="lazy" /></div>
+          <div class="ctag">${esc(o.tag)}</div>
+          <div class="crow">
+            <div><div class="cname">${esc(o.name)}</div><div class="cloc">${esc(o.loc)}</div></div>
+            <div class="cprice">${esc(o.price)}</div>
+          </div>
+          <div class="cdesc">${esc(o.desc)}</div>
+          <div class="cfoot">
+            <div class="cm"><div class="cm-n">${o.rooms}</div><div class="cm-l">Rooms</div></div>
+            <div class="cm"><div class="cm-n">${o.maxGuests}</div><div class="cm-l">Guests</div></div>
+            <div class="cm"><div class="cm-n">${o.baths}</div><div class="cm-l">Baths</div></div>
+            <a class="enq" href="./${o.id}.html" data-cursor>View Details</a>
+          </div>
+        </div>`).join('');
+
+  const gallery = p.images.map((u, i) =>
+    `<img src="../${u}" alt="${esc(p.name)} — photograph ${i + 1}" loading="${i < 4 ? 'eager' : 'lazy'}" data-idx="${i}" data-cursor />`
+  ).join('\n            ');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(p.seo.title)}</title>
+  <meta name="description" content="${esc(p.seo.desc)}" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#F5F1E8" />
+  <link rel="canonical" href="${canonical}" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="${esc(p.seo.title)}" />
+  <meta property="og:description" content="${esc(p.seo.desc)}" />
+  <meta property="og:image" content="${SITE_URL}/${p.images[0]}" />
+  <meta property="og:url" content="${canonical}" />
+  <meta property="og:site_name" content="AnVira" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${esc(p.seo.title)}" />
+  <meta name="twitter:description" content="${esc(p.seo.desc)}" />
+  <meta name="twitter:image" content="${SITE_URL}/${p.images[0]}" />
+
+  <script type="application/ld+json">
+${jsonld}
+  </script>
+${fonts}
+  <link rel="preload" as="image" href="../${p.images[0]}" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body data-base="../" data-estate="${p.id}">
+${chrome.nav}
+
+  <main>
+    <section class="ep-hero">
+      <img src="../${p.images[0]}" alt="${esc(p.name)} — ${esc(p.loc)}" />
+      <div class="ep-hero-overlay"></div>
+      <div class="ep-hero-caption">
+        <p class="ep-crumb"><a href="../index.html" data-cursor>AnVira</a> &nbsp;/&nbsp; <a href="./index.html" data-cursor>Estates</a> &nbsp;/&nbsp; ${esc(p.name)}</p>
+        <div id="pd-hero-tag">${esc(p.tag)}</div>
+        <h1 id="pd-hero-name">${esc(p.name)}</h1>
+        <div id="pd-hero-loc"><a href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" data-cursor>${PIN_SVG} ${esc(p.loc)}</a></div>
+      </div>
+    </section>
+
+    <div class="ep-wrap">
+      <div class="ep-main">
+        <article>
+          <section class="ep-section fi">
+            <div class="jaali" aria-hidden="true"></div>
+            <div class="ep-story-text">
+            ${storyHTML(p)}
+            </div>
+            <div class="ep-stats">
+              <div><div class="pd-spec-n">${p.rooms}</div><div class="pd-spec-l">Rooms</div></div>
+              <div><div class="pd-spec-n">${p.maxGuests}</div><div class="pd-spec-l">Guests</div></div>
+              <div><div class="pd-spec-n">${p.baths}</div><div class="pd-spec-l">Baths</div></div>
+            </div>
+          </section>
+
+          <section class="ep-section fi">
+            <p class="ep-sec-title">Amenities &amp; Features</p>
+            <div class="pd-amen-grid">
+              ${p.amenities.map(a => `<span class="pd-amen-tag">${esc(a)}</span>`).join('\n              ')}
+            </div>
+          </section>
+
+          <section class="ep-section fi" id="availability">
+            <p class="ep-sec-title">Availability &mdash; by month</p>
+            <div class="avail-grid" id="pd-avail-grid"></div>
+            <div class="avail-legend">
+              <span class="avail-key"><span class="avail-dot g"></span>Available</span>
+              <span class="avail-key"><span class="avail-dot a"></span>Partial</span>
+              <span class="avail-key"><span class="avail-dot x"></span>Booked</span>
+            </div>
+          </section>
+
+          <section class="ep-section fi">
+            <p class="ep-sec-title">Location</p>
+            <p id="pd-address">${p.address.replace('\n', '<br>')}</p>
+            <a id="pd-map-link" href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" data-cursor style="margin-top:1.1rem">
+              ${PIN_SVG}
+              Get Directions on Google Maps
+            </a>
+          </section>
+
+          <section class="ep-section fi">
+            <p class="ep-sec-title">Gallery &mdash; ${p.images.length} photographs</p>
+            <div id="pd-gallery">
+            ${gallery}
+            </div>
+          </section>
+
+${p.staff.length ? `          <section class="ep-section fi">
+            <p class="ep-sec-title">The People of the House</p>
+            ${p.staff.map(s => `<div class="lg-item"><div class="lg-name">${esc(s.name)}</div><p class="lg-meta">${esc(s.role)}</p><p class="lg-desc">${esc(s.bio)}</p></div>`).join('\n            ')}
+          </section>
+` : ''}          <section class="ep-section fi">
+            <p class="ep-sec-title">The Local Guide &mdash; curated by our staff</p>
+            <div class="lg-grid">${guide}
+            </div>
+          </section>
+
+          <section class="ep-section fi">
+            <p class="ep-sec-title">Guest Voices &mdash; ${esc(p.name)}</p>
+            <div class="ep-reviews">${reviews}
+            </div>
+          </section>
+        </article>
+${bookingAside(p)}
+      </div>
+    </div>
+
+    <section class="ep-similar fi">
+      <div class="sec-head">
+        <div>
+          <p class="sec-ey">Continue Exploring</p>
+          <h2 class="st">Other AnVira Estates</h2>
+        </div>
+      </div>
+      <div class="cards">${similar}
+      </div>
+    </section>
+
+    <div id="inquiry" class="fi">
+      <div>
+        <p class="sec-ey">Private Viewing</p>
+        <h2>Undecided? Request a curated showing of ${esc(p.name)}.</h2>
+      </div>
+      <a class="cta" style="text-decoration:none" href="https://wa.me/${WA_NUMBER}?text=${waText}" target="_blank" rel="noopener noreferrer" data-cursor>Enquire on WhatsApp</a>
+    </div>
+${chrome.footer}
+  </main>
+
+  <div id="float-wa">
+    <a href="https://wa.me/${WA_NUMBER}?text=${waText}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">${WA_SVG}</a>
+  </div>
+
+  <div id="sticky-book">
+    <a href="#bw">${WA_SVG} Check availability &mdash; ${esc(p.name)}</a>
+  </div>
+
+  <div id="mpc-wrap" role="dialog" aria-modal="true" aria-label="Enquiry preview">
+    <div id="mpc">
+      <p class="mpc-eye">Your enquiry</p>
+      <p class="mpc-title" id="mpc-prop"></p>
+      <div class="mpc-rows">
+        <div class="mpc-row"><span>Check-in</span><b id="mpc-in"></b></div>
+        <div class="mpc-row"><span>Check-out</span><b id="mpc-out"></b></div>
+        <div class="mpc-row"><span>Nights</span><b id="mpc-nights"></b></div>
+        <div class="mpc-row"><span>Guests</span><b id="mpc-guests"></b></div>
+      </div>
+      <div class="bw-field">
+        <label class="mpc-note-label" for="mpc-name">Name</label>
+        <input class="bw-input" type="text" id="mpc-name" autocomplete="name" />
+      </div>
+      <div class="bw-field">
+        <label class="mpc-note-label" for="mpc-note">Add a note &mdash; occasion, requests (optional)</label>
+        <textarea class="bw-input" id="mpc-note" maxlength="300" placeholder="e.g. Our tenth anniversary &mdash; we'd love a quiet corner room."></textarea>
+      </div>
+      <div class="mpc-preview" id="mpc-preview" aria-live="polite"></div>
+      <div class="mpc-actions">
+        <button class="mpc-send" id="mpc-send" data-cursor>Send on WhatsApp</button>
+        <button class="mpc-cancel" id="mpc-cancel" data-cursor>Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="lb">
+    <button id="lb-close" aria-label="Close">&#xd7;</button>
+    <button id="lb-prev" aria-label="Previous">&#x2039;</button>
+    <img id="lb-img" src="" alt="" draggable="false" />
+    <button id="lb-next" aria-label="Next">&#x203a;</button>
+    <div id="lb-dots"></div>
+    <div id="lb-counter"></div>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/gallery.js"></script>
+  <script src="../assets/js/booking.js"></script>
+  <script src="../assets/js/estate.js"></script>
+</body>
+</html>
+`;
+}
+
+function listingPage() {
+  const cards = PROPERTIES.map(p => `
+        <div class="prop-card" data-cursor onclick="location.href='./${p.id}.html'">
+          <div class="ci-wrap"><img class="ci" src="../${p.card}" alt="${esc(p.name)}" loading="lazy" /></div>
+          <div class="ctag">${esc(p.tag)}</div>
+          <div class="crow">
+            <div><div class="cname">${esc(p.name)}</div><div class="cloc">${esc(p.loc)}</div></div>
+            <div class="cprice">${esc(p.price)}</div>
+          </div>
+          <div class="cdesc">${esc(p.desc)}</div>
+          <div class="cfoot">
+            <div class="cm"><div class="cm-n">${p.rooms}</div><div class="cm-l">Rooms</div></div>
+            <div class="cm"><div class="cm-n">${p.maxGuests}</div><div class="cm-l">Guests</div></div>
+            <div class="cm"><div class="cm-n">${p.baths}</div><div class="cm-l">Baths</div></div>
+            <a class="enq" href="./${p.id}.html" data-cursor>View Details</a>
+          </div>
+        </div>`).join('');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Estate Collection — Private Luxury Villas in India | AnVira</title>
+  <meta name="description" content="The complete AnVira portfolio — hand-selected private estates in Chail, New Delhi, and Goa. Browse, compare, and book directly." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#F5F1E8" />
+  <link rel="canonical" href="${SITE_URL}/estates/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="The Estate Collection | AnVira" />
+  <meta property="og:description" content="Hand-selected private estates in Chail, New Delhi, and Goa. Book directly." />
+  <meta property="og:image" content="${SITE_URL}/chail/anvira-terrace.webp" />
+${fonts}
+  <link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body data-base="../">
+${chrome.nav}
+
+  <main>
+    <section id="listings" style="padding-top:clamp(120px,16vh,170px)">
+      <div class="sec-head">
+        <div>
+          <p class="sec-ey">Estate Collection</p>
+          <h2 class="st">The Portfolio</h2>
+        </div>
+      </div>
+      <div class="cards">${cards}
+      </div>
+    </section>
+
+    <div id="inquiry" class="fi">
+      <div>
+        <p class="sec-ey">Private Viewing</p>
+        <h2>Request a curated showing.<br>Discretion is our default.</h2>
+      </div>
+      <a class="cta" style="text-decoration:none" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hello AnVira, I'd like to enquire about an estate.")}" target="_blank" rel="noopener noreferrer" data-cursor>Enquire on WhatsApp</a>
+    </div>
+${chrome.footer}
+  </main>
+
+  <div id="float-wa">
+    <a href="https://wa.me/${WA_NUMBER}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">${WA_SVG}</a>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/core.js"></script>
+</body>
+</html>
+`;
+}
+
+mkdirSync(join(ROOT, 'estates'), { recursive: true });
+for (const p of PROPERTIES) {
+  writeFileSync(join(ROOT, 'estates', `${p.id}.html`), estatePage(p));
+  console.log(`built estates/${p.id}.html`);
+}
+writeFileSync(join(ROOT, 'estates', 'index.html'), listingPage());
+console.log('built estates/index.html');

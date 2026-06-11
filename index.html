@@ -276,7 +276,7 @@
           <p class="sec-ey">Estate Collection</p>
           <h2 class="st">The Portfolio</h2>
         </div>
-        <button class="ghost" data-cursor>View All Estates &rarr;</button>
+        <a class="ghost" style="text-decoration:none" href="./estates/index.html" data-cursor>View All Estates &rarr;</a>
       </div>
       <div class="cards" id="cards-grid"></div>
     </section>
@@ -341,128 +341,9 @@
     </a>
   </div>
 
-  <!-- Property detail overlay -->
-  <div id="detail">
-    <div id="pd-bar">
-      <button id="pd-back" data-cursor>&#8592; Back to Portfolio</button>
-      <div class="av" style="font-size:1.1rem">
-        <span class="av-an">An</span><span class="av-vira">Vira<span class="av-line"></span></span>
-      </div>
-    </div>
-    <div id="pd-hero">
-      <img id="pd-hero-img" src="" alt="" />
-      <div id="pd-hero-overlay"></div>
-      <div id="pd-hero-caption">
-        <div id="pd-hero-tag"></div>
-        <div id="pd-hero-name"></div>
-        <div id="pd-hero-loc"></div>
-      </div>
-    </div>
-    <div id="pd-body">
-      <div id="pd-meta">
-        <div id="pd-desc-col">
-          <div id="pd-desc-text"></div>
-          <div id="pd-specs">
-            <div><div class="pd-spec-n" id="pd-spec-rooms"></div><div class="pd-spec-l">Rooms</div></div>
-            <div><div class="pd-spec-n" id="pd-spec-guests"></div><div class="pd-spec-l">Guests</div></div>
-            <div><div class="pd-spec-n" id="pd-spec-baths"></div><div class="pd-spec-l">Baths</div></div>
-          </div>
-        </div>
-        <div id="pd-cta-col">
-          <form id="bw" novalidate>
-            <div class="bw-title">Plan your stay</div>
-            <div class="bw-row">
-              <div class="bw-field">
-                <label class="bw-label" for="bw-in">Check-in</label>
-                <input class="bw-input" type="date" id="bw-in" name="checkin" required />
-              </div>
-              <div class="bw-field">
-                <label class="bw-label" for="bw-out">Check-out</label>
-                <input class="bw-input" type="date" id="bw-out" name="checkout" required />
-              </div>
-            </div>
-            <div class="bw-row">
-              <div class="bw-field">
-                <label class="bw-label" for="bw-guests">Guests</label>
-                <input class="bw-input" type="number" id="bw-guests" name="guests" min="1" value="2" required />
-              </div>
-              <div class="bw-field">
-                <label class="bw-label" for="bw-name">Your name</label>
-                <input class="bw-input" type="text" id="bw-name" name="name" autocomplete="name" required />
-              </div>
-            </div>
-            <p class="bw-err" id="bw-err" role="alert" aria-live="polite"></p>
-            <button type="submit" class="cta" data-cursor>Preview Enquiry</button>
-            <a class="bw-call" id="bw-call" href="tel:+919807087087" data-cursor>Call instead</a>
-          </form>
-        </div>
-      </div>
-      <div id="pd-amenities">
-        <p class="pd-amen-title">Amenities &amp; Features</p>
-        <div class="pd-amen-grid" id="pd-amenities-list"></div>
-      </div>
-      <div id="pd-avail">
-        <p class="pd-amen-title">Availability — by month</p>
-        <div class="avail-grid" id="pd-avail-grid"></div>
-        <div class="avail-legend">
-          <span class="avail-key"><span class="avail-dot g"></span>Available</span>
-          <span class="avail-key"><span class="avail-dot a"></span>Partial</span>
-          <span class="avail-key"><span class="avail-dot x"></span>Booked</span>
-        </div>
-      </div>
-      <div id="pd-location">
-        <p class="pd-amen-title">Location</p>
-        <p id="pd-address"></p>
-        <a id="pd-map-link" href="#" target="_blank" rel="noopener noreferrer" data-cursor>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
-          </svg>
-          Get Directions on Google Maps
-        </a>
-      </div>
-      <p id="pd-gallery-title">Gallery</p>
-      <div id="pd-gallery"></div>
-    </div>
-  </div>
-
-  <!-- Message Preview Card -->
-  <div id="mpc-wrap" role="dialog" aria-modal="true" aria-label="Enquiry preview">
-    <div id="mpc">
-      <p class="mpc-eye">Your enquiry</p>
-      <p class="mpc-title" id="mpc-prop"></p>
-      <div class="mpc-rows">
-        <div class="mpc-row"><span>Check-in</span><b id="mpc-in"></b></div>
-        <div class="mpc-row"><span>Check-out</span><b id="mpc-out"></b></div>
-        <div class="mpc-row"><span>Nights</span><b id="mpc-nights"></b></div>
-        <div class="mpc-row"><span>Guests</span><b id="mpc-guests"></b></div>
-      </div>
-      <div class="bw-field">
-        <label class="mpc-note-label" for="mpc-name">Name</label>
-        <input class="bw-input" type="text" id="mpc-name" autocomplete="name" />
-      </div>
-      <div class="bw-field">
-        <label class="mpc-note-label" for="mpc-note">Add a note — occasion, requests (optional)</label>
-        <textarea class="bw-input" id="mpc-note" maxlength="300" placeholder="e.g. Our tenth anniversary — we'd love a quiet corner room."></textarea>
-      </div>
-      <div class="mpc-preview" id="mpc-preview" aria-live="polite"></div>
-      <div class="mpc-actions">
-        <button class="mpc-send" id="mpc-send" data-cursor>Send on WhatsApp</button>
-        <button class="mpc-cancel" id="mpc-cancel" data-cursor>Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Lightbox -->
-  <div id="lb">
-    <button id="lb-close" aria-label="Close">&#xd7;</button>
-    <button id="lb-prev" aria-label="Previous">&#x2039;</button>
-    <img id="lb-img" src="" alt="" draggable="false" />
-    <button id="lb-next" aria-label="Next">&#x203a;</button>
-    <div id="lb-dots"></div>
-    <div id="lb-counter"></div>
-  </div>
 
   <script src="./assets/js/data.js"></script>
-  <script src="./assets/js/main.js"></script>
+  <script src="./assets/js/core.js"></script>
+  <script src="./assets/js/home.js"></script>
 </body>
 </html>

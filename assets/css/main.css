@@ -1077,3 +1077,87 @@
       .pd-amen-tag { padding: 8px 14px; font-size: 10px; }
       .cta { width: 100%; text-align: center; padding: 16px 20px; }
     }
+
+    /* ════════════════════════════════════════════════════════════
+       Estate pages — /estates/[slug].html
+       Two-column conversion layout: story left, sticky booking right.
+       All spacing drawn from the --space scale for symmetric rhythm.
+       ════════════════════════════════════════════════════════════ */
+    .ep-hero { position: relative; height: 100svh; min-height: 480px; overflow: hidden; }
+    .ep-hero img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      animation: kenburns 8s var(--lux) both;
+    }
+    @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.03); } }
+    .ep-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(24,24,26,.78) 0%, rgba(24,24,26,.08) 52%, transparent 100%);
+    }
+    .ep-hero-caption { position: absolute; bottom: var(--space-5); left: var(--pad-x); right: var(--pad-x); }
+    .ep-crumb { font-size: 9.5px; letter-spacing: .4em; text-transform: uppercase; margin-bottom: .7rem; }
+    .ep-crumb, .ep-crumb a { color: rgba(255,255,255,.55); text-decoration: none; }
+    .ep-crumb a:hover { color: #FAF8F3; }
+
+    .ep-wrap { max-width: 1180px; margin: 0 auto; padding: var(--space-6) var(--pad-x); }
+    .ep-main { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; }
+    .ep-aside { position: sticky; top: 92px; display: flex; flex-direction: column; gap: var(--space-3); }
+
+    .ep-section { padding-top: var(--space-4); margin-top: var(--space-4); border-top: 1px solid var(--border); }
+    .ep-section:first-child { padding-top: 0; margin-top: 0; border-top: none; }
+    .ep-sec-title { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.2rem; font-weight: 500; }
+
+    /* Story prose — readable measure, no orphan space */
+    .ep-story-text { max-width: 600px; }
+    .ep-story-text p, .ep-story-text li {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 1.6vw, 1.35rem); font-weight: 300; line-height: 1.8;
+      color: var(--mid);
+    }
+    .ep-story-text p { margin-bottom: 1em; }
+    .ep-story-text p:last-child { margin-bottom: 0; }
+    .ep-story-text ul { margin: .2em 0 1em 1.3em; }
+    .ep-story-text li { margin-bottom: .4em; }
+    .ep-stats { display: flex; gap: var(--space-4); margin-top: var(--space-4); }
+
+    /* Price anchor block */
+    .ep-price {
+      background: var(--surface); border: 1px solid var(--border-mid); border-radius: 2px;
+      padding: 1.4rem 1.5rem 1.3rem;
+    }
+    .ep-price-from { font-size: 9.5px; letter-spacing: .36em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
+    .ep-price-amt  { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.2; }
+    .ep-price-note { font-size: 11.5px; color: var(--mid); margin-top: 6px; line-height: 1.6; }
+    .ep-price-min  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); margin-top: 8px; letter-spacing: .06em; }
+    .ep-incl { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
+    .ep-incl-title { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; font-weight: 500; }
+    .ep-incl li { font-size: 12px; line-height: 1.9; color: var(--mid); list-style: none; padding-left: 16px; position: relative; }
+    .ep-incl li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
+    .ep-incl li.x::before { content: '+'; }
+
+    /* Local guide */
+    .lg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-4); }
+    .lg-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; font-style: italic; color: var(--text); }
+    .lg-desc { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 5px 0 7px; }
+    .lg-meta { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+    .lg-meta span { color: var(--faint); }
+
+    /* Reviews on estate page */
+    .ep-reviews { display: grid; gap: var(--space-3); }
+    .ep-reviews .testi-card { flex: none; }
+
+    /* Trust strip under booking widget */
+    .ep-trust { font-size: 11px; line-height: 1.8; color: var(--mid); text-align: center; letter-spacing: .04em; }
+    .ep-trust b { color: var(--text); font-weight: 500; }
+
+    /* Similar estates + footer CTA reuse .cards / #inquiry styles */
+    .ep-similar { max-width: 1180px; margin: 0 auto; padding: 0 var(--pad-x) var(--space-6); }
+
+    @media (max-width: 980px) {
+      .ep-main { grid-template-columns: 1fr; }
+      .ep-aside { position: static; max-width: 480px; }
+    }
+    @media (max-width: 768px) {
+      .ep-hero { height: 72svh; min-height: 420px; }
+      .lg-grid { grid-template-columns: 1fr; }
+      .ep-stats { gap: var(--space-3); }
+    }
