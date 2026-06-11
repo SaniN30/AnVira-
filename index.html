@@ -508,7 +508,7 @@
 
     #pd-bar {
       position: sticky; top: 0; z-index: 10;
-      background: rgba(245,241,232,0.92);
+      background: #4F5635;
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
       padding: 1rem clamp(1.5rem,5vw,3.5rem);
@@ -973,27 +973,16 @@
       transform: scale(1.035);
       filter: drop-shadow(0 12px 32px rgba(184,148,106,0.35));
     }
-    /* All structural strokes start invisible (drawn in via JS class) */
-    .lp { /* logo path */
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-    }
-    .ls { /* logo sprig */
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-    }
-    .lt { /* logo text */
-      opacity: 0;
-      transition: opacity 0.7s ease;
-    }
-    .ld { /* logo divider lines */
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-    }
-    .lo { /* logo ornament (gold) */
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
+    /* Strokes are visible by default; the draw animation hides then reveals them.
+       If JS or animations fail, the logo still shows. */
+    .lp, .ls, .ld { stroke-dasharray: 1; }
+    .lt { transition: opacity 0.7s ease; }
+    .lorn { transition: opacity 0.5s ease; }
+    #brand-logo:not(.drawn) .lp,
+    #brand-logo:not(.drawn) .ls,
+    #brand-logo:not(.drawn) .ld { stroke-dashoffset: 1; }
+    #brand-logo:not(.drawn) .lt,
+    #brand-logo:not(.drawn) .lorn { opacity: 0; }
     /* Drawn state — applied by JS */
     #brand-logo.drawn .lp { animation: logoDraw 1.6s var(--lux) forwards; }
     #brand-logo.drawn .lp:nth-child(1) { animation-delay: 0s; }
@@ -1002,8 +991,8 @@
     #brand-logo.drawn .ls { animation: logoDraw 1.4s var(--lux) 0.5s forwards; }
     #brand-logo.drawn .ld { animation: logoDraw 0.8s ease 1.6s forwards; }
     #brand-logo.drawn .lt { opacity: 1; transition-delay: 1.2s; }
-    #brand-logo.drawn .lo { opacity: 1; transition-delay: 1.7s; }
-    @keyframes logoDraw { to { stroke-dashoffset: 0; } }
+    #brand-logo.drawn .lorn { opacity: 1; transition-delay: 1.7s; }
+    @keyframes logoDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
     /* Continuous sprig sway — added by JS after draw completes */
     #brand-logo.swaying .ls {
       animation: sprigSway 7s ease-in-out infinite;
@@ -1157,47 +1146,47 @@
             <!-- House outline -->
             <path class="lp" pathLength="1"
               d="M130 28 L55 90 L55 173 L205 173 L205 90 Z"
-              stroke="rgba(245,241,232,0.90)" stroke-width="1.6" stroke-linejoin="round"/>
+              stroke="#4F5635" stroke-width="1.6" stroke-linejoin="round"/>
 
             <!-- A letterform (peak shared with house roof) -->
             <path class="lp" pathLength="1"
               d="M130 28 L79 173 M130 28 L181 173 M97 127 L163 127"
-              stroke="rgba(245,241,232,0.90)" stroke-width="2" stroke-linecap="round"/>
+              stroke="#4F5635" stroke-width="2" stroke-linecap="round"/>
 
             <!-- V letterform (inscribed in lower A) -->
             <path class="lp" pathLength="1"
               d="M91 152 L130 173 L169 152"
-              stroke="rgba(245,241,232,0.90)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              stroke="#4F5635" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 
             <!-- Botanical sprig — stem -->
             <path class="ls" pathLength="1"
               d="M60 98 C 46 78 30 56 16 30"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1.3" stroke-linecap="round"/>
+              stroke="#5C6440" stroke-width="1.3" stroke-linecap="round"/>
 
             <!-- Sprig leaf 1 — lower left -->
             <path class="ls" pathLength="1"
               d="M50 84 C 36 80 22 72 14 60 C 24 58 38 66 50 84 Z"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1.1" stroke-linejoin="round"/>
+              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
 
             <!-- Sprig leaf 2 — lower right (other side) -->
             <path class="ls" pathLength="1"
               d="M44 76 C 54 66 64 56 70 46 C 68 56 60 66 44 76 Z"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1.1" stroke-linejoin="round"/>
+              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
 
             <!-- Sprig leaf 3 — upper left -->
             <path class="ls" pathLength="1"
               d="M34 58 C 20 50 10 36 12 22 C 22 24 30 40 34 58 Z"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1.1" stroke-linejoin="round"/>
+              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
 
             <!-- Sprig leaf 4 — upper right -->
             <path class="ls" pathLength="1"
               d="M26 46 C 34 36 44 26 50 16 C 50 26 42 36 26 46 Z"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1.1" stroke-linejoin="round"/>
+              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
 
             <!-- Sprig leaf 5 — tip -->
             <path class="ls" pathLength="1"
               d="M18 32 C 12 22 12 10 18 4 C 22 10 20 22 18 32 Z"
-              stroke="rgba(245,241,232,0.82)" stroke-width="1" stroke-linejoin="round"/>
+              stroke="#5C6440" stroke-width="1" stroke-linejoin="round"/>
 
             <!-- ANVIRA logotype -->
             <text class="lt"
@@ -1206,7 +1195,7 @@
               font-family="'Cormorant Garamond',serif"
               font-size="22"
               letter-spacing="9"
-              fill="rgba(245,241,232,0.92)">ANVIRA</text>
+              fill="#4F5635">ANVIRA</text>
 
             <!-- Decorative divider -->
             <line class="ld" pathLength="1" x1="72" y1="230" x2="108" y2="230"
@@ -1215,7 +1204,7 @@
               stroke="#B8946A" stroke-width="0.8"/>
 
             <!-- Gold ornament (small flower/diamond) -->
-            <g class="lo" transform="translate(130,230)">
+            <g class="lorn" transform="translate(130,230)">
               <circle r="2.2" fill="#B8946A"/>
               <path d="M0 -6 L1.2 -1.2 L6 0 L1.2 1.2 L0 6 L-1.2 1.2 L-6 0 L-1.2 -1.2 Z"
                 fill="#B8946A" opacity="0.7"/>
