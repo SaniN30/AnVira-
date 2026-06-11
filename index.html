@@ -3,7 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AnVira — Private Estates</title>
+  <title>AnVira — Private Estates | Curated Luxury Villas in India</title>
+  <meta name="description" content="AnVira curates a hand-selected collection of private estates across India's most coveted landscapes — Chail, New Delhi, and Goa. Book directly and experience privacy without compromise." />
+  <meta name="keywords" content="luxury villa india, private estate rental, villa chail himachal, estate 10 delhi, goa sea view villa, anvira, luxury retreat india" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AnVira — Private Estates | Curated Luxury Villas in India" />
+  <meta property="og:description" content="Three hand-selected private estates across India's most coveted landscapes — Chail, New Delhi, and Goa. Enquire directly." />
+  <meta property="og:image" content="./chail/anvira-terrace.webp" />
+  <meta property="og:site_name" content="AnVira" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AnVira — Private Estates" />
+  <meta name="twitter:description" content="Three hand-selected private estates across India's most coveted landscapes." />
+  <meta name="twitter:image" content="./chail/anvira-terrace.webp" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LodgingBusiness",
+    "name": "AnVira Private Estates",
+    "description": "A curated collection of private estates across India — Chail, New Delhi, and Goa. Hand-selected for permanence, refinement, and timeless detail.",
+    "priceRange": "On Request",
+    "address": { "@type": "PostalAddress", "addressCountry": "IN" },
+    "amenityFeature": [
+      { "@type": "LocationFeatureSpecification", "name": "Private Pool" },
+      { "@type": "LocationFeatureSpecification", "name": "Mountain Views" },
+      { "@type": "LocationFeatureSpecification", "name": "24/7 Staff" },
+      { "@type": "LocationFeatureSpecification", "name": "Chef on Request" },
+      { "@type": "LocationFeatureSpecification", "name": "Bonfire" }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -606,6 +641,175 @@
     }
     .lb-dot.on { background: var(--gold); transform: scale(1.4); }
 
+    /* ── Scroll-down indicator ────────────────────────────── */
+    #scroll-ind {
+      position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 9px;
+      pointer-events: none;
+      animation: si-fade 1s ease 3.6s both;
+    }
+    @keyframes si-fade { from { opacity: 0; transform: translate(-50%,10px); } to { opacity: 1; transform: translate(-50%,0); } }
+    .si-label { font-size: 7px; letter-spacing: .52em; text-transform: uppercase; color: var(--faint); }
+    .si-line {
+      width: 1px; height: 42px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: si-drop 2.4s ease-in-out 3.6s infinite;
+    }
+    @keyframes si-drop {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+      45%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+      100% { transform: scaleY(1) translateY(18px); opacity: 0; }
+    }
+    #scroll-ind.gone { opacity: 0; transition: opacity .5s ease; }
+
+    /* ── Welcome / intro ───────────────────────────────────── */
+    #welcome { display: grid; grid-template-columns: 1fr 1fr; min-height: clamp(460px, 65vh, 740px); }
+    #welcome-img-col { overflow: hidden; }
+    #welcome-img-col img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 1.2s var(--lux); }
+    #welcome:hover #welcome-img-col img { transform: scale(1.05); }
+    #welcome-text-col {
+      padding: clamp(3.5rem,8vw,6.5rem) clamp(2.5rem,6vw,5.5rem);
+      background: var(--surface);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .wlc-eye { font-size: 8px; letter-spacing: .52em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; font-weight: 300; }
+    .wlc-h {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.7rem,3.2vw,2.9rem); font-weight: 300; line-height: 1.28;
+      color: var(--text); margin-bottom: 2.2rem; letter-spacing: .01em;
+    }
+    #wlc-divider { width: 0; height: 1px; background: var(--gold); margin-bottom: 2.2rem; transition: width 1.3s var(--lux) .15s; }
+    #welcome.vis #wlc-divider { width: 44px; }
+    .wlc-p { font-size: 11px; line-height: 1.95; color: var(--mid); font-weight: 300; max-width: 430px; letter-spacing: .025em; margin-bottom: 1.3em; }
+    .wlc-p:last-of-type { margin-bottom: 0; }
+    @media (max-width: 768px) {
+      #welcome { grid-template-columns: 1fr; }
+      #welcome-img-col { height: 55vw; min-height: 240px; }
+    }
+
+    /* ── Experiences ───────────────────────────────────────── */
+    #experiences { padding: clamp(5rem,9vh,7rem) clamp(1.5rem,5vw,3.5rem); }
+    #exp-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--border); margin-top: 2.8rem;
+    }
+    .exp-card {
+      padding: 2.6rem 2rem 2.2rem;
+      border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--bg); transition: background .4s ease;
+    }
+    .exp-card:hover { background: var(--surface); }
+    .exp-card:nth-child(3n) { border-right: none; }
+    .exp-card:nth-last-child(-n+3) { border-bottom: none; }
+    .exp-ico { width: 20px; height: 20px; margin-bottom: 1.3rem; color: var(--gold); }
+    .exp-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 300; font-style: italic; color: var(--text); margin-bottom: .5rem; }
+    .exp-desc { font-size: 9.5px; line-height: 1.78; color: var(--mid); font-weight: 300; letter-spacing: .02em; }
+    @media (max-width: 768px) { #exp-grid { grid-template-columns: repeat(2,1fr); } .exp-card:nth-child(3n) { border-right: 1px solid var(--border); } .exp-card:nth-child(2n) { border-right: none; } }
+    @media (max-width: 480px) { #exp-grid { grid-template-columns: 1fr; } .exp-card { border-right: none !important; } }
+
+    /* ── Story / owner's quote ─────────────────────────────── */
+    #story {
+      padding: clamp(5.5rem,11vh,9rem) clamp(1.5rem,5vw,3.5rem);
+      background: var(--text); text-align: center; position: relative; overflow: hidden;
+    }
+    #story::before {
+      content: '\201C'; position: absolute; top: -5rem; left: 50%; transform: translateX(-50%);
+      font-family: 'Cormorant Garamond', serif; font-size: 22rem; line-height: 1;
+      color: rgba(247,244,239,0.04); pointer-events: none; user-select: none;
+    }
+    .story-eye { font-size: 8px; letter-spacing: .52em; text-transform: uppercase; color: var(--gold); margin-bottom: 3rem; font-weight: 300; }
+    #story-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.35rem,2.6vw,2.15rem); font-weight: 300; font-style: italic;
+      line-height: 1.78; max-width: 730px; margin: 0 auto 2.4rem;
+      color: rgba(247,244,239,0.9); letter-spacing: .01em;
+    }
+    #story-attr { font-size: 8.5px; letter-spacing: .4em; text-transform: uppercase; color: rgba(247,244,239,0.28); font-weight: 300; }
+
+    /* ── Testimonials ──────────────────────────────────────── */
+    #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; overflow: hidden; }
+    #testimonials .sec-bar { padding: 0 clamp(1.5rem,5vw,3.5rem); margin-bottom: 3rem; }
+    #testi-track-wrap { overflow: hidden; }
+    #testi-track {
+      display: flex; gap: 1.4rem;
+      padding: .4rem clamp(1.5rem,5vw,3.5rem) 1rem;
+      will-change: transform; transition: transform .7s var(--lux);
+    }
+    .testi-card {
+      flex: 0 0 clamp(270px,34vw,400px);
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 2.2rem 2.2rem 1.8rem; border-radius: 2px;
+    }
+    .testi-stars { display: flex; gap: 3px; margin-bottom: 1.2rem; }
+    .testi-star { color: var(--gold); font-size: 10px; line-height: 1; }
+    .testi-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem,1.5vw,1.18rem); font-weight: 300; font-style: italic;
+      line-height: 1.8; color: var(--text); margin-bottom: 1.6rem;
+    }
+    .testi-name { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--mid); font-weight: 300; }
+    .testi-prop { font-size: 8px; letter-spacing: .22em; text-transform: uppercase; color: var(--faint); margin-top: 3px; }
+    .testi-nav {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.5rem clamp(1.5rem,5vw,3.5rem) 0;
+    }
+    .testi-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1px solid var(--border-mid); background: none; color: var(--mid);
+      display: flex; align-items: center; justify-content: center; font-size: 1rem; line-height: 1;
+      transition: border-color .3s ease, color .3s ease, background .3s ease;
+    }
+    .testi-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-light); }
+    #testi-prog-wrap { flex: 1; height: 1px; background: var(--border); overflow: hidden; }
+    #testi-prog-bar  { height: 100%; background: var(--gold); transition: width .7s var(--lux); width: 25%; }
+
+    /* ── Floating WhatsApp ─────────────────────────────────── */
+    #float-wa {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 800;
+      opacity: 0; pointer-events: none;
+      transform: translateY(16px) scale(.88);
+      transition: opacity .5s var(--lux), transform .5s var(--lux);
+    }
+    #float-wa.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
+    #float-wa a {
+      width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 22px rgba(37,211,102,.3);
+      transition: transform .3s var(--lux), box-shadow .3s ease; text-decoration: none;
+    }
+    #float-wa a:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(37,211,102,.5); }
+    #float-wa svg { width: 26px; height: 26px; fill: #fff; }
+
+    /* ── Sticky mobile book bar ────────────────────────────── */
+    #sticky-book {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 700;
+      background: var(--text); padding: 1rem 1.5rem;
+      display: none; align-items: center; justify-content: center;
+      border-top: 1px solid rgba(184,148,106,.18);
+      transform: translateY(100%); transition: transform .5s var(--lux);
+    }
+    #sticky-book.show { transform: translateY(0); }
+    #sticky-book a {
+      font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+      color: var(--bg); text-decoration: none; font-weight: 300;
+      display: flex; align-items: center; gap: 10px;
+    }
+    #sticky-book svg { width: 14px; height: 14px; fill: #25D366; flex-shrink: 0; }
+    @media (max-width: 768px) { #sticky-book { display: flex; } #float-wa { bottom: 5.5rem; } }
+
+    /* ── prefers-reduced-motion ────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+      .fi { opacity: 1 !important; transform: none !important; }
+      #page { opacity: 1 !important; transform: none !important; }
+      #wlc-divider { width: 44px !important; }
+    }
+
     /* ── Touch devices — remove custom cursor ─────────────── */
     @media (hover: none) {
       *, *::before, *::after { cursor: auto !important; }
@@ -757,6 +961,128 @@
           </div>
         </div>
       </div>
+
+      <!-- Scroll indicator -->
+      <div id="scroll-ind" aria-hidden="true">
+        <span class="si-label">Scroll</span>
+        <div class="si-line"></div>
+      </div>
+    </section>
+
+    <!-- Welcome / intro section -->
+    <section id="welcome" class="fi">
+      <div id="welcome-img-col">
+        <img src="./chail/anvira-terrace.webp" alt="AnVira estate terrace, Chail" loading="lazy" />
+      </div>
+      <div id="welcome-text-col">
+        <p class="wlc-eye">Welcome to AnVira</p>
+        <h2 class="wlc-h">A Collection Built<br>on Restraint</h2>
+        <div id="wlc-divider"></div>
+        <p class="wlc-p">AnVira is not a catalogue. It is a considered edit — three private estates across India, each selected for its sense of place, its architecture, and the quality of stillness it offers to those who stay.</p>
+        <p class="wlc-p">From the pine ridges of Chail to the riverside calm of Goa and the curated seclusion of New Delhi, every property carries a story. We exist to connect you to that story — and nothing more.</p>
+      </div>
+    </section>
+
+    <!-- Experiences section -->
+    <section id="experiences" class="fi">
+      <div class="sec-bar">
+        <div class="sec-bar-left">
+          <div class="sec-bar-title">The AnVira Experience</div>
+          <div class="sec-bar-sub">What every stay is shaped around</div>
+        </div>
+      </div>
+      <div id="exp-grid">
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <div class="exp-name">Private by Design</div>
+          <div class="exp-desc">Entire estates reserved exclusively for your group — no shared amenities, no strangers, no compromise on intimacy.</div>
+        </div>
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="exp-name">Unhurried Rhythm</div>
+          <div class="exp-desc">Flexible arrivals, generous timings, and a pace set entirely by you — because a true retreat answers to no itinerary but yours.</div>
+        </div>
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="exp-name">Dedicated Staffing</div>
+          <div class="exp-desc">Each property comes with in-house caretaking staff who know it intimately — discreet, attentive, and fluent in anticipating needs.</div>
+        </div>
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <div class="exp-name">Curated Interiors</div>
+          <div class="exp-desc">Thoughtfully furnished spaces where each piece has been placed with intention — art, textiles, and objects that speak to the local landscape.</div>
+        </div>
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div class="exp-name">Security &amp; Privacy</div>
+          <div class="exp-desc">Gated access, fully walled grounds, and complete guest discretion — your presence at our estates remains entirely your own business.</div>
+        </div>
+        <div class="exp-card">
+          <svg class="exp-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.52 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.07 6.07l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div class="exp-name">White-Glove Support</div>
+          <div class="exp-desc">A single point of contact from first enquiry to check-out — handling every arrangement so your only task is to arrive and unwind.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Owner's story / quote -->
+    <section id="story" class="fi">
+      <p class="story-eye">The Philosophy</p>
+      <blockquote id="story-quote">
+        "We did not set out to build a portfolio. We set out to find places that already possessed a rare quality — a kind of earned silence. AnVira is simply the name we gave to that discipline of choosing."
+      </blockquote>
+      <p id="story-attr">The Founders &mdash; AnVira Private Estates</p>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="fi">
+      <div class="sec-bar">
+        <div class="sec-bar-left">
+          <div class="sec-bar-title">Guest Voices</div>
+          <div class="sec-bar-sub">From those who have stayed</div>
+        </div>
+      </div>
+      <div id="testi-track-wrap">
+        <div id="testi-track">
+          <div class="testi-card">
+            <div class="testi-stars">
+              <span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span>
+            </div>
+            <p class="testi-text">"Villa AnVira was unlike anything we had experienced. The pine forest, the silence, the attentiveness of the staff — it reset something in us that a normal holiday never could."</p>
+            <div class="testi-name">Meera &amp; Rohan S.</div>
+            <div class="testi-prop">Villa AnVira, Chail</div>
+          </div>
+          <div class="testi-card">
+            <div class="testi-stars">
+              <span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span>
+            </div>
+            <p class="testi-text">"Estate 10 gave us Delhi on our own terms. The lawn, the pool, the privacy — we hosted a family gathering of fifteen and it still felt intimate. A genuinely rare find in the city."</p>
+            <div class="testi-name">The Kapoor Family</div>
+            <div class="testi-prop">Estate 10, New Delhi</div>
+          </div>
+          <div class="testi-card">
+            <div class="testi-stars">
+              <span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span>
+            </div>
+            <p class="testi-text">"Waking up to the Zuari River from the terrace of Tarika's Seascapes — there is simply no comparison. Goa, finally, without the noise. The pool and the sunsets made every morning feel earned."</p>
+            <div class="testi-name">Priya N.</div>
+            <div class="testi-prop">Tarika's Seascapes, Goa</div>
+          </div>
+          <div class="testi-card">
+            <div class="testi-stars">
+              <span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span><span class="testi-star">&#9733;</span>
+            </div>
+            <p class="testi-text">"The team handled every detail — from late arrival to a special dietary request at breakfast. The level of care at AnVira is not something you find through a typical booking platform. Discretion and warmth in equal measure."</p>
+            <div class="testi-name">Vikram A.</div>
+            <div class="testi-prop">Villa AnVira, Chail</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-nav">
+        <button class="testi-btn" id="testi-prev" aria-label="Previous review">&#8249;</button>
+        <div id="testi-prog-wrap"><div id="testi-prog-bar"></div></div>
+        <button class="testi-btn" id="testi-next" aria-label="Next review">&#8250;</button>
+      </div>
     </section>
 
     <!-- Accordion gallery -->
@@ -802,9 +1128,38 @@
         <a href="#" class="fa" data-cursor>Locations</a>
         <a href="#" class="fa" data-cursor>Privacy</a>
       </div>
+      <div class="fl" style="gap:1.4rem;margin-top:.6rem">
+        <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="fa" data-cursor aria-label="Instagram" style="display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Instagram
+        </a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" class="fa" data-cursor aria-label="Facebook" style="display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
+        </a>
+        <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" class="fa" data-cursor aria-label="WhatsApp" style="display:flex;align-items:center;gap:5px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+      </div>
       <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
     </footer>
 
+  </div>
+
+  <!-- Floating WhatsApp button -->
+  <div id="float-wa">
+    <a href="https://wa.me/919999999999?text=Hello%2C%20I%27d%20like%20to%20enquire%20about%20an%20AnVira%20estate." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+    </a>
+  </div>
+
+  <!-- Sticky mobile booking bar -->
+  <div id="sticky-book">
+    <a href="https://wa.me/919999999999?text=Hello%2C%20I%27d%20like%20to%20book%20an%20AnVira%20estate." target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      Enquire on WhatsApp
+    </a>
   </div>
 
   <!-- Property detail overlay -->
@@ -1371,6 +1726,90 @@
       const dx = e.changedTouches[0].clientX - lbTouchX;
       if (Math.abs(dx) > 48) lbGo(dx < 0 ? 1 : -1);
       lbTouchX = null;
+    });
+
+    /* ── Scroll indicator hide-on-scroll ────────────────────── */
+    const scrollInd = document.getElementById('scroll-ind');
+    if (scrollInd) {
+      let siGone = false;
+      window.addEventListener('scroll', () => {
+        if (!siGone && window.scrollY > 80) { scrollInd.classList.add('gone'); siGone = true; }
+      }, { passive: true });
+    }
+
+    /* ── Floating WhatsApp — show after hero leaves viewport ── */
+    const floatWa   = document.getElementById('float-wa');
+    const stickyBk  = document.getElementById('sticky-book');
+    const heroEl    = document.getElementById('hero');
+    if (floatWa && heroEl) {
+      const waObs = new IntersectionObserver(entries => {
+        const leaving = !entries[0].isIntersecting;
+        floatWa.classList.toggle('show', leaving);
+        if (stickyBk) stickyBk.classList.toggle('show', leaving);
+      }, { threshold: 0.15 });
+      waObs.observe(heroEl);
+    }
+
+    /* ── Testimonials carousel ──────────────────────────────── */
+    const track     = document.getElementById('testi-track');
+    const progBar   = document.getElementById('testi-prog-bar');
+    const tPrev     = document.getElementById('testi-prev');
+    const tNext     = document.getElementById('testi-next');
+    if (track) {
+      const cards   = track.querySelectorAll('.testi-card');
+      const total   = cards.length;
+      let   tIdx    = 0;
+      let   tTimer  = null;
+
+      function teScrollTo(i) {
+        tIdx = (i + total) % total;
+        const card   = cards[tIdx];
+        const wrap   = track.parentElement;
+        const wrapL  = wrap.getBoundingClientRect().left;
+        const cardL  = card.getBoundingClientRect().left;
+        const scroll = track.parentElement.scrollLeft + (cardL - wrapL) - parseFloat(getComputedStyle(track).paddingLeft || 24);
+        track.parentElement.scrollTo({ left: scroll, behavior: 'smooth' });
+        if (progBar) progBar.style.width = `${((tIdx + 1) / total) * 100}%`;
+      }
+
+      function teStart() { tTimer = setInterval(() => teScrollTo(tIdx + 1), 5000); }
+      function teStop()  { clearInterval(tTimer); tTimer = null; }
+
+      if (tPrev) tPrev.addEventListener('click', () => { teStop(); teScrollTo(tIdx - 1); teStart(); });
+      if (tNext) tNext.addEventListener('click', () => { teStop(); teScrollTo(tIdx + 1); teStart(); });
+
+      /* swipe on the track */
+      let tTouchX = null;
+      track.addEventListener('touchstart', e => { tTouchX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', e => {
+        if (tTouchX === null) return;
+        const dx = e.changedTouches[0].clientX - tTouchX;
+        if (Math.abs(dx) > 44) { teStop(); teScrollTo(dx < 0 ? tIdx + 1 : tIdx - 1); teStart(); }
+        tTouchX = null;
+      });
+
+      /* init progress bar + auto-advance */
+      if (progBar) progBar.style.width = `${(1 / total) * 100}%`;
+      teStart();
+
+      /* pause on hover */
+      track.addEventListener('mouseenter', teStop);
+      track.addEventListener('mouseleave', teStart);
+    }
+
+    /* ── CTA buttons → WhatsApp ─────────────────────────────── */
+    const WA_BASE = 'https://wa.me/919999999999?text=Hello%2C%20I%27d%20like%20to%20enquire%20about%20an%20AnVira%20estate.';
+    document.querySelectorAll('.cta, button.ghost').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (detail.classList.contains('open')) return; /* detail page has its own CTA */
+        window.open(WA_BASE, '_blank', 'noopener,noreferrer');
+      });
+    });
+    /* Detail page CTA → WhatsApp with property name */
+    document.querySelector('#pd-cta-col .cta')?.addEventListener('click', () => {
+      const pdName = document.getElementById('pd-hero-name')?.textContent || 'an AnVira estate';
+      const msg = encodeURIComponent(`Hello, I'd like to enquire about ${pdName}.`);
+      window.open(`https://wa.me/919999999999?text=${msg}`, '_blank', 'noopener,noreferrer');
     });
 
   })();
