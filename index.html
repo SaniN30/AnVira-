@@ -44,6 +44,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&family=Spectral:ital,wght@1,300&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="./brand/logo-transparent.png" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
@@ -113,30 +114,39 @@
       pointer-events: none; will-change: transform;
     }
 
-    /* ── Intro (dark, high-contrast reveal) ─────────────────── */
+    /* ── Intro (brand logo reveal on cream) ─────────────────── */
     #intro {
       position: fixed; inset: 0; z-index: 200;
-      background: #18181A;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 1s var(--lux);
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity .9s var(--lux);
+      cursor: pointer;
     }
     #intro.out { opacity: 0; pointer-events: none; }
 
-    #intro-word {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 7vw, 6rem);
-      font-weight: 300; letter-spacing: .14em;
-      color: var(--bg);
-      opacity: 0; transform: translateY(24px);
-      transition: opacity .8s ease, transform .8s var(--lux);
+    #intro-logo {
+      width: clamp(190px, 26vw, 310px); height: auto;
+      user-select: none;
+      opacity: 0; transform: translateY(20px) scale(.96);
+      filter: blur(6px);
+      transition: opacity 1.1s ease, transform 1.2s var(--lux), filter 1.1s ease;
     }
-    #intro-word .iv { font-style: italic; color: var(--gold); }
-    #intro-word.show { opacity: 1; transform: translateY(0); }
-    #intro-word.hide { opacity: 0; transform: translateY(-20px) scale(.96); }
+    #intro-logo.show { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    #intro-logo.hide { opacity: 0; transform: translateY(-16px) scale(1.03); filter: blur(2px); }
+
+    #intro-skip {
+      margin-top: 2.2rem;
+      font-size: 9px; letter-spacing: .34em; text-transform: uppercase;
+      color: var(--faint);
+      opacity: 0; transition: opacity .8s ease 1.4s;
+    }
+    #intro-logo.show ~ #intro-skip { opacity: .8; }
+    #intro-logo.hide ~ #intro-skip { opacity: 0; transition-delay: 0s; transition-duration: .3s; }
 
     #intro-line {
       position: absolute; bottom: 0; left: 0;
-      height: 1px; background: rgba(245,241,232,0.07);
+      height: 1px; background: var(--gold); opacity: .4;
       width: 0; transition: width 1.9s var(--lux) .1s;
     }
     #intro-line.full { width: 100%; }
@@ -227,6 +237,17 @@
       transition: opacity 1s ease .15s, transform 1s var(--lux) .15s;
     }
     #page.show { opacity: 1; transform: translateY(0); }
+
+    /* Hero entrance — staggered after page reveal */
+    .hero-btm .eyebrow,
+    .hero-btm .ed,
+    .hero-btm .stats {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity .9s ease, transform .9s var(--lux);
+    }
+    #page.show .hero-btm .eyebrow { opacity: 1; transform: none; transition-delay: .55s; }
+    #page.show .hero-btm .ed      { opacity: 1; transform: none; transition-delay: .75s; }
+    #page.show .hero-btm .stats   { opacity: 1; transform: none; transition-delay: .95s; }
 
     /* ── Hero ────────────────────────────────────────────────── */
     #hero {
@@ -1011,6 +1032,8 @@
       html { scroll-behavior: auto; }
       .fi { opacity: 1 !important; transform: none !important; }
       #page { opacity: 1 !important; transform: none !important; }
+      .hero-btm .eyebrow, .hero-btm .ed, .hero-btm .stats { opacity: 1 !important; transform: none !important; }
+      #brand-logo { opacity: 1 !important; transform: none !important; }
       #wlc-divider { width: 44px !important; }
     }
 
@@ -1099,8 +1122,9 @@
   <div id="cursor-dot"></div>
 
   <!-- Intro overlay -->
-  <div id="intro">
-    <span id="intro-word">An<span class="iv">Vira</span></span>
+  <div id="intro" aria-hidden="true">
+    <img id="intro-logo" src="./brand/logo-transparent.png" alt="" draggable="false" />
+    <span id="intro-skip">Click to enter</span>
     <div id="intro-line"></div>
   </div>
 
@@ -1137,7 +1161,7 @@
                src="./brand/logo-transparent.png"
                alt="AnVira"
                draggable="false" />
-          <p class="tagline" style="opacity:0;transition:opacity 0.8s ease 1.9s" id="logo-tagline">Private Estate Curation &mdash; India</p>
+          <p class="tagline" style="opacity:0;transition:opacity 0.8s ease 0.7s" id="logo-tagline">Private Estate Curation &mdash; India</p>
         </div>
       </div>
 
@@ -1709,15 +1733,54 @@
       });
     });
 
-    /* ── Intro sequence ─────────────────────────────────────── */
-    const introEl = document.getElementById('intro');
-    const word    = document.getElementById('intro-word');
-    const iLine   = document.getElementById('intro-line');
-    const page    = document.getElementById('page');
-    setTimeout(() => { word.classList.add('show'); iLine.classList.add('full'); }, 80);
-    setTimeout(() => word.classList.add('hide'), 2100);
-    setTimeout(() => { introEl.classList.add('out'); page.classList.add('show'); }, 2700);
-    setTimeout(() => introEl.remove(), 3800);
+    /* ── Intro sequence — logo reveal, skippable ────────────── */
+    const introEl   = document.getElementById('intro');
+    const introLogo = document.getElementById('intro-logo');
+    const iLine     = document.getElementById('intro-line');
+    const page      = document.getElementById('page');
+    const noMotion  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let introEnded  = false;
+    let introTimer;
+
+    function endIntro(fast) {
+      if (introEnded) return;
+      introEnded = true;
+      clearTimeout(introTimer);
+      introLogo.classList.add('hide');
+      const exitDelay = fast ? 120 : 520;
+      setTimeout(() => {
+        introEl.classList.add('out');
+        page.classList.add('show');
+        window.dispatchEvent(new CustomEvent('anvira:enter'));
+      }, exitDelay);
+      setTimeout(() => introEl.remove(), exitDelay + 1100);
+    }
+
+    if (noMotion) {
+      introEl.remove();
+      page.classList.add('show');
+      window.dispatchEvent(new CustomEvent('anvira:enter'));
+    } else {
+      // Wait for the logo to be fully decoded so it never pops in,
+      // but never hold the page hostage if the image stalls.
+      const logoReady = introLogo.decode
+        ? introLogo.decode().catch(() => {})
+        : Promise.resolve();
+      Promise.race([logoReady, new Promise(r => setTimeout(r, 1200))]).then(() => {
+        requestAnimationFrame(() => {
+          introLogo.classList.add('show');
+          iLine.classList.add('full');
+        });
+        introTimer = setTimeout(() => endIntro(false), 2400);
+      });
+      introEl.addEventListener('click', () => endIntro(true));
+      window.addEventListener('keydown', function skipOnce(e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+          endIntro(true);
+          window.removeEventListener('keydown', skipOnce);
+        }
+      });
+    }
 
     /* ── Stats count-up ─────────────────────────────────────── */
     const cObs = new IntersectionObserver(entries => {
@@ -2076,11 +2139,19 @@
     const brandLogo  = document.getElementById('brand-logo');
     const logoTagline = document.getElementById('logo-tagline');
     if (brandLogo) {
-      setTimeout(() => {
-        brandLogo.classList.add('drawn');
-        if (logoTagline) logoTagline.style.opacity = '1';
-      }, 350);
-      setTimeout(() => brandLogo.classList.add('swaying'), 2400);
+      let logoRevealed = false;
+      const revealHeroLogo = () => {
+        if (logoRevealed) return;
+        logoRevealed = true;
+        setTimeout(() => {
+          brandLogo.classList.add('drawn');
+          if (logoTagline) logoTagline.style.opacity = '1';
+        }, 250);
+        setTimeout(() => brandLogo.classList.add('swaying'), 2200);
+      };
+      window.addEventListener('anvira:enter', revealHeroLogo, { once: true });
+      // Intro already gone (reduced motion fired the event before this ran)
+      if (page.classList.contains('show')) revealHeroLogo();
     }
 
     /* ── Scroll progress bar ────────────────────────────────── */
