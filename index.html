@@ -7,6 +7,7 @@
   <meta name="description" content="AnVira curates a hand-selected collection of private estates across India's most coveted landscapes — Chail, New Delhi, and Goa. Book directly and experience privacy without compromise." />
   <meta name="keywords" content="luxury villa india, private estate rental, villa chail himachal, estate 10 delhi, goa sea view villa, anvira, luxury retreat india" />
   <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#F5F1E8" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -42,31 +43,38 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@100;200;300;400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&family=Spectral:ital,wght@1,300&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
 
     :root {
-      --bg:          #F7F4EF;
-      --surface:     #FFFFFF;
-      --text:        #1A1614;
-      --mid:         #524E4A;
-      --faint:       #BCB6B0;
-      --gold:        #B8946A;
-      --gold-light:  rgba(184,148,106,0.10);
-      --border:      rgba(26,22,20,0.08);
-      --border-mid:  rgba(26,22,20,0.14);
+      /* AnVira design tokens — see CLAUDE.md §3 */
+      --bg:          #F5F1E8;   /* Lime Wash */
+      --surface:     #FAF8F3;   /* Bone */
+      --text:        #18181A;   /* Ink */
+      --mid:         #7A7670;   /* Dust */
+      --faint:       #A8A39A;   /* Dust, lightened — micro labels */
+      --gold:        #A87C45;   /* Patina Brass */
+      --gold-light:  rgba(168,124,69,0.10);
+      --wash:        #EFE0C0;   /* Turmeric Mist */
+      --rule:        #D6CEBF;   /* Linen Rule */
+      --wa:          #1F9E5F;   /* Monsoon Green */
+      --error:       #B5513A;   /* Fired Clay */
+      --border:      rgba(24,24,26,0.08);
+      --border-mid:  rgba(24,24,26,0.14);
       --lux:         cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     html { scroll-behavior: smooth; }
 
+    :focus-visible { outline: 1.5px solid var(--gold); outline-offset: 2px; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-weight: 300;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
@@ -79,7 +87,7 @@
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 9999;
       width: 36px; height: 36px;
-      border: 1px solid rgba(26,22,20,0.22);
+      border: 1px solid rgba(24,24,26,0.22);
       border-radius: 50%; pointer-events: none;
       display: flex; align-items: center; justify-content: center;
       transition: width .35s var(--lux), height .35s var(--lux),
@@ -108,7 +116,7 @@
     /* ── Intro (dark, high-contrast reveal) ─────────────────── */
     #intro {
       position: fixed; inset: 0; z-index: 200;
-      background: #1A1614;
+      background: #18181A;
       display: flex; align-items: center; justify-content: center;
       transition: opacity 1s var(--lux);
     }
@@ -128,7 +136,7 @@
 
     #intro-line {
       position: absolute; bottom: 0; left: 0;
-      height: 1px; background: rgba(247,244,239,0.07);
+      height: 1px; background: rgba(245,241,232,0.07);
       width: 0; transition: width 1.9s var(--lux) .1s;
     }
     #intro-line.full { width: 100%; }
@@ -141,7 +149,7 @@
       transition: background .5s ease, backdrop-filter .5s ease;
     }
     #nav.scrolled {
-      background: rgba(247,244,239,0.88);
+      background: rgba(245,241,232,0.88);
       backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
       border-bottom: 1px solid var(--border);
     }
@@ -170,7 +178,7 @@
       display: flex; flex-direction: column; gap: 5px; padding: 4px;
     }
     .bl {
-      display: block; height: 1px; background: rgba(26,22,20,0.5);
+      display: block; height: 1px; background: rgba(24,24,26,0.5);
       transition: transform .35s var(--lux), opacity .25s ease;
     }
     .bl:nth-child(1) { width: 22px; }
@@ -181,7 +189,7 @@
     /* ── Full-screen menu (light) ────────────────────────────── */
     #menu {
       position: fixed; inset: 0; z-index: 90;
-      background: rgba(247,244,239,0.97);
+      background: rgba(245,241,232,0.97);
       backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
       display: flex; flex-direction: column; justify-content: center;
       padding: 0 8%;
@@ -230,7 +238,7 @@
     #hero::before {
       content: '';
       position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(rgba(26,22,20,0.04) 1px, transparent 1px);
+      background-image: radial-gradient(rgba(24,24,26,0.04) 1px, transparent 1px);
       background-size: 46px 46px;
     }
 
@@ -242,7 +250,7 @@
     #hwm { text-align: center; will-change: transform, opacity; }
     #hwm .av { font-size: clamp(4rem, 11vw, 9.5rem); letter-spacing: .065em; }
     #hwm .tagline {
-      font-family: 'Inter', sans-serif; font-size: 9px;
+      font-family: 'DM Sans', sans-serif; font-size: 9px;
       letter-spacing: .48em; text-transform: uppercase;
       color: var(--mid); opacity: .75; margin-top: 1.1rem; font-weight: 300;
     }
@@ -267,9 +275,9 @@
       border-top: 1px solid var(--border); padding-top: 2.6rem;
     }
     .sn {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 5.5vw, 5rem);
-      font-weight: 300; letter-spacing: -.01em; line-height: 1;
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      font-weight: 400; letter-spacing: -.01em; line-height: 1;
       margin-bottom: .4rem; color: var(--text);
     }
     .sl {
@@ -312,9 +320,9 @@
       position: absolute; inset: 0; pointer-events: none;
       background: linear-gradient(
         to top,
-        rgba(0,0,0,0.90) 0%,
-        rgba(0,0,0,0.30) 40%,
-        rgba(0,0,0,0.06) 68%,
+        rgba(24,24,26,0.90) 0%,
+        rgba(24,24,26,0.30) 40%,
+        rgba(24,24,26,0.06) 68%,
         transparent 100%
       );
       transition: opacity .6s ease;
@@ -345,7 +353,7 @@
     }
     .acol:hover .acol-info { opacity: 1; transform: translateY(0); }
     .acol-type { font-size: 8px; letter-spacing: .4em; text-transform: uppercase; color: rgba(255,255,255,0.72); margin-bottom: 6px; }
-    .acol-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; font-style: italic; color: #fff; line-height: 1.2; }
+    .acol-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; font-style: italic; color: #FAF8F3; line-height: 1.2; }
     .acol-loc  { font-size: 9px; letter-spacing: .22em; color: rgba(255,255,255,0.68); margin-top: 5px; }
     /* gold bar — grows on hover */
     .acol-bar  { width: 0; height: 1px; background: var(--gold); margin-top: 13px; transition: width .75s var(--lux) .18s; }
@@ -411,7 +419,7 @@
     .cprice { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 300; color: var(--text); white-space: nowrap; padding-left: .5rem; }
     .cfoot { display: flex; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
     .cm { margin-right: 16px; }
-    .cm-n { font-size: .82rem; font-weight: 300; color: var(--text); }
+    .cm-n { font-family: 'DM Mono', monospace; font-size: .82rem; font-weight: 400; color: var(--text); }
     .cm-l { font-size: 8px; letter-spacing: .3em; text-transform: uppercase; color: var(--mid); margin-top: 2px; }
     .enq {
       margin-left: auto; font-size: 8px; letter-spacing: .26em; text-transform: uppercase;
@@ -428,23 +436,23 @@
     ─────────────────────────────────────────────────────────── */
     .skel .si {
       aspect-ratio: 4/3; margin-bottom: .9rem; border-radius: 2px;
-      border: 1px dashed rgba(26,22,20,0.13);
+      border: 1px dashed rgba(24,24,26,0.13);
       background: #EEEBe5;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
     }
     .skel .si-icon {
       width: 28px; height: 28px; border-radius: 50%;
-      border: 1px solid rgba(26,22,20,0.16);
+      border: 1px solid rgba(24,24,26,0.16);
       display: flex; align-items: center; justify-content: center;
     }
-    .skel .si-plus { font-size: 13px; color: rgba(26,22,20,0.22); font-weight: 100; line-height: 1; }
-    .skel .si-hint { font-size: 8px; letter-spacing: .28em; text-transform: uppercase; color: rgba(26,22,20,0.2); font-weight: 300; }
-    .skel .sl-line { height: 1px; background: rgba(26,22,20,0.09); border-radius: 1px; }
+    .skel .si-plus { font-size: 13px; color: rgba(24,24,26,0.22); font-weight: 100; line-height: 1; }
+    .skel .si-hint { font-size: 8px; letter-spacing: .28em; text-transform: uppercase; color: rgba(24,24,26,0.2); font-weight: 300; }
+    .skel .sl-line { height: 1px; background: rgba(24,24,26,0.09); border-radius: 1px; }
     .skel .sl-a { width: 34%; margin-bottom: 10px; }
     .skel .sl-b { width: 63%; margin-bottom: 6px; }
     .skel .sl-c { width: 28%; margin-bottom: 14px; }
     .skel .sf { display: flex; align-items: center; padding-top: 10px; border-top: 1px solid var(--border); }
-    .skel .sf-blk { width: 24px; height: 1px; background: rgba(26,22,20,0.09); margin-right: 14px; }
+    .skel .sf-blk { width: 24px; height: 1px; background: rgba(24,24,26,0.09); margin-right: 14px; }
     .skel .sf-btn { margin-left: auto; font-size: 8px; letter-spacing: .26em; text-transform: uppercase; color: var(--faint); background: none; border: 1px solid var(--border); padding: 7px 12px; }
 
     /* ── Inquiry ─────────────────────────────────────────────── */
@@ -500,7 +508,7 @@
 
     #pd-bar {
       position: sticky; top: 0; z-index: 10;
-      background: rgba(247,244,239,0.92);
+      background: rgba(245,241,232,0.92);
       backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
       padding: 1rem clamp(1.5rem,5vw,3.5rem);
@@ -518,7 +526,7 @@
     #pd-hero-img { width: 100%; height: 100%; object-fit: cover; display: block; }
     #pd-hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(26,22,20,.75) 0%, rgba(26,22,20,.06) 55%, transparent 100%);
+      background: linear-gradient(to top, rgba(24,24,26,.75) 0%, rgba(24,24,26,.06) 55%, transparent 100%);
     }
     #pd-hero-caption {
       position: absolute; bottom: 2.5rem;
@@ -528,7 +536,7 @@
     #pd-hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.2rem,5.5vw,5rem); font-weight: 300; font-style: italic;
-      color: #fff; line-height: 1.1;
+      color: #FAF8F3; line-height: 1.1;
     }
     #pd-hero-loc { font-size: 9.5px; letter-spacing: .26em; color: rgba(255,255,255,.5); margin-top: .5rem; }
 
@@ -549,7 +557,7 @@
     #pd-desc-text ul { margin: .2em 0 1.1em 1.4em; }
     #pd-desc-text li { margin-bottom: .45em; }
     #pd-specs { display: flex; gap: 2.5rem; }
-    .pd-spec-n { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: var(--text); }
+    .pd-spec-n { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 400; color: var(--text); }
     .pd-spec-l { font-size: 8px; letter-spacing: .32em; text-transform: uppercase; color: var(--mid); margin-top: 3px; }
     #pd-cta-col { display: flex; flex-direction: column; align-items: flex-end; gap: 1.4rem; }
 
@@ -594,7 +602,7 @@
     /* ── Lightbox ────────────────────────────────────────────── */
     #lb {
       position: fixed; inset: 0; z-index: 400;
-      background: rgba(20,17,15,0.97);
+      background: rgba(24,24,26,0.97);
       display: flex; align-items: center; justify-content: center;
       opacity: 0; pointer-events: none;
       transition: opacity .4s var(--lux);
@@ -609,15 +617,15 @@
     #lb-close {
       position: absolute; top: 1.4rem; right: 1.8rem;
       font-size: 1.8rem; line-height: 1; font-weight: 100;
-      color: rgba(247,244,239,0.55); background: none; border: none;
+      color: rgba(245,241,232,0.55); background: none; border: none;
       cursor: pointer !important;
       transition: color .2s ease;
     }
-    #lb-close:hover { color: #fff; }
+    #lb-close:hover { color: #FAF8F3; }
     #lb-prev, #lb-next {
       position: absolute; top: 50%; transform: translateY(-50%);
       font-size: 2rem; line-height: 1; font-weight: 100;
-      color: rgba(247,244,239,0.45); background: none; border: none;
+      color: rgba(245,241,232,0.45); background: none; border: none;
       padding: 1.2rem 1.4rem;
       cursor: pointer !important;
       transition: color .2s ease;
@@ -628,7 +636,7 @@
     #lb-counter {
       position: absolute; bottom: 1.6rem; left: 50%; transform: translateX(-50%);
       font-size: 8px; letter-spacing: .38em; text-transform: uppercase;
-      color: rgba(247,244,239,0.38); white-space: nowrap;
+      color: rgba(245,241,232,0.38); white-space: nowrap;
     }
     #lb-dots {
       position: absolute; bottom: 3.2rem; left: 50%; transform: translateX(-50%);
@@ -636,7 +644,7 @@
     }
     .lb-dot {
       width: 5px; height: 5px; border-radius: 50%;
-      background: rgba(247,244,239,0.22);
+      background: rgba(245,241,232,0.22);
       transition: background .3s ease, transform .3s var(--lux);
     }
     .lb-dot.on { background: var(--gold); transform: scale(1.4); }
@@ -710,21 +718,21 @@
     /* ── Story / owner's quote ─────────────────────────────── */
     #story {
       padding: clamp(5.5rem,11vh,9rem) clamp(1.5rem,5vw,3.5rem);
-      background: var(--text); text-align: center; position: relative; overflow: hidden;
+      background: var(--wash); text-align: center; position: relative; overflow: hidden;
     }
     #story::before {
       content: '\201C'; position: absolute; top: -5rem; left: 50%; transform: translateX(-50%);
       font-family: 'Cormorant Garamond', serif; font-size: 22rem; line-height: 1;
-      color: rgba(247,244,239,0.04); pointer-events: none; user-select: none;
+      color: rgba(168,124,69,0.07); pointer-events: none; user-select: none;
     }
-    .story-eye { font-size: 8px; letter-spacing: .52em; text-transform: uppercase; color: var(--gold); margin-bottom: 3rem; font-weight: 300; }
+    .story-eye { font-size: 9px; letter-spacing: .52em; text-transform: uppercase; color: var(--gold); margin-bottom: 3rem; font-weight: 400; }
     #story-quote {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1.35rem,2.6vw,2.15rem); font-weight: 300; font-style: italic;
       line-height: 1.78; max-width: 730px; margin: 0 auto 2.4rem;
-      color: rgba(247,244,239,0.9); letter-spacing: .01em;
+      color: var(--text); letter-spacing: .01em;
     }
-    #story-attr { font-size: 8.5px; letter-spacing: .4em; text-transform: uppercase; color: rgba(247,244,239,0.28); font-weight: 300; }
+    #story-attr { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; font-size: 12px; letter-spacing: .14em; color: var(--mid); }
 
     /* ── Testimonials ──────────────────────────────────────── */
     #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; overflow: hidden; }
@@ -772,20 +780,20 @@
     }
     #float-wa.show { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
     #float-wa a {
-      width: 52px; height: 52px; border-radius: 50%; background: #25D366; color: #fff;
+      width: 52px; height: 52px; border-radius: 50%; background: var(--wa); color: #FAF8F3;
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 22px rgba(37,211,102,.3);
+      box-shadow: 0 4px 22px rgba(31,158,95,.3);
       transition: transform .3s var(--lux), box-shadow .3s ease; text-decoration: none;
     }
-    #float-wa a:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(37,211,102,.5); }
-    #float-wa svg { width: 26px; height: 26px; fill: #fff; }
+    #float-wa a:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(31,158,95,.5); }
+    #float-wa svg { width: 26px; height: 26px; fill: #FAF8F3; }
 
     /* ── Sticky mobile book bar ────────────────────────────── */
     #sticky-book {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 700;
       background: var(--text); padding: 1rem 1.5rem;
       display: none; align-items: center; justify-content: center;
-      border-top: 1px solid rgba(184,148,106,.18);
+      border-top: 1px solid rgba(168,124,69,.18);
       transform: translateY(100%); transition: transform .5s var(--lux);
     }
     #sticky-book.show { transform: translateY(0); }
@@ -794,8 +802,145 @@
       color: var(--bg); text-decoration: none; font-weight: 300;
       display: flex; align-items: center; gap: 10px;
     }
-    #sticky-book svg { width: 14px; height: 14px; fill: #25D366; flex-shrink: 0; }
+    #sticky-book svg { width: 14px; height: 14px; fill: var(--wa); flex-shrink: 0; }
     @media (max-width: 768px) { #sticky-book { display: flex; } #float-wa { bottom: 5.5rem; } }
+
+    /* ── Indian spatial geometry — jaali motif + brass rule ── */
+    .jaali {
+      width: 22px; height: 22px; margin-bottom: 1rem;
+      background-image: radial-gradient(var(--gold) 1.2px, transparent 1.2px);
+      background-size: 7px 7px; background-position: 1px 1px;
+      opacity: .85;
+    }
+    .brass-rule {
+      width: 60%; max-width: 640px; height: 1px;
+      background: var(--gold); opacity: .45; border: none;
+      margin: 0 0 0 clamp(1.5rem,5vw,3.5rem);
+      transform: scaleY(.5);
+    }
+
+    /* ── WhatsApp pulse — soft concentric, 4s interval ─────── */
+    #float-wa a { position: relative; }
+    #float-wa a::before {
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid var(--wa);
+      animation: wa-pulse 4s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes wa-pulse {
+      0%   { transform: scale(1);   opacity: .3; }
+      55%  { transform: scale(1.65); opacity: 0; }
+      100% { transform: scale(1.65); opacity: 0; }
+    }
+
+    /* ── Booking widget (detail page) ───────────────────────── */
+    #bw {
+      width: 300px; background: var(--surface);
+      border: 1px solid var(--border-mid); border-radius: 2px;
+      padding: 1.6rem 1.5rem 1.4rem;
+    }
+    #bw .bw-title {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.15rem; font-weight: 300; color: var(--text); margin-bottom: 1.1rem;
+    }
+    .bw-field { margin-bottom: .85rem; }
+    .bw-label {
+      display: block; font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--mid); margin-bottom: 5px; font-weight: 500;
+    }
+    .bw-input {
+      width: 100%; font-family: 'DM Sans', sans-serif; font-size: 13px;
+      color: var(--text); background: var(--bg);
+      border: 1px solid var(--rule); border-radius: 1px;
+      padding: 9px 10px; outline: none;
+      transition: border-color .25s ease;
+    }
+    .bw-input:focus { border-color: var(--gold); }
+    .bw-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+    .bw-err { font-size: 10.5px; color: var(--error); margin: .2rem 0 .6rem; min-height: 14px; }
+    #bw .cta { width: 100%; text-align: center; }
+    .bw-call {
+      display: block; text-align: center; margin-top: .7rem;
+      font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none;
+      transition: color .25s ease;
+    }
+    .bw-call:hover { color: var(--text); }
+
+    /* ── Availability calendar — month-level ────────────────── */
+    #pd-avail { margin-bottom: 3rem; }
+    .avail-grid { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .avail-month {
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+      padding: 9px 14px; border-radius: 1px; border: 1px solid var(--rule);
+      color: var(--text); background: none;
+      font-family: 'DM Mono', monospace;
+      transition: border-color .25s ease, background .25s ease;
+    }
+    .avail-month.available { border-color: rgba(31,158,95,.4); }
+    .avail-month.available:hover { background: rgba(31,158,95,.07); border-color: var(--wa); }
+    .avail-month.partial   { border-color: rgba(168,124,69,.55); color: var(--gold); }
+    .avail-month.booked    { color: var(--faint); border-color: var(--border); text-decoration: line-through; }
+    .avail-legend { display: flex; gap: 1.4rem; margin-top: .9rem; }
+    .avail-key { display: flex; align-items: center; gap: 6px; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--mid); }
+    .avail-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .avail-dot.g { background: var(--wa); } .avail-dot.a { background: var(--gold); } .avail-dot.x { background: var(--faint); }
+
+    /* ── Message Preview Card ───────────────────────────────── */
+    #mpc-wrap {
+      position: fixed; inset: 0; z-index: 600;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(24,24,26,0.35);
+      opacity: 0; pointer-events: none; transition: opacity .35s ease;
+      padding: 1.2rem;
+    }
+    #mpc-wrap.open { opacity: 1; pointer-events: all; }
+    #mpc {
+      width: min(440px, 100%); max-height: 86vh; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border-mid); border-radius: 2px;
+      padding: 1.8rem 1.7rem 1.5rem;
+      transform: scale(.92) translateY(14px); transform-origin: bottom center;
+      opacity: 0;
+      transition: transform .5s cubic-bezier(.22,1.4,.36,1), opacity .35s ease;
+    }
+    #mpc-wrap.open #mpc { transform: scale(1) translateY(0); opacity: 1; }
+    .mpc-eye { font-size: 9px; letter-spacing: .42em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; font-weight: 500; }
+    .mpc-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.45rem; font-weight: 300; color: var(--text); margin-bottom: 1.1rem; }
+    .mpc-rows { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: .8rem 0; margin-bottom: 1rem; }
+    .mpc-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: var(--mid); }
+    .mpc-row b { font-family: 'DM Mono', monospace; font-weight: 400; color: var(--text); }
+    .mpc-note-label { font-size: 9px; letter-spacing: .26em; text-transform: uppercase; color: var(--mid); margin-bottom: 5px; display: block; font-weight: 500; }
+    #mpc textarea.bw-input { resize: vertical; min-height: 56px; }
+    .mpc-preview {
+      font-size: 11.5px; line-height: 1.7; color: var(--mid);
+      background: var(--bg); border: 1px dashed var(--rule); border-radius: 1px;
+      padding: .8rem .9rem; margin: .9rem 0 1.1rem; white-space: pre-wrap;
+      font-family: 'DM Mono', monospace;
+    }
+    .mpc-actions { display: flex; gap: .7rem; align-items: center; }
+    .mpc-send {
+      flex: 1; background: var(--wa); color: #FAF8F3; border: none;
+      font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase;
+      padding: 13px 14px; font-weight: 500; border-radius: 1px;
+      transition: filter .25s ease;
+    }
+    .mpc-send:hover { filter: brightness(1.07); }
+    .mpc-cancel {
+      background: none; border: none; font-size: 9px; letter-spacing: .24em;
+      text-transform: uppercase; color: var(--mid); padding: 12px 8px;
+      transition: color .25s ease;
+    }
+    .mpc-cancel:hover { color: var(--text); }
+
+    /* ── Readability — body copy raised toward 16px standard ── */
+    .wlc-p   { font-size: 13.5px; }
+    .cdesc   { font-size: 12px; }
+    .exp-desc{ font-size: 12px; }
+    .testi-occ {
+      font-family: 'Spectral', serif; font-style: italic; font-weight: 300;
+      font-size: 11.5px; color: var(--mid); margin-top: 6px;
+    }
+    .fc-gst { font-size: 8.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); margin-top: 4px; }
 
     /* ── prefers-reduced-motion ────────────────────────────── */
     @media (prefers-reduced-motion: reduce) {
@@ -851,9 +996,9 @@
       .acol-g {
         background: linear-gradient(
           to top,
-          rgba(0,0,0,0.92) 0%,
-          rgba(0,0,0,0.40) 38%,
-          rgba(0,0,0,0.08) 65%,
+          rgba(24,24,26,0.92) 0%,
+          rgba(24,24,26,0.40) 38%,
+          rgba(24,24,26,0.08) 65%,
           transparent 100%
         );
       }
@@ -914,10 +1059,10 @@
   <!-- Full-screen menu -->
   <div id="menu" role="dialog" aria-label="Navigation">
     <nav>
-      <div class="mwrap"><a href="#" class="mlink" data-cursor>Portfolio</a></div>
-      <div class="mwrap"><a href="#" class="mlink" data-cursor>Properties</a></div>
-      <div class="mwrap"><a href="#" class="mlink" data-cursor>Locations</a></div>
-      <div class="mwrap"><a href="#" class="mlink" data-cursor>Private Inquiry</a></div>
+      <div class="mwrap"><a href="#gal-sec" class="mlink" data-cursor>Portfolio</a></div>
+      <div class="mwrap"><a href="#listings" class="mlink" data-cursor>Properties</a></div>
+      <div class="mwrap"><a href="#welcome" class="mlink" data-cursor>Locations</a></div>
+      <div class="mwrap"><a href="#inquiry" class="mlink" data-cursor>Private Inquiry</a></div>
     </nav>
     <div id="menu-foot">Est. 2018 &mdash; Private Estates</div>
   </div>
@@ -975,6 +1120,7 @@
         <img src="./chail/anvira-terrace.webp" alt="AnVira estate terrace, Chail" loading="lazy" />
       </div>
       <div id="welcome-text-col">
+        <div class="jaali" aria-hidden="true"></div>
         <p class="wlc-eye">Welcome to AnVira</p>
         <h2 class="wlc-h">A Collection Built<br>on Restraint</h2>
         <div id="wlc-divider"></div>
@@ -984,9 +1130,11 @@
     </section>
 
     <!-- Experiences section -->
+    <hr class="brass-rule" aria-hidden="true" />
     <section id="experiences" class="fi">
       <div class="sec-bar">
         <div class="sec-bar-left">
+          <div class="jaali" aria-hidden="true"></div>
           <div class="sec-bar-title">The AnVira Experience</div>
           <div class="sec-bar-sub">What every stay is shaped around</div>
         </div>
@@ -1035,9 +1183,11 @@
     </section>
 
     <!-- Testimonials -->
+    <hr class="brass-rule" aria-hidden="true" />
     <section id="testimonials" class="fi">
       <div class="sec-bar">
         <div class="sec-bar-left">
+          <div class="jaali" aria-hidden="true"></div>
           <div class="sec-bar-title">Guest Voices</div>
           <div class="sec-bar-sub">From those who have stayed</div>
         </div>
@@ -1051,6 +1201,7 @@
             <p class="testi-text">"Villa AnVira was unlike anything we had experienced. The pine forest, the silence, the attentiveness of the staff — it reset something in us that a normal holiday never could."</p>
             <div class="testi-name">Meera &amp; Rohan S.</div>
             <div class="testi-prop">Villa AnVira, Chail</div>
+            <div class="testi-occ">Anniversary escape &middot; March 2026</div>
           </div>
           <div class="testi-card">
             <div class="testi-stars">
@@ -1059,6 +1210,7 @@
             <p class="testi-text">"Estate 10 gave us Delhi on our own terms. The lawn, the pool, the privacy — we hosted a family gathering of fifteen and it still felt intimate. A genuinely rare find in the city."</p>
             <div class="testi-name">The Kapoor Family</div>
             <div class="testi-prop">Estate 10, New Delhi</div>
+            <div class="testi-occ">Family gathering &middot; January 2026</div>
           </div>
           <div class="testi-card">
             <div class="testi-stars">
@@ -1067,6 +1219,7 @@
             <p class="testi-text">"Waking up to the Zuari River from the terrace of Tarika's Seascapes — there is simply no comparison. Goa, finally, without the noise. The pool and the sunsets made every morning feel earned."</p>
             <div class="testi-name">Priya N.</div>
             <div class="testi-prop">Tarika's Seascapes, Goa</div>
+            <div class="testi-occ">Winter holiday &middot; December 2025</div>
           </div>
           <div class="testi-card">
             <div class="testi-stars">
@@ -1075,6 +1228,7 @@
             <p class="testi-text">"The team handled every detail — from late arrival to a special dietary request at breakfast. The level of care at AnVira is not something you find through a typical booking platform. Discretion and warmth in equal measure."</p>
             <div class="testi-name">Vikram A.</div>
             <div class="testi-prop">Villa AnVira, Chail</div>
+            <div class="testi-occ">Corporate retreat &middot; April 2026</div>
           </div>
         </div>
       </div>
@@ -1086,9 +1240,11 @@
     </section>
 
     <!-- Accordion gallery -->
+    <hr class="brass-rule" aria-hidden="true" />
     <section id="gal-sec" class="fi">
       <div class="sec-bar">
         <div class="sec-bar-left">
+          <div class="jaali" aria-hidden="true"></div>
           <div class="sec-bar-title">Explore the Portfolio</div>
           <div class="sec-bar-sub">Three curated estates across India</div>
         </div>
@@ -1123,10 +1279,11 @@
         <span class="av-an">An</span><span class="av-vira" style="font-style:italic">Vira</span>
       </div>
       <div class="fl">
-        <a href="#" class="fa" data-cursor>Portfolio</a>
-        <a href="#" class="fa" data-cursor>Properties</a>
-        <a href="#" class="fa" data-cursor>Locations</a>
-        <a href="#" class="fa" data-cursor>Privacy</a>
+        <a href="#gal-sec" class="fa" data-cursor>Portfolio</a>
+        <a href="#listings" class="fa" data-cursor>Properties</a>
+        <a href="#" class="fa" data-cursor>Privacy Policy</a>
+        <a href="#" class="fa" data-cursor>Terms</a>
+        <a href="#" class="fa" data-cursor>Cancellation Policy</a>
       </div>
       <div class="fl" style="gap:1.4rem;margin-top:.6rem">
         <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" class="fa" data-cursor aria-label="Instagram" style="display:flex;align-items:center;gap:5px">
@@ -1142,7 +1299,10 @@
           WhatsApp
         </a>
       </div>
-      <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
+      <div>
+        <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
+        <div class="fc-gst">GSTIN: To be updated before launch</div>
+      </div>
     </footer>
 
   </div>
@@ -1190,16 +1350,46 @@
           </div>
         </div>
         <div id="pd-cta-col">
-          <button class="cta" data-cursor>Request a Viewing</button>
-          <div style="text-align:right">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--text)">On Request</div>
-            <div style="font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);margin-top:3px">Nightly Rate</div>
-          </div>
+          <form id="bw" novalidate>
+            <div class="bw-title">Plan your stay</div>
+            <div class="bw-row">
+              <div class="bw-field">
+                <label class="bw-label" for="bw-in">Check-in</label>
+                <input class="bw-input" type="date" id="bw-in" name="checkin" required />
+              </div>
+              <div class="bw-field">
+                <label class="bw-label" for="bw-out">Check-out</label>
+                <input class="bw-input" type="date" id="bw-out" name="checkout" required />
+              </div>
+            </div>
+            <div class="bw-row">
+              <div class="bw-field">
+                <label class="bw-label" for="bw-guests">Guests</label>
+                <input class="bw-input" type="number" id="bw-guests" name="guests" min="1" value="2" required />
+              </div>
+              <div class="bw-field">
+                <label class="bw-label" for="bw-name">Your name</label>
+                <input class="bw-input" type="text" id="bw-name" name="name" autocomplete="name" required />
+              </div>
+            </div>
+            <p class="bw-err" id="bw-err" role="alert" aria-live="polite"></p>
+            <button type="submit" class="cta" data-cursor>Preview Enquiry</button>
+            <a class="bw-call" id="bw-call" href="tel:+919999999999" data-cursor>Call instead</a>
+          </form>
         </div>
       </div>
       <div id="pd-amenities">
         <p class="pd-amen-title">Amenities &amp; Features</p>
         <div class="pd-amen-grid" id="pd-amenities-list"></div>
+      </div>
+      <div id="pd-avail">
+        <p class="pd-amen-title">Availability — by month</p>
+        <div class="avail-grid" id="pd-avail-grid"></div>
+        <div class="avail-legend">
+          <span class="avail-key"><span class="avail-dot g"></span>Available</span>
+          <span class="avail-key"><span class="avail-dot a"></span>Partial</span>
+          <span class="avail-key"><span class="avail-dot x"></span>Booked</span>
+        </div>
       </div>
       <div id="pd-location">
         <p class="pd-amen-title">Location</p>
@@ -1213,6 +1403,33 @@
       </div>
       <p id="pd-gallery-title">Gallery</p>
       <div id="pd-gallery"></div>
+    </div>
+  </div>
+
+  <!-- Message Preview Card -->
+  <div id="mpc-wrap" role="dialog" aria-modal="true" aria-label="Enquiry preview">
+    <div id="mpc">
+      <p class="mpc-eye">Your enquiry</p>
+      <p class="mpc-title" id="mpc-prop"></p>
+      <div class="mpc-rows">
+        <div class="mpc-row"><span>Check-in</span><b id="mpc-in"></b></div>
+        <div class="mpc-row"><span>Check-out</span><b id="mpc-out"></b></div>
+        <div class="mpc-row"><span>Nights</span><b id="mpc-nights"></b></div>
+        <div class="mpc-row"><span>Guests</span><b id="mpc-guests"></b></div>
+      </div>
+      <div class="bw-field">
+        <label class="mpc-note-label" for="mpc-name">Name</label>
+        <input class="bw-input" type="text" id="mpc-name" autocomplete="name" />
+      </div>
+      <div class="bw-field">
+        <label class="mpc-note-label" for="mpc-note">Add a note — occasion, requests (optional)</label>
+        <textarea class="bw-input" id="mpc-note" maxlength="300" placeholder="e.g. Our tenth anniversary — we'd love a quiet corner room."></textarea>
+      </div>
+      <div class="mpc-preview" id="mpc-preview" aria-live="polite"></div>
+      <div class="mpc-actions">
+        <button class="mpc-send" id="mpc-send" data-cursor>Send on WhatsApp</button>
+        <button class="mpc-cancel" id="mpc-cancel" data-cursor>Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -1585,8 +1802,64 @@
     /* ── Detail overlay ─────────────────────────────────────── */
     const detail = document.getElementById('detail');
     const pdBack = document.getElementById('pd-back');
+    let currentProp = null;
+
+    /* Month-level availability — owner-maintained.
+       Override per property/month: AVAILABILITY['estate-10']['2026-08'] = 'partial' | 'booked'
+       Months not listed default to 'available'. */
+    const AVAILABILITY = {
+      'villa-anvira':      {},
+      'estate-10':         {},
+      'tarikas-seascapes': {},
+    };
+
+    const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    function renderAvailability(p) {
+      const grid = document.getElementById('pd-avail-grid');
+      const now  = new Date();
+      const overrides = AVAILABILITY[p.id] || {};
+      grid.innerHTML = '';
+      for (let k = 0; k < 6; k++) {
+        const d  = new Date(now.getFullYear(), now.getMonth() + k, 1);
+        const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const status = overrides[ym] || 'available';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `avail-month ${status}`;
+        btn.setAttribute('data-cursor', '');
+        btn.textContent = `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+        btn.disabled = status === 'booked';
+        btn.setAttribute('aria-label', `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()} — ${status}`);
+        if (status !== 'booked') {
+          btn.addEventListener('click', () => {
+            /* pre-fill booking widget with the 1st of the month (or today) */
+            const start = k === 0 ? now : d;
+            const inEl  = document.getElementById('bw-in');
+            const outEl = document.getElementById('bw-out');
+            inEl.value = toISO(start);
+            const end = new Date(start); end.setDate(end.getDate() + 2);
+            outEl.value = toISO(end);
+            document.getElementById('bw')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
+        grid.appendChild(btn);
+      }
+    }
+
+    function toISO(dt) {
+      return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+    }
 
     function openDetail(p) {
+      currentProp = p;
+      renderAvailability(p);
+      const guestsEl = document.getElementById('bw-guests');
+      guestsEl.max = p.guests;
+      if (+guestsEl.value > p.guests) guestsEl.value = Math.min(2, p.guests);
+      document.getElementById('bw-err').textContent = '';
+      document.getElementById('bw-in').min = toISO(new Date());
+      document.getElementById('bw-out').min = toISO(new Date());
       document.getElementById('pd-hero-img').src          = p.images[0];
       document.getElementById('pd-hero-img').alt          = p.name;
       document.getElementById('pd-hero-tag').textContent  = p.tag;
@@ -1805,12 +2078,87 @@
         window.open(WA_BASE, '_blank', 'noopener,noreferrer');
       });
     });
-    /* Detail page CTA → WhatsApp with property name */
-    document.querySelector('#pd-cta-col .cta')?.addEventListener('click', () => {
-      const pdName = document.getElementById('pd-hero-name')?.textContent || 'an AnVira estate';
-      const msg = encodeURIComponent(`Hello, I'd like to enquire about ${pdName}.`);
-      window.open(`https://wa.me/919999999999?text=${msg}`, '_blank', 'noopener,noreferrer');
+    /* ── Booking widget → Message Preview Card ──────────────── */
+    const WA_NUMBER = '919999999999'; /* replace with verified WhatsApp Business number before launch */
+    const bwForm   = document.getElementById('bw');
+    const mpcWrap  = document.getElementById('mpc-wrap');
+    const mpcName  = document.getElementById('mpc-name');
+    const mpcNote  = document.getElementById('mpc-note');
+    const mpcPrev  = document.getElementById('mpc-preview');
+    let enquiry = null;
+
+    function fmtDate(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      return `${String(d).padStart(2, '0')} ${MONTH_NAMES[m - 1]} ${y}`;
+    }
+
+    function buildMessage() {
+      if (!enquiry) return '';
+      const lines = [
+        `Hello AnVira, I'd like to enquire about ${enquiry.prop}.`,
+        `Check-in: ${fmtDate(enquiry.checkin)}`,
+        `Check-out: ${fmtDate(enquiry.checkout)}`,
+        `Nights: ${enquiry.nights}`,
+        `Guests: ${enquiry.guests}`,
+        `Name: ${mpcName.value.trim() || '—'}`,
+      ];
+      const note = mpcNote.value.trim();
+      if (note) lines.push(`Note: ${note}`);
+      return lines.join('\n');
+    }
+
+    function refreshPreview() { mpcPrev.textContent = buildMessage(); }
+    mpcName.addEventListener('input', refreshPreview);
+    mpcNote.addEventListener('input', refreshPreview);
+
+    function openMpc() {
+      document.getElementById('mpc-prop').textContent   = enquiry.prop;
+      document.getElementById('mpc-in').textContent     = fmtDate(enquiry.checkin);
+      document.getElementById('mpc-out').textContent    = fmtDate(enquiry.checkout);
+      document.getElementById('mpc-nights').textContent = enquiry.nights;
+      document.getElementById('mpc-guests').textContent = enquiry.guests;
+      mpcName.value = enquiry.name;
+      refreshPreview();
+      mpcWrap.classList.add('open');
+      mpcName.focus();
+    }
+
+    function closeMpc() { mpcWrap.classList.remove('open'); }
+
+    bwForm.addEventListener('submit', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const errEl   = document.getElementById('bw-err');
+      const checkin  = document.getElementById('bw-in').value;
+      const checkout = document.getElementById('bw-out').value;
+      const guests   = +document.getElementById('bw-guests').value;
+      const name     = document.getElementById('bw-name').value.trim();
+      const cap      = currentProp ? currentProp.guests : 99;
+
+      const today = toISO(new Date());
+      let err = '';
+      if (!checkin || !checkout)            err = 'Please select check-in and check-out dates.';
+      else if (checkin < today)             err = 'Check-in cannot be in the past.';
+      else if (checkout <= checkin)         err = 'Check-out must be after check-in.';
+      else if (!guests || guests < 1)       err = 'Please enter the number of guests.';
+      else if (guests > cap)                err = `This estate hosts up to ${cap} guests.`;
+      else if (!name)                       err = 'Please tell us your name.';
+      errEl.textContent = err;
+      if (err) return;
+
+      const nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+      enquiry = { prop: currentProp ? currentProp.name : 'an AnVira estate', checkin, checkout, nights, guests, name };
+      openMpc();
     });
+
+    document.getElementById('mpc-send').addEventListener('click', () => {
+      const msg = encodeURIComponent(buildMessage());
+      window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
+      closeMpc();
+    });
+    document.getElementById('mpc-cancel').addEventListener('click', closeMpc);
+    mpcWrap.addEventListener('click', e => { if (e.target === mpcWrap) closeMpc(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && mpcWrap.classList.contains('open')) closeMpc(); });
 
   })();
   </script>
