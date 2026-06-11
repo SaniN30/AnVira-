@@ -651,12 +651,14 @@
 
     /* ── Scroll-down indicator ────────────────────────────── */
     #scroll-ind {
-      position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 2rem; right: 2.4rem;
       display: flex; flex-direction: column; align-items: center; gap: 9px;
       pointer-events: none;
       animation: si-fade 1s ease 3.6s both;
     }
-    @keyframes si-fade { from { opacity: 0; transform: translate(-50%,10px); } to { opacity: 1; transform: translate(-50%,0); } }
+    @keyframes si-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .si-label { writing-mode: vertical-rl; letter-spacing: .42em; }
+    @media (max-width: 768px) { #scroll-ind { right: 1.2rem; bottom: 4.5rem; } }
     .si-label { font-size: 9px; letter-spacing: .52em; text-transform: uppercase; color: var(--faint); }
     .si-line {
       width: 1px; height: 42px;
@@ -975,20 +977,23 @@
     }
     /* Strokes are visible by default; the draw animation hides then reveals them.
        If JS or animations fail, the logo still shows. */
-    .lp, .ls, .ld { stroke-dasharray: 1; }
+    .lp, .ld { stroke-dasharray: 1; }
+    .ls { transition: opacity 0.9s ease; }
     .lt { transition: opacity 0.7s ease; }
     .lorn { transition: opacity 0.5s ease; }
     #brand-logo:not(.drawn) .lp,
-    #brand-logo:not(.drawn) .ls,
     #brand-logo:not(.drawn) .ld { stroke-dashoffset: 1; }
+    #brand-logo:not(.drawn) .ls,
     #brand-logo:not(.drawn) .lt,
     #brand-logo:not(.drawn) .lorn { opacity: 0; }
     /* Drawn state — applied by JS */
     #brand-logo.drawn .lp { animation: logoDraw 1.6s var(--lux) forwards; }
     #brand-logo.drawn .lp:nth-child(1) { animation-delay: 0s; }
-    #brand-logo.drawn .lp:nth-child(2) { animation-delay: 0.15s; }
-    #brand-logo.drawn .lp:nth-child(3) { animation-delay: 0.55s; }
-    #brand-logo.drawn .ls { animation: logoDraw 1.4s var(--lux) 0.5s forwards; }
+    #brand-logo.drawn .lp:nth-child(2),
+    #brand-logo.drawn .lp:nth-child(3) { animation-delay: 0.3s; }
+    #brand-logo.drawn .lp:nth-child(4),
+    #brand-logo.drawn .lp:nth-child(5) { animation-delay: 0.7s; }
+    #brand-logo.drawn .ls { opacity: 1; transition-delay: 0.8s; }
     #brand-logo.drawn .ld { animation: logoDraw 0.8s ease 1.6s forwards; }
     #brand-logo.drawn .lt { opacity: 1; transition-delay: 1.2s; }
     #brand-logo.drawn .lorn { opacity: 1; transition-delay: 1.7s; }
@@ -1140,75 +1145,71 @@
       <!-- Brand logo — parallaxes on scroll -->
       <div id="hwrap">
         <div id="hwm">
-          <svg id="brand-logo" viewBox="0 0 240 258" fill="none" xmlns="http://www.w3.org/2000/svg"
-               role="img" aria-label="AnVira Private Estates">
+          <svg id="brand-logo" viewBox="0 0 300 352" fill="none" xmlns="http://www.w3.org/2000/svg"
+               role="img" aria-label="AnVira">
 
-            <!-- House outline -->
+            <!-- House outline — left slope broken where sprig crosses,
+                 bottom broken where the V descends through it -->
             <path class="lp" pathLength="1"
-              d="M130 28 L55 90 L55 173 L205 173 L205 90 Z"
-              stroke="#4F5635" stroke-width="1.6" stroke-linejoin="round"/>
+              d="M160 16 L124 47 M104 64 L66 96 L66 212 L148 212 M196 212 L254 212 L254 96 L160 16"
+              stroke="#4F5635" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
 
-            <!-- A letterform (peak shared with house roof) -->
+            <!-- A letterform — outlined serif (outer stroke) -->
             <path class="lp" pathLength="1"
-              d="M130 28 L79 173 M130 28 L181 173 M97 127 L163 127"
-              stroke="#4F5635" stroke-width="2" stroke-linecap="round"/>
-
-            <!-- V letterform (inscribed in lower A) -->
+              d="M160 42 L104 236 M160 42 L216 236 M127 168 L193 168 M95 236 L113 236 M207 236 L225 236"
+              stroke="#4F5635" stroke-width="9" stroke-linecap="square"/>
+            <!-- A letterform — inner cut (hollow outline effect) -->
             <path class="lp" pathLength="1"
-              d="M91 152 L130 173 L169 152"
-              stroke="#4F5635" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              d="M160 42 L104 236 M160 42 L216 236 M127 168 L193 168 M95 236 L113 236 M207 236 L225 236"
+              stroke="#F7F4EF" stroke-width="4.6" stroke-linecap="square"/>
 
-            <!-- Botanical sprig — stem -->
-            <path class="ls" pathLength="1"
-              d="M60 98 C 46 78 30 56 16 30"
-              stroke="#5C6440" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- V letterform — nested, vertex descends below house base -->
+            <path class="lp" pathLength="1"
+              d="M137 178 L186 258 L236 132 M228 132 L246 132"
+              stroke="#4F5635" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter"/>
+            <path class="lp" pathLength="1"
+              d="M137 178 L186 258 L236 132 M228 132 L246 132"
+              stroke="#F7F4EF" stroke-width="4" stroke-linecap="square" stroke-linejoin="miter"/>
 
-            <!-- Sprig leaf 1 — lower left -->
+            <!-- Botanical sprig — stem rising from inside the house,
+                 crossing out through the left roof slope -->
             <path class="ls" pathLength="1"
-              d="M50 84 C 36 80 22 72 14 60 C 24 58 38 66 50 84 Z"
-              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
+              d="M98 190 C 76 152 52 108 36 36"
+              stroke="#5C6440" stroke-width="2" stroke-linecap="round"/>
 
-            <!-- Sprig leaf 2 — lower right (other side) -->
-            <path class="ls" pathLength="1"
-              d="M44 76 C 54 66 64 56 70 46 C 68 56 60 66 44 76 Z"
-              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
-
-            <!-- Sprig leaf 3 — upper left -->
-            <path class="ls" pathLength="1"
-              d="M34 58 C 20 50 10 36 12 22 C 22 24 30 40 34 58 Z"
-              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
-
-            <!-- Sprig leaf 4 — upper right -->
-            <path class="ls" pathLength="1"
-              d="M26 46 C 34 36 44 26 50 16 C 50 26 42 36 26 46 Z"
-              stroke="#5C6440" stroke-width="1.1" stroke-linejoin="round"/>
-
-            <!-- Sprig leaf 5 — tip -->
-            <path class="ls" pathLength="1"
-              d="M18 32 C 12 22 12 10 18 4 C 22 10 20 22 18 32 Z"
-              stroke="#5C6440" stroke-width="1" stroke-linejoin="round"/>
+            <!-- Sprig leaves — filled, alternating sides -->
+            <path class="ls" d="M86 162 C 62 156 44 144 34 126 C 52 122 72 138 86 162 Z" fill="#5C6440" stroke="#5C6440" stroke-width="1"/>
+            <path class="ls" d="M78 140 C 88 122 98 106 106 92 C 102 110 94 128 78 140 Z" fill="#5C6440" stroke="#5C6440" stroke-width="1"/>
+            <path class="ls" d="M60 110 C 40 100 28 84 30 64 C 46 70 56 90 60 110 Z" fill="#5C6440" stroke="#5C6440" stroke-width="1"/>
+            <path class="ls" d="M52 84 C 62 68 72 54 82 42 C 78 58 68 74 52 84 Z" fill="#5C6440" stroke="#5C6440" stroke-width="1"/>
+            <path class="ls" d="M40 54 C 30 42 26 26 32 12 C 42 22 44 40 40 54 Z" fill="#5C6440" stroke="#5C6440" stroke-width="1"/>
 
             <!-- ANVIRA logotype -->
             <text class="lt"
-              x="130" y="212"
+              x="156" y="300"
               text-anchor="middle"
               font-family="'Cormorant Garamond',serif"
-              font-size="22"
-              letter-spacing="9"
-              fill="#4F5635">ANVIRA</text>
+              font-weight="500"
+              font-size="34"
+              letter-spacing="13"
+              fill="#5C6440">ANVIRA</text>
 
-            <!-- Decorative divider -->
-            <line class="ld" pathLength="1" x1="72" y1="230" x2="108" y2="230"
-              stroke="#B8946A" stroke-width="0.8"/>
-            <line class="ld" pathLength="1" x1="152" y1="230" x2="188" y2="230"
-              stroke="#B8946A" stroke-width="0.8"/>
+            <!-- Decorative gold divider -->
+            <line class="ld" pathLength="1" x1="64" y1="320" x2="136" y2="320"
+              stroke="#B8946A" stroke-width="1"/>
+            <line class="ld" pathLength="1" x1="176" y1="320" x2="248" y2="320"
+              stroke="#B8946A" stroke-width="1"/>
 
-            <!-- Gold ornament (small flower/diamond) -->
-            <g class="lorn" transform="translate(130,230)">
-              <circle r="2.2" fill="#B8946A"/>
-              <path d="M0 -6 L1.2 -1.2 L6 0 L1.2 1.2 L0 6 L-1.2 1.2 L-6 0 L-1.2 -1.2 Z"
-                fill="#B8946A" opacity="0.7"/>
+            <!-- Gold botanical ornament between dividers -->
+            <g class="lorn" transform="translate(156,320)">
+              <ellipse cx="0" cy="-4" rx="2.4" ry="4.2" fill="#B8946A"/>
+              <ellipse cx="-5" cy="1" rx="4" ry="2.4" transform="rotate(-30 -5 1)" fill="#B8946A" opacity="0.85"/>
+              <ellipse cx="5" cy="1" rx="4" ry="2.4" transform="rotate(30 5 1)" fill="#B8946A" opacity="0.85"/>
+              <circle cx="0" cy="1.5" r="1.6" fill="#8a6c3c"/>
             </g>
+
+            <!-- Gold dot beneath -->
+            <circle class="lorn" cx="156" cy="342" r="2.4" fill="#B8946A"/>
 
           </svg>
           <p class="tagline" style="opacity:0;transition:opacity 0.8s ease 1.9s" id="logo-tagline">Private Estate Curation &mdash; India</p>
