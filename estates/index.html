@@ -51,8 +51,26 @@
           <h2 class="st">The Portfolio</h2>
         </div>
       </div>
-      <div class="cards">
-        <div class="prop-card" data-cursor onclick="location.href='./villa-anvira.html'">
+
+      <div id="est-filter" class="est-filter" role="group" aria-label="Filter estates">
+        <div class="est-pills">
+          <button type="button" class="est-pill on" data-region="all" data-cursor>All</button>
+          <button type="button" class="est-pill" data-region="Himachal" data-cursor>Himachal</button>
+          <button type="button" class="est-pill" data-region="Delhi" data-cursor>Delhi</button>
+          <button type="button" class="est-pill" data-region="Goa" data-cursor>Goa</button>
+        </div>
+        <label class="est-guests-label" for="est-guests">Guests
+          <select id="est-guests" class="est-guests" data-cursor>
+            <option value="0">Any</option>
+            <option value="6">6+</option>
+            <option value="10">10+</option>
+            <option value="15">15+</option>
+            <option value="20">20+</option>
+          </select>
+        </label>
+      </div>
+      <div class="cards" id="est-cards">
+        <div class="prop-card" data-region="Himachal" data-guests="20" data-cursor onclick="location.href='./villa-anvira.html'">
           <div class="ci-wrap"><img class="ci" src="../chail/villa-anvira-by-gtv-estate-6e2617.jpg" alt="Villa AnVira" loading="lazy" /></div>
           <div class="ctag">Hill Retreat</div>
           <div class="crow">
@@ -67,7 +85,7 @@
             <a class="enq" href="./villa-anvira.html" data-cursor>View Details</a>
           </div>
         </div>
-        <div class="prop-card" data-cursor onclick="location.href='./estate-10.html'">
+        <div class="prop-card" data-region="Delhi" data-guests="15" data-cursor onclick="location.href='./estate-10.html'">
           <div class="ci-wrap"><img class="ci" src="../Delhi/estate10-exterior.webp" alt="Estate 10" loading="lazy" /></div>
           <div class="ctag">Urban Estate</div>
           <div class="crow">
@@ -82,7 +100,7 @@
             <a class="enq" href="./estate-10.html" data-cursor>View Details</a>
           </div>
         </div>
-        <div class="prop-card" data-cursor onclick="location.href='./tarikas-seascapes.html'">
+        <div class="prop-card" data-region="Goa" data-guests="6" data-cursor onclick="location.href='./tarikas-seascapes.html'">
           <div class="ci-wrap"><img class="ci" src="../Goa/tarikas-seascapes-4c718c.webp" alt="Tarika's Seascapes" loading="lazy" /></div>
           <div class="ctag">River View Villa</div>
           <div class="crow">
@@ -97,7 +115,33 @@
             <a class="enq" href="./tarikas-seascapes.html" data-cursor>View Details</a>
           </div>
         </div>
+
+        <div class="prop-card prop-card-soon" data-region="Rajasthan">
+          <div class="ci-wrap ci-soon" aria-hidden="true"><div class="jaali"></div></div>
+          <div class="ctag">Under Curation</div>
+          <div class="crow">
+            <div><div class="cname">A Heritage Haveli</div><div class="cloc">Rajasthan</div></div>
+            <div class="cprice">Opening soon</div>
+          </div>
+          <div class="cdesc">A restored haveli with a courtyard pool and desert-facing terraces. Currently being prepared to AnVira standards.</div>
+          <div class="cfoot">
+            <button type="button" class="enq" data-waitlist="coming-soon-rajasthan" data-waitlist-name="A Heritage Haveli, Rajasthan" data-cursor>Notify me</button>
+          </div>
+        </div>
+        <div class="prop-card prop-card-soon" data-region="Uttarakhand">
+          <div class="ci-wrap ci-soon" aria-hidden="true"><div class="jaali"></div></div>
+          <div class="ctag">Under Curation</div>
+          <div class="crow">
+            <div><div class="cname">A Riverside Retreat</div><div class="cloc">Rishikesh, Uttarakhand</div></div>
+            <div class="cprice">Opening soon</div>
+          </div>
+          <div class="cdesc">A Ganges-facing retreat amid sal forest — yoga deck, river deck, full staff. Opening to enquiries soon.</div>
+          <div class="cfoot">
+            <button type="button" class="enq" data-waitlist="coming-soon-rishikesh" data-waitlist-name="A Riverside Retreat, Rishikesh, Uttarakhand" data-cursor>Notify me</button>
+          </div>
+        </div>
       </div>
+      <p id="est-empty" class="est-empty" style="display:none">No estate matches that filter yet &mdash; <a href="https://wa.me/919807087087?text=Hello%20AnVira%2C%20I'm%20looking%20for%20an%20estate%20%E2%80%94%20can%20you%20help%3F" target="_blank" rel="noopener noreferrer" data-cursor>tell us what you're looking for</a>.</p>
     </section>
 
     <div id="inquiry" class="fi">
@@ -106,6 +150,12 @@
         <h2>Request a curated showing.<br>Discretion is our default.</h2>
       </div>
       <a class="cta" style="text-decoration:none" href="https://wa.me/919807087087?text=Hello%20AnVira%2C%20I'd%20like%20to%20enquire%20about%20an%20estate." target="_blank" rel="noopener noreferrer" data-cursor>Enquire on WhatsApp</a>
+    </div>
+
+    <div class="trust-strip fi" aria-label="Why book directly">
+      <div class="trust-item"><span class="trust-n">2&nbsp;hrs</span><span class="trust-l">Reply time on WhatsApp, 9am&ndash;9pm IST</span></div>
+      <div class="trust-item"><span class="trust-n">0%</span><span class="trust-l">Platform fees &mdash; you book directly with us</span></div>
+      <div class="trust-item"><span class="trust-n">Direct</span><span class="trust-l">Line to the caretaker from day one</span></div>
     </div>
 
     <footer>
@@ -129,10 +179,42 @@
   </main>
 
   <div id="float-wa">
-    <a href="https://wa.me/919807087087" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></a>
+    <a href="https://wa.me/919807087087?text=Hello%20AnVira%2C%20I'm%20browsing%20your%20estate%20collection%20and%20have%20a%20question." target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></a>
+  </div>
+
+  <div id="wl-wrap" role="dialog" aria-modal="true" aria-label="Join the waitlist">
+    <div id="wl">
+      <p class="mpc-eye">Under curation</p>
+      <p class="mpc-title" id="wl-estate"></p>
+      <form id="wl-form" novalidate>
+        <p class="wl-blurb">Leave your WhatsApp number and we'll message you the moment this estate opens for enquiries. Nothing else, ever.</p>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="wl-name">Your name</label>
+          <input class="bw-input" type="text" id="wl-name" autocomplete="name" />
+        </div>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="wl-wa">WhatsApp number</label>
+          <input class="bw-input" type="tel" id="wl-wa" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" />
+        </div>
+        <label class="wl-consent-row" for="wl-consent">
+          <input type="checkbox" id="wl-consent" />
+          <span>You may message me on WhatsApp when this estate launches.</span>
+        </label>
+        <p class="bw-err" id="wl-err" role="alert" aria-live="polite"></p>
+        <div class="mpc-actions">
+          <button type="submit" class="mpc-send" id="wl-send" data-cursor>Notify me</button>
+          <button type="button" class="mpc-cancel" id="wl-cancel" data-cursor>Cancel</button>
+        </div>
+      </form>
+      <div id="wl-done" style="display:none">
+        <p class="wl-done-msg">You're on the list. We'll send one message when the estate opens &mdash; nothing else.</p>
+        <div class="mpc-actions"><button type="button" class="mpc-cancel" data-cursor onclick="document.getElementById('wl-wrap').classList.remove('open')">Close</button></div>
+      </div>
+    </div>
   </div>
 
   <script src="../assets/js/data.js"></script>
   <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/listing.js"></script>
 </body>
 </html>

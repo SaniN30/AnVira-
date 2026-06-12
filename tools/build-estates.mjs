@@ -18,7 +18,7 @@ const ctx = {};
 vm.createContext(ctx);
 vm.runInContext(readFileSync(join(ROOT, 'assets/js/data.js'), 'utf8'), ctx);
 /* top-level consts live in the context's lexical scope, not on the object */
-const { PROPERTIES, WA_NUMBER } = vm.runInContext('({ PROPERTIES, WA_NUMBER })', ctx);
+const { PROPERTIES, COMING_SOON, WA_NUMBER } = vm.runInContext('({ PROPERTIES, COMING_SOON, WA_NUMBER })', ctx);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -55,6 +55,12 @@ const chrome = {
     </nav>
     <div id="menu-foot">Est. 2018 &mdash; Private Estates</div>
   </div>`,
+  trust: `
+    <div class="trust-strip fi" aria-label="Why book directly">
+      <div class="trust-item"><span class="trust-n">2&nbsp;hrs</span><span class="trust-l">Reply time on WhatsApp, 9am&ndash;9pm IST</span></div>
+      <div class="trust-item"><span class="trust-n">0%</span><span class="trust-l">Platform fees &mdash; you book directly with us</span></div>
+      <div class="trust-item"><span class="trust-n">Direct</span><span class="trust-l">Line to the caretaker from day one</span></div>
+    </div>`,
   footer: `
     <footer>
       <div class="av" style="font-size:1.1rem">
@@ -322,6 +328,7 @@ ${bookingAside(p)}
       </div>
       <a class="cta" style="text-decoration:none" href="https://wa.me/${WA_NUMBER}?text=${waText}" target="_blank" rel="noopener noreferrer" data-cursor>Enquire on WhatsApp</a>
     </div>
+${chrome.trust}
 ${chrome.footer}
   </main>
 
@@ -379,8 +386,40 @@ ${chrome.footer}
 }
 
 function listingPage() {
+  const regions = [...new Set(PROPERTIES.map(p => p.region))];
+  const filterBar = `
+      <div id="est-filter" class="est-filter" role="group" aria-label="Filter estates">
+        <div class="est-pills">
+          <button type="button" class="est-pill on" data-region="all" data-cursor>All</button>
+          ${regions.map(r => `<button type="button" class="est-pill" data-region="${esc(r)}" data-cursor>${esc(r)}</button>`).join('\n          ')}
+        </div>
+        <label class="est-guests-label" for="est-guests">Guests
+          <select id="est-guests" class="est-guests" data-cursor>
+            <option value="0">Any</option>
+            <option value="6">6+</option>
+            <option value="10">10+</option>
+            <option value="15">15+</option>
+            <option value="20">20+</option>
+          </select>
+        </label>
+      </div>`;
+
+  const comingSoon = COMING_SOON.map(c => `
+        <div class="prop-card prop-card-soon" data-region="${esc(c.region)}">
+          <div class="ci-wrap ci-soon" aria-hidden="true"><div class="jaali"></div></div>
+          <div class="ctag">${esc(c.tag)}</div>
+          <div class="crow">
+            <div><div class="cname">${esc(c.name)}</div><div class="cloc">${esc(c.loc)}</div></div>
+            <div class="cprice">Opening soon</div>
+          </div>
+          <div class="cdesc">${esc(c.desc)}</div>
+          <div class="cfoot">
+            <button type="button" class="enq" data-waitlist="${esc(c.id)}" data-waitlist-name="${esc(`${c.name}, ${c.loc}`)}" data-cursor>Notify me</button>
+          </div>
+        </div>`).join('');
+
   const cards = PROPERTIES.map(p => `
-        <div class="prop-card" data-cursor onclick="location.href='./${p.id}.html'">
+        <div class="prop-card" data-region="${esc(p.region)}" data-guests="${p.maxGuests}" data-cursor onclick="location.href='./${p.id}.html'">
           <div class="ci-wrap"><img class="ci" src="../${p.card}" alt="${esc(p.name)}" loading="lazy" /></div>
           <div class="ctag">${esc(p.tag)}</div>
           <div class="crow">
@@ -424,8 +463,11 @@ ${chrome.nav}
           <h2 class="st">The Portfolio</h2>
         </div>
       </div>
-      <div class="cards">${cards}
+${filterBar}
+      <div class="cards" id="est-cards">${cards}
+${comingSoon}
       </div>
+      <p id="est-empty" class="est-empty" style="display:none">No estate matches that filter yet &mdash; <a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hello AnVira, I'm looking for an estate — can you help?")}" target="_blank" rel="noopener noreferrer" data-cursor>tell us what you're looking for</a>.</p>
     </section>
 
     <div id="inquiry" class="fi">
@@ -435,15 +477,48 @@ ${chrome.nav}
       </div>
       <a class="cta" style="text-decoration:none" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hello AnVira, I'd like to enquire about an estate.")}" target="_blank" rel="noopener noreferrer" data-cursor>Enquire on WhatsApp</a>
     </div>
+${chrome.trust}
 ${chrome.footer}
   </main>
 
   <div id="float-wa">
-    <a href="https://wa.me/${WA_NUMBER}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">${WA_SVG}</a>
+    <a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hello AnVira, I'm browsing your estate collection and have a question.")}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">${WA_SVG}</a>
+  </div>
+
+  <div id="wl-wrap" role="dialog" aria-modal="true" aria-label="Join the waitlist">
+    <div id="wl">
+      <p class="mpc-eye">Under curation</p>
+      <p class="mpc-title" id="wl-estate"></p>
+      <form id="wl-form" novalidate>
+        <p class="wl-blurb">Leave your WhatsApp number and we'll message you the moment this estate opens for enquiries. Nothing else, ever.</p>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="wl-name">Your name</label>
+          <input class="bw-input" type="text" id="wl-name" autocomplete="name" />
+        </div>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="wl-wa">WhatsApp number</label>
+          <input class="bw-input" type="tel" id="wl-wa" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" />
+        </div>
+        <label class="wl-consent-row" for="wl-consent">
+          <input type="checkbox" id="wl-consent" />
+          <span>You may message me on WhatsApp when this estate launches.</span>
+        </label>
+        <p class="bw-err" id="wl-err" role="alert" aria-live="polite"></p>
+        <div class="mpc-actions">
+          <button type="submit" class="mpc-send" id="wl-send" data-cursor>Notify me</button>
+          <button type="button" class="mpc-cancel" id="wl-cancel" data-cursor>Cancel</button>
+        </div>
+      </form>
+      <div id="wl-done" style="display:none">
+        <p class="wl-done-msg">You're on the list. We'll send one message when the estate opens &mdash; nothing else.</p>
+        <div class="mpc-actions"><button type="button" class="mpc-cancel" data-cursor onclick="document.getElementById('wl-wrap').classList.remove('open')">Close</button></div>
+      </div>
+    </div>
   </div>
 
   <script src="../assets/js/data.js"></script>
   <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/listing.js"></script>
 </body>
 </html>
 `;

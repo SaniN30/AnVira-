@@ -890,15 +890,15 @@
       opacity: 0 !important; pointer-events: none !important;
     }
 
-    #mpc-wrap {
+    #mpc-wrap, #wl-wrap {
       position: fixed; inset: 0; z-index: 900;
       display: flex; align-items: center; justify-content: center;
       background: rgba(24,24,26,0.35);
       opacity: 0; pointer-events: none; transition: opacity .35s ease;
       padding: 1.2rem;
     }
-    #mpc-wrap.open { opacity: 1; pointer-events: all; }
-    #mpc {
+    #mpc-wrap.open, #wl-wrap.open { opacity: 1; pointer-events: all; }
+    #mpc, #wl {
       width: min(440px, 100%); max-height: 86vh; overflow-y: auto;
       background: var(--surface); border: 1px solid var(--border-mid); border-radius: 2px;
       padding: 1.8rem 1.7rem 1.5rem;
@@ -906,7 +906,7 @@
       opacity: 0;
       transition: transform .5s cubic-bezier(.22,1.4,.36,1), opacity .35s ease;
     }
-    #mpc-wrap.open #mpc { transform: scale(1) translateY(0); opacity: 1; }
+    #mpc-wrap.open #mpc, #wl-wrap.open #wl { transform: scale(1) translateY(0); opacity: 1; }
     .mpc-eye { font-size: 10px; letter-spacing: .42em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; font-weight: 500; }
     .mpc-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.45rem; font-weight: 300; color: var(--text); margin-bottom: 1.1rem; }
     .mpc-rows { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: .8rem 0; margin-bottom: 1rem; }
@@ -1161,3 +1161,78 @@
       .lg-grid { grid-template-columns: 1fr; }
       .ep-stats { gap: var(--space-3); }
     }
+
+    /* ════════════════════════════════════════════════════════════
+       Phase 2 — Conversion system: trust strip, listing filter,
+       coming-soon cards, waitlist modal extras
+       ════════════════════════════════════════════════════════════ */
+
+    /* ── Trust strip — why book directly ── */
+    .trust-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      max-width: 1180px; margin: 0 auto;
+      padding: var(--space-5) var(--pad-x);
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .trust-item { display: flex; flex-direction: column; gap: 7px; align-items: center; }
+    .trust-n {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
+      font-size: clamp(1.5rem, 2.6vw, 2rem); color: var(--gold); line-height: 1;
+    }
+    .trust-l { font-size: 11.5px; letter-spacing: .08em; color: var(--mid); line-height: 1.7; max-width: 24ch; }
+    @media (max-width: 700px) {
+      .trust-strip { grid-template-columns: 1fr; gap: var(--space-4); padding: var(--space-5) var(--pad-x); }
+    }
+
+    /* ── Listing filter bar ── */
+    .est-filter {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-3); flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .est-pills { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .est-pill {
+      background: none; border: 1px solid var(--border-mid); border-radius: 1px;
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--mid); padding: 9px 16px; transition: all .3s var(--lux);
+    }
+    .est-pill:hover { border-color: var(--gold); color: var(--text); }
+    .est-pill.on { background: var(--text); border-color: var(--text); color: var(--surface); }
+    .est-guests-label {
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--mid);
+      display: inline-flex; align-items: center; gap: .7rem;
+    }
+    .est-guests {
+      background: var(--surface); border: 1px solid var(--border-mid); border-radius: 1px;
+      font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text);
+      padding: 8px 10px;
+    }
+    .est-empty { font-size: 15px; color: var(--mid); padding: var(--space-4) 0; }
+    .est-empty a { color: var(--gold); }
+
+    /* ── "Under Curation" coming-soon cards ── */
+    .prop-card-soon { cursor: default; }
+    .prop-card-soon .ci-soon {
+      position: relative; background: var(--wash);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .prop-card-soon .ci-soon .jaali { position: absolute; inset: 0; opacity: .5; }
+    .prop-card-soon .cprice { color: var(--gold); }
+    .prop-card-soon .cfoot { justify-content: flex-end; }
+    .prop-card-soon .enq { background: none; border: 1px solid var(--border-mid); padding: 10px 18px; }
+    .prop-card-soon .enq:hover { border-color: var(--gold); }
+
+    /* ── Waitlist modal extras (shares #mpc modal shell) ── */
+    .wl-blurb { font-size: 13.5px; line-height: 1.75; color: var(--mid); margin-bottom: 1.1rem; }
+    .wl-consent-row {
+      display: flex; gap: .6rem; align-items: flex-start;
+      font-size: 12px; line-height: 1.65; color: var(--mid);
+      margin: .9rem 0 .4rem; cursor: pointer;
+    }
+    .wl-consent-row input { margin-top: 3px; accent-color: var(--gold); }
+    .wl-done-msg { font-size: 14.5px; line-height: 1.8; color: var(--text); margin: .6rem 0 1.1rem; }

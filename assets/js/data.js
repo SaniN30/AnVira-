@@ -14,6 +14,7 @@ const PROPERTIES = [
     id: 'villa-anvira',
     name: 'Villa AnVira',
     loc: 'Chail, Himachal Pradesh',
+    region: 'Himachal',
     tag: 'Hill Retreat',
     desc: 'An elegant pine-framed mountain villa in Chail with sweeping valley views, a bonfire terrace, and curated hospitality — crafted for families and groups.',
     fullDesc: 'Formerly known as Tarika Residences, Villa Anvira by GTV Estate is an elegant 7-bedroom luxury villa in Chail. Set amidst whispering pine trees and overlooking the tranquil valleys of Himachal, this private mountain retreat is thoughtfully crafted for families and large groups of friends seeking space and serenity.\n\nEach bedroom opens to a private balcony with sweeping forest or valley views, welcoming sunlit mornings, and refreshing mountain winds. Guests can spend their days exploring scenic trails around the estate and their evenings indulging in barbecue feasts and cosy bonfires under the stars. A charming gazebo, high-speed Wi-Fi, and freshly prepared meals on request elevate both leisurely escapes and peaceful workcations.\n\nLocated near Shimla\'s popular attractions yet peacefully tucked away from the crowds, Villa Anvira by GTV Estate offers quiet luxury, natural beauty, and togetherness at the heart of the Himalayas.',
@@ -90,6 +91,7 @@ const PROPERTIES = [
     id: 'estate-10',
     name: 'Estate 10',
     loc: 'New Delhi',
+    region: 'Delhi',
     tag: 'Urban Estate',
     desc: 'A luxurious urban oasis in New Delhi with a manicured acre lawn, private outdoor pool, in-house temple, and bespoke hospitality — for up to fifteen.',
     fullDesc: 'Tucked away in a peaceful corner amidst the bustling cityscape of New Delhi lies Estate 10 by GTV Estate, a veritable oasis of calm and tranquillity. This hidden gem boasts an unparalleled location and breathtaking interiors that are sure to leave you awestruck.\n\nEstate 10 is special because of its:\nIdeal location away from the noise and bustle of the city\nBeautifully landscaped lawn up to an acre in size, ideal for holding small parties\nPrivate outdoor pool surrounded by chaise lounges and outdoor furniture\nWonderfully constructed in-house temple\nDelicious ensemble of home-cooked meals\nImmersive activities like bonfires\nClose proximity to well-known tourist destinations in Delhi',
@@ -156,6 +158,7 @@ const PROPERTIES = [
     id: 'tarikas-seascapes',
     name: "Tarika's Seascapes",
     loc: 'Mormugao, Goa',
+    region: 'Goa',
     tag: 'River View Villa',
     desc: 'A bayside holiday home on the Zuari River in Goa with a private pool, river-view deck, and 3 elegant bedrooms — a breezy, private Goan escape.',
     fullDesc: 'This charming bayside holiday home offers a breezy Goan escape with enchanting views of the Zuari River.\n\nLocated on the 2nd floor of an apartment complex, the property features 3 elegant bedrooms — 2 on the upper level and 1 on the ground level. The modern living room opens to a deck area overlooking the river, providing a serene spot for relaxation. The dining area comfortably seats 6, and guests can use the well-equipped kitchen to prepare their own meals.\n\nThe private swimming pool offers spectacular views of the river, and the pool deck is equipped with cosy seating for lounging. The spacious terrace and other common areas offer additional hangout spots to soak in the tranquil surroundings. Parking is conveniently available outside the premises.',
@@ -227,4 +230,44 @@ const AVAILABILITY = {
   'tarikas-seascapes': {},
 };
 
+/* ── Estates "Under Curation" — coming-soon cards on /estates/.
+   Guests can join a notify-me waitlist; rows land in the Waitlist sheet tab. */
+const COMING_SOON = [
+  {
+    id: 'coming-soon-rajasthan',
+    name: 'A Heritage Haveli',
+    loc: 'Rajasthan',
+    region: 'Rajasthan',
+    tag: 'Under Curation',
+    desc: 'A restored haveli with a courtyard pool and desert-facing terraces. Currently being prepared to AnVira standards.',
+  },
+  {
+    id: 'coming-soon-rishikesh',
+    name: 'A Riverside Retreat',
+    loc: 'Rishikesh, Uttarakhand',
+    region: 'Uttarakhand',
+    tag: 'Under Curation',
+    desc: 'A Ganges-facing retreat amid sal forest — yoga deck, river deck, full staff. Opening to enquiries soon.',
+  },
+];
+
 const WA_NUMBER = '919807087087';
+
+/* Google Apps Script web-app endpoint (enquiry log / waitlist / reviews).
+   Empty string = logging disabled; every form still degrades gracefully.
+   Set after the owner deploys tools/apps-script.gs (see tools/APPS_SCRIPT_SETUP.md). */
+const API_ENDPOINT = '';
+
+/* Fire-and-forget logger — never blocks or breaks the guest flow.
+   Apps Script web apps require no CORS preflight when sent as text/plain. */
+function logToSheet(type, payload) {
+  if (!API_ENDPOINT) return;
+  try {
+    fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type, ...payload }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch (_) { /* logging must never affect the guest */ }
+}

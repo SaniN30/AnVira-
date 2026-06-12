@@ -121,6 +121,15 @@ bwForm.addEventListener('submit', e => {
 });
 
 document.getElementById('mpc-send').addEventListener('click', () => {
+  /* Log to the owner's sheet in the background — WhatsApp opens regardless. */
+  logToSheet('enquiry', {
+    property: enquiry.prop,
+    checkIn: enquiry.checkin,
+    checkOut: enquiry.checkout,
+    guests: enquiry.guests,
+    name: mpcName.value.trim() || enquiry.name,
+    note: mpcNote.value.trim(),
+  });
   const msg = encodeURIComponent(buildMessage());
   window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
   closeMpc();
