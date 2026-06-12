@@ -46,6 +46,21 @@ const PROPERTIES = [
     card: 'chail/villa-anvira-by-gtv-estate-6e2617.jpg',
     address: 'Villa AnVira, Kufri Road, Kandaghat\nChail, Himachal Pradesh — 173 217',
     mapUrl: 'https://www.google.com/maps/dir//Villa+AnVira+,+Chail,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/@29.6872837,75.9435921,8.4z/data=!4m8!4m7!1m0!1m5!1m1!1s0x390f8162e0bd3713:0xb48395c65f24bfa9!2m2!1d77.1870428!2d30.9700264?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+    arrive: {
+      checkIn: '1:00 PM', checkOut: '11:00 AM',
+      distances: [
+        { from: 'Chandigarh Airport (IXC)', mode: 'Drive', time: '≈ 3.5 hrs · 110 km' },
+        { from: 'Kalka Railway Station', mode: 'Drive', time: '≈ 2.5 hrs · 85 km' },
+        { from: 'Shimla', mode: 'Drive', time: '≈ 1.5 hrs · 45 km' },
+      ],
+      notes: [
+        'The final stretch is a mountain road — arrive before dusk if you can; the drive up is part of the experience in daylight.',
+        'The last full market is in Kandaghat (30 min before the villa). Stock up on anything specific there; the kitchen handles the rest.',
+        'Evenings are cool year-round, even in summer. The bonfire is lit on request — let the caretaker know a day ahead.',
+        'Mobile coverage is good (Jio/Airtel); Wi-Fi covers the whole villa.',
+      ],
+      bring: ['Warm layers for the evenings', 'Walking shoes for the forest trails', 'Government ID for all adult guests', 'Any regular medication — the nearest chemist is 20 minutes away'],
+    },
     amenities: ['Private Terrace','Bonfire Pit','Valley Views','Curated Dining','Chef on Request','Gazebo','Indoor Games','24/7 Staff','Free Parking'],
     images: [
       'chail/anvira-terrace.webp',
@@ -122,6 +137,21 @@ const PROPERTIES = [
     card: 'Delhi/estate10-exterior.webp',
     address: 'Estate 10, Dera Village, Dera Mandi\nNew Delhi — 110 074',
     mapUrl: 'https://www.google.com/maps/dir/StayVista+At+Estate+10+By+Tarika+%7C+Premium+Villa+With+Private+Pool+In+New+Delhi,+Dera+Village,+Dera+Mandi,+New+Delhi,+Delhi+110074//@28.4475278,77.1686262,18.6z/data=!4m8!4m7!1m5!1m1!1s0x390d1f9265c03145:0x4075d136f2ae3942!2m2!1d77.1680222!2d28.4475384!1m0?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+    arrive: {
+      checkIn: '1:00 PM', checkOut: '11:00 AM',
+      distances: [
+        { from: 'IGI Airport (DEL)', mode: 'Drive', time: '≈ 45–60 min · 22 km' },
+        { from: 'New Delhi Railway Station', mode: 'Drive', time: '≈ 50 min · 24 km' },
+        { from: 'Chhatarpur Metro (Yellow Line)', mode: 'Drive', time: '≈ 15 min' },
+      ],
+      notes: [
+        'The estate is gated — share your car number with us a day ahead so security waves you straight through.',
+        'The pool is open 7 am – 8 pm; towels are provided at the poolside.',
+        'Outdoor music winds down by 10:30 pm in consideration of the neighbourhood.',
+        'The home chef shops fresh each morning — share meal preferences the evening before.',
+      ],
+      bring: ['Swimwear', 'Government ID for all adult guests', 'Event plans, if any — lawn setups are arranged in advance'],
+    },
     amenities: ['Private Pool','Manicured Lawn','Bonfire Area','Home Chef','Party Lawn','Indoor Lounge','24/7 Security','Concierge','Parking'],
     images: [
       'Delhi/estate10-exterior.webp',
@@ -189,6 +219,21 @@ const PROPERTIES = [
     card: 'Goa/tarikas-seascapes-4c718c.webp',
     address: 'Infiniti Bay, Holy Cross Colony\nMormugao, Ijorshi, Goa — 403 711',
     mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/@15.3978297,73.8537601,17.6z/data=!4m13!4m12!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
+    arrive: {
+      checkIn: '1:00 PM', checkOut: '11:00 AM',
+      distances: [
+        { from: 'Dabolim Airport (GOI)', mode: 'Drive', time: '≈ 10 min · 6 km' },
+        { from: 'Madgaon Railway Station', mode: 'Drive', time: '≈ 30 min · 22 km' },
+        { from: 'Vasco da Gama town', mode: 'Drive', time: '≈ 15 min' },
+      ],
+      notes: [
+        'The home is on the 2nd floor of the Infiniti Bay complex — there are stairs; let us know in advance if any guest needs assistance.',
+        'Parking is just outside the premises; the watchman will guide you in.',
+        'The kitchen is fully equipped if you\'d like to cook; a Goan cook is available on request with a day\'s notice.',
+        'Sunset from the river deck is the house ritual — pour something cold and be there by 6.',
+      ],
+      bring: ['Swimwear and sunscreen', 'Government ID for all adult guests', 'Light cottons — Goa stays warm year-round'],
+    },
     amenities: ['Private Pool','Sea View Terrace','Home Theatre','Smart TV','Full Kitchen','Workspace','2 Balconies','Private Entrance','24/7 Staff','Parking'],
     images: [
       'Goa/tarikas-seascapes-4c718c.webp',

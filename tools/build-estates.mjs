@@ -69,9 +69,10 @@ const chrome = {
       <div class="fl">
         <a href="../index.html#gal-sec" class="fa" data-cursor>Portfolio</a>
         <a href="./index.html" class="fa" data-cursor>Estates</a>
-        <a href="#" class="fa" data-cursor>Privacy Policy</a>
-        <a href="#" class="fa" data-cursor>Terms</a>
-        <a href="#" class="fa" data-cursor>Cancellation Policy</a>
+        <a href="../legal/privacy.html" class="fa" data-cursor>Privacy Policy</a>
+        <a href="../legal/terms.html" class="fa" data-cursor>Terms</a>
+        <a href="../legal/cancellation.html" class="fa" data-cursor>Cancellation Policy</a>
+        <a href="../reviews/submit.html" class="fa" data-cursor>Share a Review</a>
       </div>
       <div>
         <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
@@ -524,6 +525,238 @@ ${chrome.footer}
 `;
 }
 
+/* ── Shared shell for simple inner pages (arrive / reviews / legal) ── */
+function shell({ title, desc, robots = 'index, follow', canonicalPath, body, scripts = '' }) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(desc)}" />
+  <meta name="robots" content="${robots}" />
+  <meta name="theme-color" content="#F5F1E8" />
+${canonicalPath ? `  <link rel="canonical" href="${SITE_URL}${canonicalPath}" />\n` : ''}${fonts}
+  <link rel="stylesheet" href="../assets/css/main.css" />
+</head>
+<body data-base="../">
+${chrome.nav}
+
+  <main>
+${body}
+${chrome.footer}
+  </main>
+
+  <div id="float-wa">
+    <a href="https://wa.me/${WA_NUMBER}" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">${WA_SVG}</a>
+  </div>
+
+  <script src="../assets/js/data.js"></script>
+  <script src="../assets/js/core.js"></script>
+${scripts}</body>
+</html>
+`;
+}
+
+/* ── /arrive/[slug] — private pre-arrival page (unlisted, noindex) ── */
+function arrivePage(p) {
+  const a = p.arrive;
+  const distances = a.distances.map(d => `
+            <div class="arr-dist">
+              <div class="arr-dist-from">${esc(d.from)}</div>
+              <div class="arr-dist-time">${esc(d.mode)} &mdash; ${esc(d.time)}</div>
+            </div>`).join('');
+  const notes = a.notes.map(n => `<li>${esc(n)}</li>`).join('\n              ');
+  const bring = a.bring.map(b => `<li>${esc(b)}</li>`).join('\n              ');
+  const caretaker = p.staff.length
+    ? p.staff.map(s => `<p class="arr-caretaker"><b>${esc(s.name)}</b> &mdash; ${esc(s.role)}. Their direct number is in your booking confirmation.</p>`).join('')
+    : `<p class="arr-caretaker">Your caretaker's name and direct number are shared in your booking confirmation. Until then, we are your single point of contact.</p>`;
+
+  const body = `
+    <section class="inner-page">
+      <p class="sec-ey">Your stay is confirmed</p>
+      <h1 class="inner-title">Getting to ${esc(p.name)}</h1>
+      <p class="inner-sub">${esc(p.loc)} &mdash; everything you need before you set out. This page is private to confirmed guests; save the link.</p>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">The address</p>
+        <p id="pd-address">${p.address.replace('\n', '<br>')}</p>
+        <a id="pd-map-link" href="${p.mapUrl}" target="_blank" rel="noopener noreferrer" data-cursor style="margin-top:1.1rem">${PIN_SVG} Open directions in Google Maps</a>
+      </section>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">Getting here</p>
+        <div class="arr-dist-grid">${distances}
+        </div>
+      </section>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">Check-in &amp; check-out</p>
+        <div class="ep-stats">
+          <div><div class="pd-spec-n">${esc(a.checkIn)}</div><div class="pd-spec-l">Check-in from</div></div>
+          <div><div class="pd-spec-n">${esc(a.checkOut)}</div><div class="pd-spec-l">Check-out by</div></div>
+        </div>
+        <p class="arr-note-p">Arriving earlier or leaving later? Tell us on WhatsApp &mdash; we accommodate whenever the calendar allows.</p>
+      </section>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">The people of the house</p>
+        ${caretaker}
+        <div class="arr-contact">
+          <a class="cta" style="text-decoration:none" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hello AnVira, we're arriving at ${p.name} — a quick question.`)}" target="_blank" rel="noopener noreferrer" data-cursor>WhatsApp us</a>
+          <a class="bw-call" href="tel:+${WA_NUMBER}" data-cursor>or call +${WA_NUMBER.slice(0,2)} ${WA_NUMBER.slice(2,7)} ${WA_NUMBER.slice(7)}</a>
+        </div>
+      </section>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">House notes</p>
+        <ul class="arr-list">
+              ${notes}
+        </ul>
+      </section>
+
+      <section class="ep-section">
+        <p class="ep-sec-title">Worth packing</p>
+        <ul class="arr-list">
+              ${bring}
+        </ul>
+      </section>
+    </section>`;
+
+  return shell({
+    title: `Getting to ${p.name} — Pre-Arrival Guide | AnVira`,
+    desc: `Private pre-arrival guide for confirmed guests of ${p.name}, ${p.loc}.`,
+    robots: 'noindex, nofollow',
+    body,
+  });
+}
+
+/* ── /reviews/submit — post-stay review form ── */
+function reviewsPage() {
+  const propOptions = PROPERTIES.map(p => `<option value="${esc(`${p.name}, ${p.loc}`)}">${esc(p.name)} &mdash; ${esc(p.loc)}</option>`).join('\n              ');
+  const occasions = ['Anniversary', 'Birthday', 'Family Reunion', 'Corporate Retreat', 'Holiday', 'Honeymoon', 'Other'];
+  const body = `
+    <section class="inner-page">
+      <p class="sec-ey">After your stay</p>
+      <h1 class="inner-title">Tell us how it was</h1>
+      <p class="inner-sub">A few honest lines help the next guest choose well. Reviews are read by the owner and published with your first name only.</p>
+
+      <form id="rv-form" class="rv-form" novalidate>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="rv-prop">Which estate did you stay at?</label>
+          <select class="bw-input" id="rv-prop" required>
+            <option value="">Select an estate&hellip;</option>
+              ${propOptions}
+          </select>
+        </div>
+        <div class="bw-row">
+          <div class="bw-field">
+            <label class="mpc-note-label" for="rv-name">Your name</label>
+            <input class="bw-input" type="text" id="rv-name" autocomplete="name" />
+          </div>
+          <div class="bw-field">
+            <label class="mpc-note-label" for="rv-phone">Phone (kept private)</label>
+            <input class="bw-input" type="tel" id="rv-phone" inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile" />
+          </div>
+        </div>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="rv-occ">The occasion</label>
+          <select class="bw-input" id="rv-occ">
+              ${occasions.map(o => `<option>${o}</option>`).join('\n              ')}
+          </select>
+        </div>
+        <fieldset class="rv-rating" id="rv-rating">
+          <legend class="mpc-note-label">Your rating</legend>
+          ${[1,2,3,4,5].map(n => `<input type="radio" name="rating" id="rv-star-${n}" value="${n}" /><label for="rv-star-${n}" data-cursor aria-label="${n} star${n > 1 ? 's' : ''}">&#9733;</label>`).join('\n          ')}
+        </fieldset>
+        <div class="bw-field">
+          <label class="mpc-note-label" for="rv-text">Your review &mdash; up to 200 words</label>
+          <textarea class="bw-input" id="rv-text" rows="6" placeholder="What stayed with you?"></textarea>
+          <p class="rv-count" id="rv-count" aria-live="polite">0 / 200 words</p>
+        </div>
+        <p class="bw-err" id="rv-err" role="alert" aria-live="polite"></p>
+        <button type="submit" class="cta" id="rv-send" data-cursor>Submit review</button>
+      </form>
+
+      <div id="rv-done" class="rv-done" style="display:none">
+        <p class="ep-sec-title">Thank you.</p>
+        <p class="inner-sub">Your review has reached us. Once the owner reads it, it joins the guest voices on the estate page.</p>
+        <a class="cta" style="text-decoration:none" href="../estates/index.html" data-cursor>Back to the estates</a>
+      </div>
+    </section>`;
+
+  return shell({
+    title: 'Share Your Review | AnVira',
+    desc: 'Stayed with AnVira? Tell us how it was — your review helps the next guest choose well.',
+    canonicalPath: '/reviews/submit.html',
+    body,
+    scripts: '  <script src="../assets/js/review.js"></script>\n',
+  });
+}
+
+/* ── /legal/* — readable prose, same design language ── */
+const LEGAL_PAGES = [
+  {
+    slug: 'privacy',
+    title: 'Privacy Policy',
+    intro: 'We collect almost nothing, and we sell nothing. Here is exactly what happens to your information.',
+    sections: [
+      ['What we collect', `When you enquire, we receive what you choose to send on WhatsApp — your name, dates, party size, and any note you add. If you join a waitlist or submit a review, we store the name and number you provide in a private spreadsheet accessible only to AnVira's owners.`],
+      ['What we use it for', `Replying to your enquiry, holding your dates, and — only if you have explicitly agreed — one message when a new estate opens. We do not run marketing lists, we do not send newsletters, and we never share or sell your details to anyone.`],
+      ["What we don't do", `No advertising trackers, no analytics that identify you, no cookies beyond what is technically necessary for the site to function. Conversations happen on WhatsApp, which is end-to-end encrypted.`],
+      ['Your choices', `Ask us at any time to delete your details from our records — one WhatsApp message is enough, and we confirm when it is done.`],
+      ['Contact', `For anything privacy-related, message us on WhatsApp or call +91 98070 87087.`],
+    ],
+  },
+  {
+    slug: 'terms',
+    title: 'Terms of Stay',
+    intro: 'Plain terms for a direct booking — what you can expect of us, and what we ask of you.',
+    sections: [
+      ['Booking & confirmation', `A booking is confirmed once dates are agreed on WhatsApp and the advance is received. The confirmation message — with your dates, tariff, and inclusions — is the record of our agreement.`],
+      ['Tariff & payment', `Tariffs are quoted per stay and include what the confirmation lists. Anything arranged additionally (chef meals, bonfires, excursions, transfers) is settled directly at the estate before check-out.`],
+      ['Your stay', `Guest counts must match the booking — our estates are staffed and provisioned for the number agreed. House quiet hours and pool timings are noted on each estate's pre-arrival page. The guest who books is responsible for the conduct of the party and for any damage beyond normal wear.`],
+      ['Our responsibilities', `A clean, safe, staffed estate matching its listing; honest photography; a reply within 2 hours, 9am–9pm IST. If something at the estate falls short, tell the caretaker first — most things are fixed within the hour.`],
+      ['Liability', `Stays are at the guest's own risk in respect of personal belongings and activities undertaken off the estate. Nothing in these terms limits rights you hold under Indian consumer law.`],
+      ['Disputes', `We resolve issues directly and in good faith. These terms are governed by the laws of India.`],
+    ],
+  },
+  {
+    slug: 'cancellation',
+    title: 'Cancellation Policy',
+    intro: 'Plans change. This is how we handle it — stated up front, applied without argument.',
+    sections: [
+      ['If you cancel', `More than 14 days before check-in: full refund of the advance. 7–14 days before: 50% of the advance is retained. Within 7 days: the advance is retained — though we will always first offer to move your dates instead.`],
+      ['Date changes', `One date change is free when requested more than 7 days out, subject to availability. We would always rather move your stay than cancel it.`],
+      ['If we cancel', `If an estate becomes unavailable for any reason on our side, you choose: a full and immediate refund, or equivalent dates at the same or another AnVira estate with any tariff difference in your favour.`],
+      ['Weather & force majeure', `Mountain roads close, rivers rise. If a verified event beyond anyone's control prevents the stay, we move your dates without penalty.`],
+      ['How refunds happen', `Refunds go back the way the payment came, within 7 working days, confirmed on WhatsApp.`],
+    ],
+  },
+];
+
+function legalPage(pg) {
+  const sections = pg.sections.map(([h, t]) => `
+      <section class="ep-section">
+        <p class="ep-sec-title">${esc(h)}</p>
+        <p class="legal-p">${esc(t)}</p>
+      </section>`).join('');
+  const body = `
+    <section class="inner-page">
+      <p class="sec-ey">AnVira Private Estates</p>
+      <h1 class="inner-title">${esc(pg.title)}</h1>
+      <p class="inner-sub">${esc(pg.intro)}</p>
+${sections}
+      <p class="legal-updated">Last updated: June 2026 &mdash; pending final owner approval before launch.</p>
+    </section>`;
+  return shell({
+    title: `${pg.title} | AnVira`,
+    desc: pg.intro,
+    canonicalPath: `/legal/${pg.slug}.html`,
+    body,
+  });
+}
+
 mkdirSync(join(ROOT, 'estates'), { recursive: true });
 for (const p of PROPERTIES) {
   writeFileSync(join(ROOT, 'estates', `${p.id}.html`), estatePage(p));
@@ -531,3 +764,19 @@ for (const p of PROPERTIES) {
 }
 writeFileSync(join(ROOT, 'estates', 'index.html'), listingPage());
 console.log('built estates/index.html');
+
+mkdirSync(join(ROOT, 'arrive'), { recursive: true });
+for (const p of PROPERTIES) {
+  writeFileSync(join(ROOT, 'arrive', `${p.id}.html`), arrivePage(p));
+  console.log(`built arrive/${p.id}.html`);
+}
+
+mkdirSync(join(ROOT, 'reviews'), { recursive: true });
+writeFileSync(join(ROOT, 'reviews', 'submit.html'), reviewsPage());
+console.log('built reviews/submit.html');
+
+mkdirSync(join(ROOT, 'legal'), { recursive: true });
+for (const pg of LEGAL_PAGES) {
+  writeFileSync(join(ROOT, 'legal', `${pg.slug}.html`), legalPage(pg));
+  console.log(`built legal/${pg.slug}.html`);
+}

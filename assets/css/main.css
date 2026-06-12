@@ -1236,3 +1236,70 @@
     }
     .wl-consent-row input { margin-top: 3px; accent-color: var(--gold); }
     .wl-done-msg { font-size: 14.5px; line-height: 1.8; color: var(--text); margin: .6rem 0 1.1rem; }
+
+    /* ════════════════════════════════════════════════════════════
+       Phase 3 — Guest journey: pre-arrival, review form, legal pages
+       ════════════════════════════════════════════════════════════ */
+
+    /* ── Shared inner-page shell ── */
+    .inner-page {
+      max-width: 720px; margin: 0 auto;
+      padding: clamp(120px, 16vh, 170px) var(--pad-x) var(--space-7);
+    }
+    .inner-title {
+      font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12;
+      margin: .4rem 0 1rem; color: var(--text);
+    }
+    .inner-title, .inner-page h1 em { font-style: italic; }
+    .inner-sub { font-size: 16.5px; line-height: 1.85; color: var(--mid); max-width: 56ch; margin-bottom: var(--space-2); }
+
+    /* ── Pre-arrival (/arrive) ── */
+    .arr-dist-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+    .arr-dist {
+      display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-2);
+      border-bottom: 1px solid var(--border); padding-bottom: .7rem;
+    }
+    .arr-dist-from { font-size: 15.5px; color: var(--text); }
+    .arr-dist-time { font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--mid); white-space: nowrap; }
+    .arr-note-p { font-size: 15px; line-height: 1.8; color: var(--mid); margin-top: var(--space-3); }
+    .arr-caretaker { font-size: 16px; line-height: 1.85; color: var(--mid); }
+    .arr-caretaker b { color: var(--text); font-weight: 500; }
+    .arr-contact { display: flex; align-items: center; gap: var(--space-3); margin-top: var(--space-3); flex-wrap: wrap; }
+    .arr-list { list-style: none; padding: 0; }
+    .arr-list li {
+      font-size: 15.5px; line-height: 1.8; color: var(--mid);
+      padding: .65rem 0 .65rem 1.6rem; position: relative;
+      border-bottom: 1px solid var(--border);
+    }
+    .arr-list li::before {
+      content: ''; position: absolute; left: 2px; top: 1.35rem;
+      width: 5px; height: 5px; background: var(--gold); border-radius: 50%;
+    }
+
+    /* ── Review form (/reviews/submit) ── */
+    .rv-form { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-4); }
+    select.bw-input { appearance: none; background-image: linear-gradient(45deg, transparent 49%, var(--mid) 50%, transparent 53%); background-repeat: no-repeat; background-position: right 12px top 55%; background-size: 9px 9px; }
+    .rv-rating { border: none; padding: 0; margin: .2rem 0; display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+    .rv-rating legend { margin-bottom: 8px; }
+    .rv-rating input { position: absolute; opacity: 0; pointer-events: none; }
+    .rv-rating label {
+      font-size: 1.7rem; line-height: 1; color: var(--rule);
+      padding: 2px 4px; cursor: pointer; transition: color .25s ease, transform .25s var(--lux);
+    }
+    .rv-rating label:hover { transform: translateY(-2px); }
+    /* fill stars up to the hovered/checked one (markup order: input,label,input,label…) */
+    .rv-rating:hover label { color: var(--gold); }
+    .rv-rating label:hover ~ label { color: var(--rule); }
+    .rv-rating input:checked ~ label { color: var(--rule); }
+    .rv-rating:not(:hover) input:checked + label,
+    .rv-rating:not(:hover) label:has(~ input:checked) { color: var(--gold); }
+    .rv-rating input:focus-visible + label { outline: 1.5px solid var(--gold); outline-offset: 2px; }
+    .rv-count { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--faint); margin-top: 6px; }
+    .rv-count.over { color: var(--error); }
+    .rv-done { margin-top: var(--space-5); }
+    .rv-done .cta { margin-top: var(--space-3); display: inline-block; }
+
+    /* ── Legal pages ── */
+    .legal-p { font-size: 16px; line-height: 1.9; color: var(--mid); max-width: 60ch; }
+    .legal-updated { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--faint); margin-top: var(--space-5); letter-spacing: .04em; }
