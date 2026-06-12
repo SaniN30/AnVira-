@@ -175,11 +175,6 @@ function bookingAside(p) {
             <a class="bw-call" id="bw-call" href="tel:+${WA_NUMBER}" data-cursor>Call instead</a>
           </form>
           <p class="ep-trust">We reply on WhatsApp <b>within 2 hours</b>, 9am&ndash;9pm IST.<br>Direct booking &mdash; no platform fees, ever.</p>
-          <div class="ep-review-cta">
-            <p class="ep-incl-title">Stayed with us?</p>
-            <p class="ep-review-line">Your words help the next guest choose well.</p>
-            <a class="cta cta-ghost" href="../reviews/submit.html?estate=${encodeURIComponent(`${p.name}, ${p.loc}`)}" data-cursor>Write a review</a>
-          </div>
         </aside>`;
 }
 
@@ -358,6 +353,11 @@ ${p.staff.length ? `          <section class="ep-section fi">
           <section class="ep-section fi">
             <p class="ep-sec-title">Guest Voices &mdash; ${esc(p.name)}</p>
             <div class="ep-reviews">${reviews}
+            </div>
+            <div class="ep-review-cta">
+              <p class="ep-incl-title">Stayed with us?</p>
+              <p class="ep-review-line">Your words help the next guest choose well.</p>
+              <a class="cta cta-ghost" href="../reviews/submit.html?estate=${encodeURIComponent(`${p.name}, ${p.loc}`)}" data-cursor>Write a review</a>
             </div>
           </section>
         </article>

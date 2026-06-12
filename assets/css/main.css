@@ -1172,11 +1172,13 @@
     .ep-trust { font-size: 11px; line-height: 1.8; color: var(--mid); text-align: center; letter-spacing: .04em; }
     .ep-trust b { color: var(--text); font-weight: 500; }
 
-    /* Write-a-review card (aside, below the booking widget) */
+    /* Write-a-review card (Guest Voices section, after testimonials) */
     .ep-review-cta {
       background: var(--surface); border: 1px solid var(--border-mid); border-radius: 2px;
       padding: 1.3rem 1.5rem; text-align: center;
+      margin-top: var(--space-3); max-width: 600px;
     }
+    .ep-review-cta .cta-ghost { max-width: 280px; margin: 0 auto; }
     .ep-review-line {
       font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: 1.05rem; color: var(--mid); margin: .4rem 0 1rem; line-height: 1.6;
