@@ -296,7 +296,7 @@ const COMING_SOON = [
   },
 ];
 
-const WA_NUMBER = '918595600366'; // TEMP — revert to '919807087087'
+const WA_NUMBER = '919807087087';
 
 /* Google Apps Script web-app endpoint (enquiry log / waitlist / reviews).
    Empty string = logging disabled; every form still degrades gracefully.
