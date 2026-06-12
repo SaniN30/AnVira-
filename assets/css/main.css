@@ -577,7 +577,9 @@
     #pd-gallery-title { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--text); margin-bottom: 1.2rem; }
     #pd-gallery { columns: 3; column-gap: 6px; }
     #pd-gallery img {
-      width: 100%; display: block; margin-bottom: 6px; break-inside: avoid; border-radius: 1px;
+      /* height:auto is load-bearing: images carry explicit width/height
+         attributes (for CLS), so without it width:100% distorts them */
+      width: 100%; height: auto; display: block; margin-bottom: 6px; break-inside: avoid; border-radius: 1px;
       cursor: pointer !important;
       transition: opacity .35s ease, transform .45s var(--lux);
     }
