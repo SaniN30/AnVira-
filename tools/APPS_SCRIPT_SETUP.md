@@ -53,3 +53,16 @@ with Status `New`. Join a waitlist on /estates/ → a row appears in **Waitlist*
 - When a coming-soon estate launches, filter the **Waitlist** tab by estate,
   copy the numbers into a WhatsApp Business broadcast list, and announce.
 - Reviews (Phase 3) arrive as **Pending** — approve by copying into the site data.
+
+## Return-guest CRM (Phase 6 — lightweight, sheet-native)
+
+Add two columns to the **Enquiries** tab after Status:
+`Returning? | Last Stay`
+
+- When a name/number you recognise enquires again, mark **Returning? = Yes**
+  and note their previous estate + month in **Last Stay**.
+- Returning guests get priority on dates and a personal touch on arrival
+  (the caretaker is told their name and last visit).
+- To find repeats fast: Data → Create a filter → sort the Name column.
+
+No software needed until volume demands it — this sheet *is* the CRM.

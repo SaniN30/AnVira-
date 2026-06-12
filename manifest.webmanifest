@@ -1,0 +1,13 @@
+{
+  "name": "AnVira Private Estates",
+  "short_name": "AnVira",
+  "description": "Hand-selected private estates in Chail, New Delhi, and Goa — booked directly.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#EFEBE0",
+  "theme_color": "#F5F1E8",
+  "icons": [
+    { "src": "/brand/logo.png", "sizes": "850x640", "type": "image/png", "purpose": "any" }
+  ]
+}

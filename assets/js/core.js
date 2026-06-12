@@ -106,6 +106,13 @@ if (floatWa && heroEl) {
   waObs.observe(heroEl);
 }
 
+/* ── PWA — offline estate pages (Phase 6) ─────────────────── */
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(ASSET_BASE + 'sw.js').catch(() => {});
+  });
+}
+
 /* ── Focus trap for overlays (menu, lightbox, modals) ─────
    Call on open; invoke the returned function on close to
    release the trap and restore focus to the opener. */
