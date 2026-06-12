@@ -28,6 +28,12 @@ function renderAvailability(p) {
         inEl.value = toISO(start);
         const end = new Date(start); end.setDate(end.getDate() + 2);
         outEl.value = toISO(end);
+        /* brief brass flash confirms the dates landed in the widget */
+        [inEl, outEl].forEach(el => {
+          el.classList.remove('flash');
+          void el.offsetWidth; /* restart the animation on repeat clicks */
+          el.classList.add('flash');
+        });
         document.getElementById('bw')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
     }

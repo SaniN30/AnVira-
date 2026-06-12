@@ -60,7 +60,7 @@ menu.querySelectorAll('.mlink').forEach(a => {
 /* ── Scroll fade-ins ─────────────────────────────────────── */
 const fObs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); fObs.unobserve(e.target); } });
-}, { threshold: 0.07 });
+}, { rootMargin: '0px 0px -20% 0px', threshold: 0 });
 document.querySelectorAll('.fi').forEach(el => fObs.observe(el));
 
 /* ── Scroll indicator hide-on-scroll ────────────────────── */

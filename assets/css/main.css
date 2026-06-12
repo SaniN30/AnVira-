@@ -394,7 +394,7 @@
       width: 100%; height: 100%; object-fit: cover; display: block;
       transition: transform 700ms var(--lux);
     }
-    .prop-card:hover .ci { transform: scale(1.06); }
+    .prop-card:hover .ci { transform: scale(1.04); }
     .ctag { font-size: 9.5px; letter-spacing: .38em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
     .crow { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
     .cname { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 300; font-style: italic; color: var(--text); }
@@ -877,6 +877,7 @@
     .avail-month.available { border-color: rgba(31,158,95,.4); }
     .avail-month.available:hover { background: rgba(31,158,95,.07); border-color: var(--wa); }
     .avail-month.partial   { border-color: rgba(168,124,69,.55); color: var(--gold); }
+    .avail-month.partial:hover { background: var(--gold-light); border-color: var(--gold); }
     .avail-month.booked    { color: var(--faint); border-color: var(--border); text-decoration: line-through; }
     .avail-legend { display: flex; gap: 1.4rem; margin-top: .9rem; }
     .avail-key { display: flex; align-items: center; gap: 6px; font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--mid); }
@@ -1102,7 +1103,11 @@
     .ep-main { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; }
     .ep-aside { position: sticky; top: 92px; display: flex; flex-direction: column; gap: var(--space-3); }
 
-    .ep-section { padding-top: var(--space-4); margin-top: var(--space-4); border-top: 1px solid var(--border); }
+    .ep-section { padding-top: var(--space-4); margin-top: var(--space-4); position: relative; }
+    .ep-section::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 60%; height: 1px; background: var(--gold); opacity: .35; transform: scaleY(.5);
+    }
     .ep-section:first-child { padding-top: 0; margin-top: 0; border-top: none; }
     .ep-sec-title { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.2rem; font-weight: 500; }
 
@@ -1303,3 +1308,57 @@
     /* ── Legal pages ── */
     .legal-p { font-size: 16px; line-height: 1.9; color: var(--mid); max-width: 60ch; }
     .legal-updated { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--faint); margin-top: var(--space-5); letter-spacing: .04em; }
+
+    /* ════════════════════════════════════════════════════════════
+       Phase 4 — Interaction & motion polish (claude.md §3:
+       unhurried but precise; nav links / body text / buttons
+       stay un-animated beyond color & underline)
+       ════════════════════════════════════════════════════════════ */
+
+    /* ── Jaali dot-grid marker above every section title ── */
+    .ep-sec-title::before {
+      content: ''; display: block; width: 22px; height: 22px;
+      margin-bottom: .9rem;
+      background-image: radial-gradient(var(--gold) 1.2px, transparent 1.2px);
+      background-size: 7px 7px; background-position: 1px 1px;
+      opacity: .85;
+    }
+
+    /* ── Brass underline grows under the estate name on card hover ── */
+    .cname { position: relative; display: inline-block; padding-bottom: 2px; }
+    .cname::after {
+      content: ''; position: absolute; left: 0; bottom: 0;
+      width: 100%; height: 1px; background: var(--gold);
+      transform: scaleX(0); transform-origin: left center;
+      transition: transform .6s var(--lux);
+    }
+    .prop-card:hover .cname::after { transform: scaleX(1); }
+
+    /* ── Estate hero name — word stagger (40ms per word) ── */
+    .hw {
+      display: inline-block; opacity: 0; transform: translateY(.45em);
+      animation: hw-in .8s var(--lux) forwards;
+      animation-delay: calc(.15s + var(--wi, 0) * 40ms);
+    }
+    @keyframes hw-in { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Booking panel slide-in on first scroll past the hero ── */
+    .ep-aside.pre { opacity: 0; transform: translateY(18px); }
+    .ep-aside { transition: opacity .8s ease, transform .8s var(--lux); }
+    .ep-aside.in { opacity: 1; transform: translateY(0); }
+
+    /* ── Calendar month → booking widget pre-fill confirmation ── */
+    .bw-input.flash { animation: bw-flash 1.1s ease both; }
+    @keyframes bw-flash {
+      0% { background: var(--gold-light); border-color: var(--gold); }
+      100% { background: transparent; }
+    }
+
+    /* ── Reduced motion: every Phase 4 effect resolves to its end state ── */
+    @media (prefers-reduced-motion: reduce) {
+      .ep-hero img { animation: none !important; transform: none !important; }
+      .hw { opacity: 1 !important; transform: none !important; animation: none !important; }
+      .ep-aside, .ep-aside.pre { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .cname::after { transition: none !important; }
+      .bw-input.flash { animation: none !important; }
+    }
