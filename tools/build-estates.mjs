@@ -829,3 +829,20 @@ console.log('built sitemap.xml');
 writeFileSync(join(ROOT, 'robots.txt'),
   `User-agent: *\nAllow: /\nDisallow: /arrive/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 console.log('built robots.txt');
+
+/* ── Stamp the service-worker cache version from asset contents so every
+   css/js change invalidates the old cache on the next visit. ── */
+{
+  const { createHash } = await import('node:crypto');
+  const { readdirSync } = await import('node:fs');
+  const h = createHash('sha1');
+  h.update(readFileSync(join(ROOT, 'assets/css/main.css')));
+  for (const f of readdirSync(join(ROOT, 'assets/js')).sort()) {
+    h.update(readFileSync(join(ROOT, 'assets/js', f)));
+  }
+  const stamp = `anvira-${h.digest('hex').slice(0, 10)}`;
+  const sw = readFileSync(join(ROOT, 'sw.js'), 'utf8')
+    .replace(/const VERSION = '[^']*'; \/\* BUILD_VERSION \*\//, `const VERSION = '${stamp}'; /* BUILD_VERSION */`);
+  writeFileSync(join(ROOT, 'sw.js'), sw);
+  console.log(`stamped sw.js → ${stamp}`);
+}

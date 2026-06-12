@@ -4,7 +4,9 @@
    so a guest who opened an estate once can reread it offline. */
 'use strict';
 
-const VERSION = 'anvira-v1';
+/* Stamped by tools/build-estates.mjs from a hash of css/js contents —
+   any asset change produces a new cache and retires the old one. */
+const VERSION = 'anvira-07a64fa25e'; /* BUILD_VERSION */
 
 const PRECACHE = [
   './',
@@ -61,7 +63,25 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  /* assets: cache-first, populate on miss */
+  /* css/js: stale-while-revalidate — serve cache instantly, refresh it
+     in the background so fixes propagate one visit later at worst */
+  if (/\.(css|js)$/.test(url.pathname)) {
+    e.respondWith(
+      caches.match(req).then(hit => {
+        const refresh = fetch(req).then(res => {
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(VERSION).then(c => c.put(req, copy));
+          }
+          return res;
+        }).catch(() => hit);
+        return hit || refresh;
+      })
+    );
+    return;
+  }
+
+  /* images & the rest: cache-first, populate on miss */
   e.respondWith(
     caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res.ok) {
