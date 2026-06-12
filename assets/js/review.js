@@ -14,6 +14,13 @@
   const sendBtn = document.getElementById('rv-send');
   const doneEl  = document.getElementById('rv-done');
 
+  /* Pre-select the estate when arriving from an estate page's
+     "Write a review" card (?estate=<name, loc>) */
+  const fromEstate = new URLSearchParams(location.search).get('estate');
+  if (fromEstate && [...propEl.options].some(o => o.value === fromEstate)) {
+    propEl.value = fromEstate;
+  }
+
   const words = () => textEl.value.trim().split(/\s+/).filter(Boolean).length;
   textEl.addEventListener('input', () => {
     const n = words();

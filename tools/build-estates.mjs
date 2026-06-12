@@ -5,7 +5,7 @@
    assets/js/data.js (single source of truth, claude.md §5 schema).
    Run after any data change:  node tools/build-estates.mjs
    ════════════════════════════════════════════════════════════════ */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -21,6 +21,20 @@ vm.runInContext(readFileSync(join(ROOT, 'assets/js/data.js'), 'utf8'), ctx);
 const { PROPERTIES, COMING_SOON, WA_NUMBER } = vm.runInContext('({ PROPERTIES, COMING_SOON, WA_NUMBER })', ctx);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* ── Responsive variants (tools/build-images.mjs writes -640w/-1280w
+   .webp next to each original). srcset() emits only widths that exist
+   on disk, so a missing variant degrades to the original silently. */
+const VARIANT_WIDTHS = [640, 1280];
+const variantPath = (u, w) => u.replace(/\.(jpe?g|png|webp)$/i, `-${w}w.webp`);
+function srcset(u, origW) {
+  const parts = VARIANT_WIDTHS
+    .filter(w => existsSync(join(ROOT, variantPath(u, w))))
+    .map(w => `../${variantPath(u, w)} ${w}w`);
+  if (!parts.length) return '';
+  if (origW) parts.push(`../${u} ${origW}w`);
+  return ` srcset="${parts.join(', ')}"`;
+}
 
 /* ── Image dimensions (JPEG SOF / WebP VP8|VP8L|VP8X headers) —
    baked into width/height attributes so the gallery never shifts layout. */
@@ -161,6 +175,11 @@ function bookingAside(p) {
             <a class="bw-call" id="bw-call" href="tel:+${WA_NUMBER}" data-cursor>Call instead</a>
           </form>
           <p class="ep-trust">We reply on WhatsApp <b>within 2 hours</b>, 9am&ndash;9pm IST.<br>Direct booking &mdash; no platform fees, ever.</p>
+          <div class="ep-review-cta">
+            <p class="ep-incl-title">Stayed with us?</p>
+            <p class="ep-review-line">Your words help the next guest choose well.</p>
+            <a class="cta cta-ghost" href="../reviews/submit.html?estate=${encodeURIComponent(`${p.name}, ${p.loc}`)}" data-cursor>Write a review</a>
+          </div>
         </aside>`;
 }
 
@@ -227,7 +246,11 @@ function estatePage(p) {
   const gallery = p.images.map((u, i) => {
     const dim = imageSize(join(ROOT, u));
     const size = dim ? ` width="${dim.w}" height="${dim.h}"` : '';
-    return `<img src="../${u}" alt="${esc(p.name)} — photograph ${i + 1}"${size} loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" data-idx="${i}" data-cursor />`;
+    /* tile sizes mirror #pd-gallery CSS: 3-col grid (lead spans 2), 2-col ≤900px, 1-col ≤480px */
+    const sizes = i === 0
+      ? '(max-width: 480px) 94vw, (max-width: 900px) 94vw, 740px'
+      : '(max-width: 480px) 94vw, (max-width: 900px) 46vw, 370px';
+    return `<img src="../${u}"${srcset(u, dim?.w)} sizes="${sizes}" alt="${esc(p.name)} — photograph ${i + 1}"${size} loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" data-idx="${i}" data-cursor />`;
   }).join('\n            ');
 
   return `<!DOCTYPE html>
@@ -256,7 +279,7 @@ function estatePage(p) {
 ${jsonld}
   </script>
 ${fonts}
-  <link rel="preload" as="image" href="../${p.images[0]}" />
+  <link rel="preload" as="image" href="../${p.images[0]}"${srcset(p.images[0], imageSize(join(ROOT, p.images[0]))?.w).replace(' srcset=', ' imagesrcset=')} imagesizes="100vw" />
   <link rel="stylesheet" href="../assets/css/main.css" />
 </head>
 <body data-base="../" data-estate="${p.id}">
@@ -264,7 +287,7 @@ ${chrome.nav}
 
   <main>
     <section class="ep-hero">
-      <img src="../${p.images[0]}" alt="${esc(p.name)} — ${esc(p.loc)}" />
+      <img src="../${p.images[0]}"${srcset(p.images[0], imageSize(join(ROOT, p.images[0]))?.w)} sizes="100vw" alt="${esc(p.name)} — ${esc(p.loc)}" />
       <div class="ep-hero-overlay"></div>
       <div class="ep-hero-caption">
         <p class="ep-crumb"><a href="../index.html" data-cursor>AnVira</a> &nbsp;/&nbsp; <a href="./index.html" data-cursor>Estates</a> &nbsp;/&nbsp; ${esc(p.name)}</p>

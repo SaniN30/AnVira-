@@ -1,0 +1,8 @@
+{
+  "name": "anvira-tools",
+  "private": true,
+  "description": "Build scripts for the AnVira static site (node tools/*.mjs)",
+  "dependencies": {
+    "sharp": "^0.35.1"
+  }
+}
