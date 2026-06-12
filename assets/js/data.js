@@ -101,6 +101,15 @@ const PROPERTIES = [
       'chail/vansh-batra-chail-186fa6.jpg',
       'chail/vansh-batra-chail-f4b990.jpg',
     ],
+    /* gallery filter category per image (same order as images):
+       outdoor | living | bedroom | dining | washroom */
+    imageCats: [
+      'outdoor', 'outdoor', 'outdoor', 'outdoor', 'outdoor', 'outdoor', 'outdoor', 'living',
+      'bedroom', 'dining', 'bedroom', 'bedroom', 'outdoor', 'washroom', 'outdoor', 'bedroom',
+      'washroom', 'bedroom', 'bedroom', 'washroom', 'outdoor', 'dining', 'dining', 'living',
+      'bedroom', 'bedroom', 'washroom', 'bedroom', 'bedroom', 'washroom', 'living', 'bedroom',
+      'bedroom', 'living', 'dining', 'outdoor', 'outdoor',
+    ],
   },
   {
     id: 'estate-10',
@@ -183,6 +192,12 @@ const PROPERTIES = [
       'Delhi/estate-10-by-tarika-793d04.jpg',
       'Delhi/estate-10-by-tarika-036fcf.webp',
     ],
+    imageCats: [
+      'outdoor', 'outdoor', 'outdoor', 'outdoor', 'outdoor', 'dining', 'living', 'outdoor',
+      'outdoor', 'outdoor', 'bedroom', 'bedroom', 'washroom', 'bedroom', 'bedroom', 'washroom',
+      'bedroom', 'bedroom', 'washroom', 'bedroom', 'bedroom', 'washroom', 'living', 'outdoor',
+      'dining', 'outdoor', 'outdoor', 'outdoor',
+    ],
   },
   {
     id: 'tarikas-seascapes',
@@ -262,6 +277,12 @@ const PROPERTIES = [
       'Goa/tarikas-seascapes-5fd21e.webp',
       'Goa/tarikas-seascapes-e34f07.webp',
       'Goa/tarikas-seascapes-75b43e.webp',
+    ],
+    imageCats: [
+      'outdoor', 'living', 'outdoor', 'living', 'living', 'outdoor', 'outdoor', 'living',
+      'dining', 'bedroom', 'bedroom', 'washroom', 'washroom', 'outdoor', 'living', 'bedroom',
+      'washroom', 'bedroom', 'dining', 'dining', 'bedroom', 'bedroom', 'washroom', 'washroom',
+      'living', 'outdoor',
     ],
   },
 ];

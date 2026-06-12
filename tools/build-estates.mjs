@@ -245,8 +245,18 @@ function estatePage(p) {
     const sizes = i === 0
       ? '(max-width: 480px) 94vw, (max-width: 900px) 94vw, 740px'
       : '(max-width: 480px) 94vw, (max-width: 900px) 46vw, 370px';
-    return `<img src="../${u}"${srcset(u, dim?.w)} sizes="${sizes}" alt="${esc(p.name)} — photograph ${i + 1}"${size} loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" data-idx="${i}" data-cursor />`;
+    const cat = p.imageCats?.[i] || '';
+    return `<img src="../${u}"${srcset(u, dim?.w)} sizes="${sizes}" alt="${esc(p.name)} — photograph ${i + 1}"${size} loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" data-idx="${i}" data-cat="${cat}"${i === 0 ? ' class="lead"' : ''} data-cursor />`;
   }).join('\n            ');
+
+  /* gallery filter chips — only categories that exist for this estate */
+  const CAT_LABELS = { outdoor: 'Outdoors', living: 'Living Spaces', bedroom: 'Bedrooms', dining: 'Dining & Kitchen', washroom: 'Washrooms' };
+  const catsPresent = Object.keys(CAT_LABELS).filter(c => (p.imageCats || []).includes(c));
+  const galleryTabs = catsPresent.length < 2 ? '' : `
+            <div id="pd-gallery-tabs" role="tablist" aria-label="Filter photographs">
+              <button class="gal-tab on" data-cat="all" role="tab" aria-selected="true" data-cursor>All &mdash; ${p.images.length}</button>
+              ${catsPresent.map(c => `<button class="gal-tab" data-cat="${c}" role="tab" aria-selected="false" data-cursor>${CAT_LABELS[c]} &mdash; ${p.imageCats.filter(x => x === c).length}</button>`).join('\n              ')}
+            </div>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -334,7 +344,7 @@ ${chrome.nav}
           </section>
 
           <section class="ep-section fi">
-            <p class="ep-sec-title">Gallery &mdash; ${p.images.length} photographs</p>
+            <p class="ep-sec-title">Gallery &mdash; ${p.images.length} photographs</p>${galleryTabs}
             <div id="pd-gallery">
             ${gallery}
             </div>

@@ -7,15 +7,43 @@ if (EP) {
   /* Booking widget: capacity cap, date floors, availability calendar */
   initBooking(EP);
 
-  /* Gallery → lightbox */
+  /* Gallery → lightbox (lightbox follows the active category filter) */
   const epImages = EP.images.map(img);
-  document.querySelectorAll('#pd-gallery img').forEach(el => {
+  const galTiles = [...document.querySelectorAll('#pd-gallery img')];
+  let galCat = 'all';
+  const visibleIdx = () => galTiles
+    .filter(t => galCat === 'all' || t.dataset.cat === galCat)
+    .map(t => +t.dataset.idx);
+  galTiles.forEach(el => {
     el.setAttribute('tabindex', '0');
     el.setAttribute('role', 'button');
-    const show = () => openLb(epImages, +el.dataset.idx, EP.name);
+    const show = () => {
+      const vis = visibleIdx();
+      openLb(vis.map(i => epImages[i]), vis.indexOf(+el.dataset.idx), EP.name);
+    };
     el.addEventListener('click', show);
     el.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); }
+    });
+  });
+
+  /* Category chips: hide non-matching tiles, move the editorial
+     lead span to the first visible tile */
+  document.querySelectorAll('#pd-gallery-tabs .gal-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      galCat = btn.dataset.cat;
+      document.querySelectorAll('#pd-gallery-tabs .gal-tab').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-selected', String(on));
+      });
+      let lead = true;
+      galTiles.forEach(t => {
+        const shown = galCat === 'all' || t.dataset.cat === galCat;
+        t.classList.toggle('gal-hide', !shown);
+        t.classList.toggle('lead', shown && lead);
+        if (shown) lead = false;
+      });
     });
   });
 
