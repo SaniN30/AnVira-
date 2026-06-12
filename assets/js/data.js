@@ -301,7 +301,7 @@ const WA_NUMBER = '919807087087';
 /* Google Apps Script web-app endpoint (enquiry log / waitlist / reviews).
    Empty string = logging disabled; every form still degrades gracefully.
    Set after the owner deploys tools/apps-script.gs (see tools/APPS_SCRIPT_SETUP.md). */
-const API_ENDPOINT = '';
+const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxUwzbs1yFACvgSbIxchCTxal1kzMYQBvh_tDQecTgqqSJ-5q9RhMWiITTYw8ZsTB42/exec';
 
 /* Fire-and-forget logger — never blocks or breaks the guest flow.
    Apps Script web apps require no CORS preflight when sent as text/plain. */

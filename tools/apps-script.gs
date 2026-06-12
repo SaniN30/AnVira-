@@ -7,7 +7,7 @@
    Deploy: see tools/APPS_SCRIPT_SETUP.md
    ════════════════════════════════════════════════════════════════ */
 
-var SHEET_ID = 'PASTE_SHEET_ID_HERE'; // from the sheet URL: docs.google.com/spreadsheets/d/<THIS>/edit
+var SHEET_ID = '1sKq1Ctziur_iRWnS10sXctoPXJUQkyeBlemavOzQt6c'; // from the sheet URL: docs.google.com/spreadsheets/d/<THIS>/edit
 
 function doPost(e) {
   try {
@@ -57,9 +57,19 @@ function handleReview(b) {
 
 /* ── helpers ───────────────────────────────────────────────────── */
 
+var HEADERS = {
+  Enquiries: ['Timestamp', 'Property', 'Check-in', 'Check-out', 'Guests', 'Name', 'Note', 'Status'],
+  Waitlist:  ['Timestamp', 'Estate', 'Name', 'WhatsApp', 'Consent'],
+  Reviews:   ['Timestamp', 'Property', 'Name', 'Phone', 'Occasion', 'Rating', 'Review', 'Status'],
+};
+
 function appendRow(tab, values) {
-  var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(tab);
-  if (!sheet) throw new Error('Missing tab: ' + tab);
+  var ss = SpreadsheetApp.openById(SHEET_ID);
+  var sheet = ss.getSheetByName(tab);
+  if (!sheet) {
+    sheet = ss.insertSheet(tab);
+    sheet.appendRow(HEADERS[tab]);
+  }
   sheet.appendRow(values);
 }
 
