@@ -47,6 +47,7 @@
   const sendBtn = document.getElementById('wl-send');
   const doneEl  = document.getElementById('wl-done');
   let estate = '';
+  let wlRelease = null;
 
   function open(id, label) {
     estate = id;
@@ -55,9 +56,13 @@
     doneEl.style.display = 'none';
     errEl.textContent = '';
     wrap.classList.add('open');
+    wlRelease = trapFocus(wrap);
     nameEl.focus();
   }
-  function close() { wrap.classList.remove('open'); }
+  function close() {
+    wrap.classList.remove('open');
+    if (wlRelease) { wlRelease(); wlRelease = null; }
+  }
 
   document.querySelectorAll('[data-waitlist]').forEach(btn => {
     btn.addEventListener('click', e => {

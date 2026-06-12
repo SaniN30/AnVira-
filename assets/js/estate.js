@@ -10,7 +10,13 @@ if (EP) {
   /* Gallery → lightbox */
   const epImages = EP.images.map(img);
   document.querySelectorAll('#pd-gallery img').forEach(el => {
-    el.addEventListener('click', () => openLb(epImages, +el.dataset.idx, EP.name));
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    const show = () => openLb(epImages, +el.dataset.idx, EP.name);
+    el.addEventListener('click', show);
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(); }
+    });
   });
 
   /* Hero name — word stagger (40ms per word, claude.md §3) */

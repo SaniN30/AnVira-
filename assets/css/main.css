@@ -516,13 +516,13 @@
       position: absolute; bottom: 2.5rem;
       left: clamp(1.5rem,5vw,3.5rem); right: clamp(1.5rem,5vw,3.5rem);
     }
-    #pd-hero-tag  { font-size: 9px; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: .5rem; }
+    #pd-hero-tag  { font-size: 9px; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.78); margin-bottom: .5rem; }
     #pd-hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.2rem,5.5vw,5rem); font-weight: 300; font-style: italic;
       color: #FAF8F3; line-height: 1.1;
     }
-    #pd-hero-loc { font-size: 10.5px; letter-spacing: .26em; color: rgba(255,255,255,.5); margin-top: .5rem; }
+    #pd-hero-loc { font-size: 10.5px; letter-spacing: .26em; color: rgba(255,255,255,.78); margin-top: .5rem; }
 
     #pd-body { padding: clamp(2.5rem,5vh,4rem) clamp(1.5rem,5vw,3.5rem); max-width: 1440px; margin: 0 auto; }
 

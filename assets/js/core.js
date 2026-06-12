@@ -44,11 +44,17 @@ onScroll();
 const burger = document.getElementById('burger');
 const menu   = document.getElementById('menu');
 let menuOpen = false;
+let releaseMenuTrap = null;
 burger.addEventListener('click', () => {
   menuOpen = !menuOpen;
   burger.classList.toggle('open', menuOpen);
   menu.classList.toggle('open', menuOpen);
   document.body.style.overflow = menuOpen ? 'hidden' : '';
+  if (menuOpen) releaseMenuTrap = trapFocus(menu);
+  else if (releaseMenuTrap) { releaseMenuTrap(); releaseMenuTrap = null; }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && menuOpen) burger.click();
 });
 menu.querySelectorAll('.mlink').forEach(a => {
   a.addEventListener('click', () => {
@@ -98,6 +104,30 @@ if (floatWa && heroEl) {
     if (stickyBk) stickyBk.classList.toggle('show', leaving);
   }, { threshold: 0.15 });
   waObs.observe(heroEl);
+}
+
+/* ── Focus trap for overlays (menu, lightbox, modals) ─────
+   Call on open; invoke the returned function on close to
+   release the trap and restore focus to the opener. */
+function trapFocus(container) {
+  const opener = document.activeElement;
+  const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  const focusables = () => [...container.querySelectorAll(sel)].filter(el => el.offsetParent !== null || container.contains(el));
+  const first = focusables()[0];
+  if (first) first.focus();
+  function onKey(e) {
+    if (e.key !== 'Tab') return;
+    const els = focusables();
+    if (!els.length) return;
+    const a = els[0], z = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+  document.addEventListener('keydown', onKey);
+  return () => {
+    document.removeEventListener('keydown', onKey);
+    if (opener && opener.focus) opener.focus();
+  };
 }
 
 function toISO(dt) {

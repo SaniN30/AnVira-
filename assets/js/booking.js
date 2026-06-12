@@ -95,10 +95,15 @@ function openMpc() {
   mpcName.value = enquiry.name;
   refreshPreview();
   mpcWrap.classList.add('open');
+  mpcRelease = trapFocus(mpcWrap);
   mpcName.focus();
 }
 
-function closeMpc() { mpcWrap.classList.remove('open'); }
+let mpcRelease = null;
+function closeMpc() {
+  mpcWrap.classList.remove('open');
+  if (mpcRelease) { mpcRelease(); mpcRelease = null; }
+}
 
 bwForm.addEventListener('submit', e => {
   e.preventDefault();

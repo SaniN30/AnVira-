@@ -9,7 +9,7 @@ const lbDots  = document.getElementById('lb-dots');
 const lbClose = document.getElementById('lb-close');
 const lbPrev  = document.getElementById('lb-prev');
 const lbNext  = document.getElementById('lb-next');
-let lbImages = [], lbIdx = 0, lbName = '';
+let lbImages = [], lbIdx = 0, lbName = '', lbRelease = null;
 
 function buildLbDots() {
   const count = Math.min(lbImages.length, 12);
@@ -31,7 +31,7 @@ function showLbImg(direction) {
   lbImg.style.transform = direction === 1 ? 'translateX(18px)' : direction === -1 ? 'translateX(-18px)' : 'none';
   setTimeout(() => {
     lbImg.src = lbImages[lbIdx];
-    lbImg.alt = lbName;
+    lbImg.alt = `${lbName} — photograph ${lbIdx + 1} of ${lbImages.length}`;
     lbImg.style.transition = 'opacity .28s ease, transform .35s var(--lux)';
     lbImg.style.opacity = '1';
     lbImg.style.transform = 'translateX(0)';
@@ -48,11 +48,13 @@ function openLb(images, idx, name) {
   updateLbUI();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
+  lbRelease = trapFocus(lb);
 }
 
 function closeLb() {
   lb.classList.remove('open');
   document.body.style.overflow = '';
+  if (lbRelease) { lbRelease(); lbRelease = null; }
 }
 
 function lbGo(dir) {
