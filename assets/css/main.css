@@ -143,27 +143,7 @@
       transform: scaleX(0); transform-origin: left;
     }
 
-    #nav-logo { font-size: 1.22rem; position: relative; display: inline-block; }
-    /* brand logo replaces the wordmark; same hover + scroll-underline behavior */
-    #nav-logo-img {
-      display: block; height: 42px; width: auto;
-      transition: opacity .3s ease, filter .45s ease;
-    }
-    #nav-logo:hover #nav-logo-img { opacity: .78; }
-    #nav-logo > .av-line { bottom: -5px; }
-    /* Estate pages: the nav floats over the hero photograph, so the
-       logo renders white (with a soft shadow for bright skies) until
-       the nav gains its solid backdrop on scroll — then brand colors. */
-    body[data-estate] #nav:not(.scrolled) #nav-logo-img {
-      filter: brightness(0) invert(1) drop-shadow(0 1px 8px rgba(24,24,26,.45));
-    }
-    /* burger needs the same treatment to stay visible over the photo */
-    body[data-estate] #nav:not(.scrolled) #burger .bl {
-      background: rgba(250,248,243,.9);
-    }
-    /* …but revert to brand colors while the light full-screen menu is open */
-    body[data-estate] #nav:not(.scrolled):has(#burger.open) #nav-logo-img { filter: none; }
-    body[data-estate] #nav:not(.scrolled) #burger.open .bl { background: rgba(24,24,26,0.5); }
+    #nav-logo { font-size: 1.22rem; }
 
     #burger {
       background: none; border: none;
@@ -1059,7 +1039,6 @@
     /* ── Mobile ≤768px ────────────────────────────────────── */
     @media (max-width: 768px) {
       #nav { padding: 1.1rem 1.5rem; }
-      #nav-logo-img { height: 35px; }
 
       /* Accordion: vertical stack */
       #accordion {
