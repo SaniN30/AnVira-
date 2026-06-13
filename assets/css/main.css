@@ -79,7 +79,10 @@
     /* ── Intro (brand logo reveal on cream) ─────────────────── */
     #intro {
       position: fixed; inset: 0; z-index: 200;
-      background: var(--bg);
+      background:
+        radial-gradient(460px circle at var(--mx, 50%) var(--my, 44%),
+                        rgba(203,160,99,.16), transparent 62%),
+        radial-gradient(circle at 50% 42%, #2b2621 0%, #15120e 74%);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       transition: opacity .9s var(--lux);
@@ -103,15 +106,16 @@
                   letter-spacing 1.5s var(--lux), padding-left 1.5s var(--lux),
                   filter 1.1s ease;
     }
-    #intro-logo .av-vira { transition: text-shadow .6s ease; }
+    #intro-logo .av-an  { color: #F1EADC; }
+    #intro-logo .av-vira { color: #CBA063; transition: text-shadow .6s ease; }
     #intro-logo.show { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); letter-spacing: .12em; padding-left: .12em; }
-    #intro-logo.show .av-vira { text-shadow: 0 0 26px rgba(176,141,87,.28); }
+    #intro-logo.show .av-vira { text-shadow: 0 0 34px rgba(203,160,99,.5); }
     #intro-logo.hide { opacity: 0; transform: translateY(-16px) scale(1.03); filter: blur(2px); letter-spacing: .34em; padding-left: .34em; }
 
     #intro-skip {
       margin-top: 2.2rem;
       font-size: 9px; letter-spacing: .34em; text-transform: uppercase;
-      color: var(--faint);
+      color: rgba(241,234,220,.6);
       opacity: 0; transition: opacity .8s ease 1.4s;
     }
     #intro-logo.show ~ #intro-skip { opacity: .8; }
@@ -119,7 +123,7 @@
 
     #intro-line {
       position: absolute; bottom: 0; left: 0;
-      height: 1px; background: var(--gold); opacity: .4;
+      height: 1px; background: linear-gradient(90deg, transparent, #CBA063 50%, transparent); opacity: .65;
       width: 0; transition: width 1.9s var(--lux) .1s;
     }
     #intro-line.full { width: 100%; }
@@ -265,7 +269,15 @@
       padding-bottom: 2rem;
     }
     #hwm { text-align: center; will-change: transform, opacity; }
-    #hwm .av { font-size: clamp(4rem, 11vw, 9.5rem); letter-spacing: .065em; }
+    /* Hero wordmark base lives here (wins specificity over #brand-logo);
+       state classes (.drawn/.swaying) are applied via #brand-logo below.
+       padding-left compensates the trailing letter-spacing so the
+       wordmark stays optically centred. */
+    #hwm .av {
+      font-size: clamp(3.6rem, 11vw, 8.4rem);
+      white-space: nowrap;
+      letter-spacing: .22em; padding-left: .22em;
+    }
     #hwm .tagline {
       font-family: 'DM Sans', sans-serif; font-size: 10px;
       letter-spacing: .48em; text-transform: uppercase;
@@ -1003,37 +1015,35 @@
     }
     .fc-gst { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); margin-top: 4px; }
 
-    /* ── Brand wordmark (hero centerpiece) ──────────────────── */
+    /* ── Brand wordmark (hero centerpiece) — animation states ── */
     #brand-logo {
-      font-size: clamp(4.2rem, 13vw, 9.5rem);
       line-height: 1;
       display: block;
-      text-align: center;
       margin: 0 auto;
       cursor: pointer;
       user-select: none;
       opacity: 0;
-      letter-spacing: .26em;
       transform: translateY(16px) scale(0.97);
-      transition: opacity 1.2s ease, transform 1.3s var(--lux),
-                  letter-spacing 1.3s var(--lux), filter 0.7s ease;
       transform-origin: center bottom;
+      transition: opacity 1.2s ease, transform 1.3s var(--lux),
+                  letter-spacing 1.3s var(--lux), padding-left 1.3s var(--lux),
+                  filter 0.7s ease;
     }
     #brand-logo .av-an,
     #brand-logo .av-vira { color: var(--text); }
-    #brand-logo.drawn { opacity: 1; transform: translateY(0) scale(1); letter-spacing: .12em; }
-    #brand-logo:hover {
-      transform: scale(1.03);
-      filter: drop-shadow(0 14px 30px rgba(120,108,80,0.28));
+    #brand-logo.drawn {
+      opacity: 1; transform: translateY(0) scale(1);
+      letter-spacing: .1em; padding-left: .1em;
+    }
+    #brand-logo.drawn:hover {
+      filter: drop-shadow(0 16px 34px rgba(120,108,80,0.3));
+      letter-spacing: .13em; padding-left: .13em;
     }
     #brand-logo.swaying { animation: logoBreathe 9s ease-in-out 2s infinite; }
     #brand-logo.swaying:hover { animation-play-state: paused; }
     @keyframes logoBreathe {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-7px); }
-    }
-    @media (max-width: 768px) {
-      #brand-logo { font-size: clamp(3rem, 19vw, 5rem); letter-spacing: .18em; }
     }
 
     /* ── Scroll progress bar ───────────────────────────────── */
@@ -1131,7 +1141,7 @@
       .acol { height: 240px; }
       .stats { gap: .75rem; }
       .sn { font-size: 2.2rem; }
-      #hwm .av { font-size: clamp(3rem, 14vw, 5rem); }
+      #hwm .av { font-size: clamp(3rem, 14vw, 5rem); letter-spacing: .14em; padding-left: .14em; }
       .cards { grid-template-columns: 1fr; }
       #pd-gallery { grid-template-columns: 1fr; }
       #pd-gallery img.lead { grid-column: span 1; grid-row: span 1; }

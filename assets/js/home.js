@@ -42,8 +42,11 @@ if (noMotion) {
   const introStage = document.getElementById('intro-stage');
   if (introStage) {
     let raf = 0;
+    let px = 50, py = 44;
     const onMove = e => {
       if (introEnded) return;
+      px = (e.clientX / window.innerWidth) * 100;
+      py = (e.clientY / window.innerHeight) * 100;
       const x = (e.clientX / window.innerWidth - 0.5);
       const y = (e.clientY / window.innerHeight - 0.5);
       if (raf) return;
@@ -51,10 +54,16 @@ if (noMotion) {
         raf = 0;
         introStage.style.transform =
           `translate(${x * 26}px, ${y * 18}px) rotateX(${-y * 5}deg) rotateY(${x * 6}deg)`;
+        introEl.style.setProperty('--mx', px + '%');
+        introEl.style.setProperty('--my', py + '%');
       });
     };
     introEl.addEventListener('pointermove', onMove);
-    introEl.addEventListener('pointerleave', () => { introStage.style.transform = ''; });
+    introEl.addEventListener('pointerleave', () => {
+      introStage.style.transform = '';
+      introEl.style.setProperty('--mx', '50%');
+      introEl.style.setProperty('--my', '44%');
+    });
   }
 
   introEl.addEventListener('click', () => endIntro(true));
