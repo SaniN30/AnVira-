@@ -6,7 +6,7 @@
 
 /* Stamped by tools/build-estates.mjs from a hash of css/js contents —
    any asset change produces a new cache and retires the old one. */
-const VERSION = 'anvira-3f6b1e8c0d'; /* BUILD_VERSION */
+const VERSION = 'anvira-5a9d2f70c4'; /* BUILD_VERSION */
 
 const PRECACHE = [
   './',
@@ -22,7 +22,6 @@ const PRECACHE = [
   './assets/js/gallery.js',
   './assets/js/estate.js',
   './assets/js/listing.js',
-  './brand/logo-transparent.png',
 ];
 
 self.addEventListener('install', e => {

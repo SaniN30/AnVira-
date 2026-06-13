@@ -29,18 +29,34 @@ if (noMotion) {
   page.classList.add('show');
   window.dispatchEvent(new CustomEvent('anvira:enter'));
 } else {
-  // Wait for the logo to be fully decoded so it never pops in,
-  // but never hold the page hostage if the image stalls.
-  const logoReady = introLogo.decode
-    ? introLogo.decode().catch(() => {})
-    : Promise.resolve();
-  Promise.race([logoReady, new Promise(r => setTimeout(r, 1200))]).then(() => {
+  // Small beat before the wordmark settles in; never blocks the page.
+  Promise.race([Promise.resolve(), new Promise(r => setTimeout(r, 300))]).then(() => {
     requestAnimationFrame(() => {
       introLogo.classList.add('show');
       iLine.classList.add('full');
     });
-    introTimer = setTimeout(() => endIntro(false), 2400);
+    introTimer = setTimeout(() => endIntro(false), 2800);
   });
+
+  // Interactive: the wordmark drifts gently toward the pointer until you enter.
+  const introStage = document.getElementById('intro-stage');
+  if (introStage) {
+    let raf = 0;
+    const onMove = e => {
+      if (introEnded) return;
+      const x = (e.clientX / window.innerWidth - 0.5);
+      const y = (e.clientY / window.innerHeight - 0.5);
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        introStage.style.transform =
+          `translate(${x * 26}px, ${y * 18}px) rotateX(${-y * 5}deg) rotateY(${x * 6}deg)`;
+      });
+    };
+    introEl.addEventListener('pointermove', onMove);
+    introEl.addEventListener('pointerleave', () => { introStage.style.transform = ''; });
+  }
+
   introEl.addEventListener('click', () => endIntro(true));
   window.addEventListener('keydown', function skipOnce(e) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {

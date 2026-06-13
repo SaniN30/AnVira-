@@ -45,7 +45,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&family=Spectral:ital,wght@1,300&display=swap" rel="stylesheet" />
-  <link rel="preload" as="image" href="./brand/logo-transparent.png" />
 
   <link rel="stylesheet" href="./assets/css/main.css" />
 </head>
@@ -56,8 +55,12 @@
 
   <!-- Intro overlay -->
   <div id="intro" aria-hidden="true">
-    <div id="intro-logo" class="av" aria-label="AnVira"><span class="av-an">An</span><span class="av-vira">Vira</span></div>
-    <span id="intro-skip">Click to enter</span>
+    <div id="intro-stage">
+      <div id="intro-logo" class="av" aria-label="AnVira">
+        <span class="av-an">An</span><span class="av-vira">Vira</span>
+      </div>
+      <span id="intro-skip">Click to enter</span>
+    </div>
     <div id="intro-line"></div>
   </div>
 
@@ -90,10 +93,7 @@
       <!-- Brand logo — parallaxes on scroll -->
       <div id="hwrap">
         <div id="hwm">
-          <img id="brand-logo"
-               src="./brand/logo-transparent.png"
-               alt="AnVira"
-               draggable="false" />
+          <div id="brand-logo" class="av" aria-label="AnVira"><span class="av-an">An</span><span class="av-vira">Vira</span></div>
           <p class="tagline" style="opacity:0;transition:opacity 0.8s ease 0.7s" id="logo-tagline">Private Estate Curation &mdash; India</p>
         </div>
       </div>
