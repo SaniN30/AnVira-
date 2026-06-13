@@ -88,7 +88,7 @@
     #intro.out { opacity: 0; pointer-events: none; }
 
     #intro-logo {
-      width: clamp(190px, 26vw, 310px); height: auto;
+      font-size: clamp(2.8rem, 8vw, 5.2rem); line-height: 1;
       user-select: none;
       opacity: 0; transform: translateY(20px) scale(.96);
       filter: blur(6px);
