@@ -119,7 +119,6 @@ const chrome = {
       </div>
       <div>
         <div class="fc">&copy; 2026 AnVira. All rights reserved.</div>
-        <div class="fc-gst">GSTIN: To be updated before launch</div>
       </div>
     </footer>
 
@@ -775,14 +774,15 @@ const LEGAL_PAGES = [
   {
     slug: 'terms',
     title: 'Terms of Stay',
-    intro: 'Plain terms for a direct booking — what you can expect of us, and what we ask of you.',
+    intro: 'Please read these terms before confirming your booking with AnVira.',
     sections: [
-      ['Booking & confirmation', `A booking is confirmed once dates are agreed on WhatsApp and the advance is received. The confirmation message — with your dates, tariff, and inclusions — is the record of our agreement.`],
-      ['Tariff & payment', `Tariffs are quoted per stay and include what the confirmation lists. Anything arranged additionally (chef meals, bonfires, excursions, transfers) is settled directly at the estate before check-out.`],
-      ['Your stay', `Guest counts must match the booking — our estates are staffed and provisioned for the number agreed. House quiet hours and pool timings are noted on each estate's pre-arrival page. The guest who books is responsible for the conduct of the party and for any damage beyond normal wear.`],
-      ['Our responsibilities', `A clean, safe, staffed estate matching its listing; honest photography; a reply within 2 hours, 9am–9pm IST. If something at the estate falls short, tell the caretaker first — most things are fixed within the hour.`],
-      ['Liability', `Stays are at the guest's own risk in respect of personal belongings and activities undertaken off the estate. Nothing in these terms limits rights you hold under Indian consumer law.`],
-      ['Disputes', `We resolve issues directly and in good faith. These terms are governed by the laws of India.`],
+      ['1. Booking & Payment', `A 60% advance payment is required to confirm the booking. The remaining balance must be paid upon check-in. All payments are non-refundable and non-cancellable.`],
+      ['2. Optional Add-On Services', `Bonfire, outdoor movie screening, extra bed, tea/coffee, and BBQ services are chargeable add-ons and not included in the standard package.`],
+      ['3. Check-In & Check-Out', `Check-in: 2:00 PM | Check-out: 11:00 AM. Early check-in or late check-out is subject to availability and may incur additional charges.`],
+      ['4. Guest Conduct & House Rules', `Guests must maintain cleanliness and respect the property. Smoking is prohibited indoors. Loud music or disturbances after 10:00 PM are not permitted. Any damage to property will be charged to the guest.`],
+      ['5. Liability', `Villa AnVira is not responsible for loss, theft, or damage to personal belongings. Guests are responsible for their own safety and that of accompanying children.`],
+      ['6. Additional Guests', `Only registered guests are allowed on the premises. Additional visitors must be approved in advance and may incur extra charges.`],
+      ['7. Pets', `Pets are allowed on the property. Guests must ensure their pets do not cause damage or disturbance to other guests.`],
     ],
   },
   {
