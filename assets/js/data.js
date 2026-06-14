@@ -300,20 +300,12 @@ const AVAILABILITY = {
    Guests can join a notify-me waitlist; rows land in the Waitlist sheet tab. */
 const COMING_SOON = [
   {
-    id: 'coming-soon-rajasthan',
-    name: 'A Heritage Haveli',
-    loc: 'Rajasthan',
-    region: 'Rajasthan',
-    tag: 'Under Curation',
-    desc: 'A restored haveli with a courtyard pool and desert-facing terraces. Currently being prepared to AnVira standards.',
-  },
-  {
-    id: 'coming-soon-rishikesh',
-    name: 'A Riverside Retreat',
-    loc: 'Rishikesh, Uttarakhand',
+    id: 'coming-soon-mukteshwar',
+    name: 'An Orchard House',
+    loc: 'Mukteshwar, Uttarakhand',
     region: 'Uttarakhand',
     tag: 'Under Curation',
-    desc: 'A Ganges-facing retreat amid sal forest — yoga deck, river deck, full staff. Opening to enquiries soon.',
+    desc: 'A Himalayan-facing home set in apple and apricot orchards at 2,200 metres — wood fires, glass-walled views of the Nanda Devi range. Currently under development to AnVira standards.',
   },
 ];
 
