@@ -87,9 +87,6 @@ Motion: unhurried but precise — Ken Burns on heroes, 40ms word stagger, fade-u
 
 These are required before full launch — placeholders are in place in the code:
 
-- [ ] Anchor prices per property (renders "On Request" until set)
-- [ ] Caretaker names, photos, and one-paragraph bios (3 properties)
-- [ ] GSTIN for footer
 - [ ] Google Sheet URL + Apps Script authorization (`tools/APPS_SCRIPT_SETUP.md`)
 - [ ] Cancellation / privacy / terms text approval
 
