@@ -6,7 +6,7 @@
 
 /* Stamped by tools/build-estates.mjs from a hash of css/js contents —
    any asset change produces a new cache and retires the old one. */
-const VERSION = 'anvira-4c80f0ed52'; /* BUILD_VERSION */
+const VERSION = 'anvira-6cf1b134fd'; /* BUILD_VERSION */
 
 const PRECACHE = [
   './',

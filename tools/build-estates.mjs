@@ -471,7 +471,7 @@ function listingPage() {
 
   const comingSoon = COMING_SOON.map(c => `
         <div class="prop-card prop-card-soon" data-region="${esc(c.region)}">
-          <div class="ci-wrap ci-soon" aria-hidden="true"><div class="jaali"></div></div>
+          <div class="ci-wrap ci-soon" aria-hidden="true">${c.image ? `<img class="ci-soon-img" src="../${esc(c.image)}" alt="" />` : ''}<div class="jaali"></div></div>
           <div class="ctag">${esc(c.tag)}</div>
           <div class="crow">
             <div><div class="cname">${esc(c.name)}</div><div class="cloc">${esc(c.loc)}</div></div>
