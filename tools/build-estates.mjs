@@ -860,7 +860,7 @@ writeFileSync(join(ROOT, 'sitemap.xml'),
 console.log('built sitemap.xml');
 
 writeFileSync(join(ROOT, 'robots.txt'),
-  `User-agent: *\nAllow: /\nDisallow: /arrive/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+  `User-agent: *\nAllow: /\nDisallow: /arrive/\nDisallow: /reviews/submit.html\nDisallow: /presentation/\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 console.log('built robots.txt');
 
 /* ── Stamp the service-worker cache version from asset contents so every
