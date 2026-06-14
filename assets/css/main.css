@@ -1327,8 +1327,8 @@
     }
     .prop-card-soon .ci-soon .ci-soon-img {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; filter: blur(10px) brightness(.72) saturate(.7);
-      transform: scale(1.08); /* hides blur edge artefacts */
+      object-fit: cover; filter: blur(22px) brightness(.65) saturate(.6);
+      transform: scale(1.12); /* hides blur edge artefacts */
     }
     .prop-card-soon .ci-soon .jaali { position: absolute; inset: 0; opacity: .45; }
     .prop-card-soon .cprice { color: var(--gold); }

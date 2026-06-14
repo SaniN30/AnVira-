@@ -306,7 +306,7 @@ const COMING_SOON = [
     region: 'Uttarakhand',
     tag: 'Under Curation',
     desc: 'A Himalayan-facing home set in apple and apricot orchards at 2,200 metres — wood fires, glass-walled views of the Nanda Devi range. Currently under development to AnVira standards.',
-    image: 'chail/vansh-batra-chail-15789f-1280w.webp',
+    image: 'brand/mukteshwar-placeholder.svg',
   },
 ];
 

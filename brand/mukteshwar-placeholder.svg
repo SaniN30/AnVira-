@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#2C3A52"/>
+      <stop offset="45%"  stop-color="#4A6080"/>
+      <stop offset="75%"  stop-color="#8A9BAD"/>
+      <stop offset="100%" stop-color="#C4B99A"/>
+    </linearGradient>
+    <linearGradient id="range-far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#6B7F94" stop-opacity=".85"/>
+      <stop offset="100%" stop-color="#9BAAB8" stop-opacity=".6"/>
+    </linearGradient>
+    <linearGradient id="range-mid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#3D5240"/>
+      <stop offset="100%" stop-color="#5A7050"/>
+    </linearGradient>
+    <linearGradient id="range-near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#2A3C2C"/>
+      <stop offset="100%" stop-color="#1A2A1C"/>
+    </linearGradient>
+    <linearGradient id="mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#C4B99A" stop-opacity="0"/>
+      <stop offset="60%"  stop-color="#D6CEB8" stop-opacity=".45"/>
+      <stop offset="100%" stop-color="#E6DCC4" stop-opacity=".7"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#EEF0F2"/>
+      <stop offset="100%" stop-color="#C8CDD2" stop-opacity=".7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sky -->
+  <rect width="800" height="500" fill="url(#sky)"/>
+
+  <!-- distant snow-capped peaks (Nanda Devi silhouette suggestion) -->
+  <path d="M0,240 L60,160 L100,180 L150,110 L200,145 L240,90 L290,130 L330,95 L370,115 L420,80 L470,118 L510,88 L560,125 L600,100 L650,140 L700,115 L740,150 L800,130 L800,260 L0,260Z" fill="url(#range-far)"/>
+
+  <!-- snow caps -->
+  <path d="M150,110 L170,128 L190,115 L210,130 L240,90 L260,112 L280,102 L290,130 L310,115 L330,95 L350,108 L370,115 L400,88 L420,80 L440,96 L460,86 L470,118 L490,100 L510,88 L530,108 L560,125 L580,110 L600,100 L620,118 L640,105 L650,140 L670,125 L700,115 L720,132 Z" fill="url(#snow)" opacity=".6"/>
+
+  <!-- mid-range forested ridge -->
+  <path d="M0,300 L30,265 L70,275 L110,248 L160,270 L200,245 L250,268 L300,250 L360,272 L410,255 L460,275 L510,258 L560,278 L620,260 L670,280 L720,265 L770,278 L800,268 L800,360 L0,360Z" fill="url(#range-mid)"/>
+
+  <!-- near foreground forest -->
+  <path d="M0,380 L40,345 L80,360 L130,338 L180,355 L230,340 L290,358 L350,342 L400,360 L450,344 L510,362 L570,346 L630,365 L680,350 L730,368 L800,352 L800,500 L0,500Z" fill="url(#range-near)"/>
+
+  <!-- atmospheric mist layer -->
+  <rect width="800" height="500" fill="url(#mist)"/>
+</svg>
