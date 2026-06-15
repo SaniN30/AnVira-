@@ -1117,6 +1117,20 @@
     @media (max-width: 768px) {
       #nav { padding: 1.1rem 1.5rem; }
 
+      /* ── Menu: slide LEFT→RIGHT on mobile ── */
+      #menu {
+        left: 0; right: auto;
+        width: min(85vw, 340px);
+        border-left: none;
+        border-right: 1px solid var(--rule);
+        transform: translateX(-100%);
+        padding: 5rem 2rem 2.5rem;
+        box-shadow: 8px 0 48px rgba(24,24,26,.1);
+      }
+      #menu.open { transform: translateX(0); }
+      .mlink { font-size: clamp(1.7rem, 7vw, 2.4rem); }
+      #menu-foot { left: 2rem; right: auto; bottom: 2rem; }
+
       /* Accordion: vertical stack */
       #accordion {
         flex-direction: column;
@@ -1125,9 +1139,7 @@
         padding: 0 clamp(1rem, 4vw, 1.5rem);
       }
       .acol { height: 280px; border-radius: 8px; }
-      /* No image zoom on touch (no hover) */
       .acol:hover .acol-imgs { transform: none; }
-      /* Info, dots, counter always visible on mobile */
       .acol-info {
         opacity: 1 !important;
         transform: translateY(0) !important;
@@ -1137,7 +1149,6 @@
       .acol-dots    { opacity: 1 !important; }
       .acol-counter { opacity: 1 !important; }
       .acol-vert    { display: none; }
-      /* Gradient: denser on mobile for legibility */
       .acol-g {
         background: linear-gradient(
           to top,
@@ -1162,6 +1173,29 @@
       /* Inquiry: stack */
       #inquiry { flex-direction: column; }
       footer { flex-direction: column; gap: 1rem; }
+
+      /* Lead popup: full-width on mobile */
+      #lead-popup {
+        width: 94vw;
+        padding: 2.4rem 1.5rem 1.8rem;
+        border-radius: 6px;
+      }
+      #lead-popup .lp-title { font-size: 1.5rem; }
+
+      /* Availability calendar: single column on mobile */
+      .avail-cal-months { flex-direction: column; }
+      .avail-cal-month { min-width: unset; max-width: 100%; }
+      .avail-cal-day { font-size: .68rem; }
+
+      /* Booking widget: single column row on mobile */
+      .bw-row { grid-template-columns: 1fr; gap: 0; }
+
+      /* Google rating badge: compact */
+      .google-rating-badge { padding: .7rem 1rem; gap: .7rem; }
+      .grb-num { font-size: 1.2rem; }
+
+      /* Guest chargeable note: smaller text */
+      .bw-charge-note { font-size: 10px; }
     }
 
     /* ── Small phone ≤480px ───────────────────────────────── */
@@ -1177,6 +1211,14 @@
       .pd-spec-n { font-size: 1.7rem; }
       .pd-amen-tag { padding: 8px 14px; font-size: 10px; }
       .cta { width: 100%; text-align: center; padding: 16px 20px; }
+
+      /* Booking widget full-width CTA */
+      #bw { padding: 1.4rem 1.1rem 1.3rem; }
+      #bw .bw-title { font-size: 1rem; margin-bottom: 1rem; padding-bottom: .8rem; }
+
+      /* Calendar nav buttons: full width */
+      .avail-cal-nav { justify-content: space-between; }
+      .avail-cal-nav-btn { flex: 1; text-align: center; }
     }
 
     /* ════════════════════════════════════════════════════════════
@@ -1290,8 +1332,16 @@
     }
     @media (max-width: 768px) {
       .ep-hero { height: 72svh; min-height: 420px; }
+      .ep-hero-caption { padding: 0 1.2rem 2rem; }
       .lg-grid { grid-template-columns: 1fr; }
       .ep-stats { gap: var(--space-3); }
+      .ep-wrap { padding: var(--space-4) var(--pad-x); }
+      .ep-aside { max-width: 100%; }
+      #bw .bw-row { grid-template-columns: 1fr; }
+      .avail-cal-months { flex-direction: column; }
+      .avail-cal-month { min-width: unset; max-width: 100%; }
+      .ep-reviews { display: flex; flex-direction: column; gap: 1rem; }
+      .testi-card { padding: 1.4rem 1.2rem; }
     }
 
     /* ════════════════════════════════════════════════════════════
