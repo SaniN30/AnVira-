@@ -55,6 +55,73 @@ if (EP) {
     heroName.innerHTML = wordSpans.join(' ');
   }
 
+  /* ── Share button (Task 6) ───────────────────────────────── */
+  const heroCaption = document.querySelector('.ep-hero-caption');
+  if (heroCaption) {
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'ep-share-btn';
+    shareBtn.setAttribute('aria-label', 'Share this property');
+    shareBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> Share';
+
+    const copied = document.createElement('span');
+    copied.className = 'ep-share-copied';
+    copied.textContent = 'Link copied';
+
+    heroCaption.appendChild(shareBtn);
+    heroCaption.appendChild(copied);
+
+    shareBtn.addEventListener('click', async () => {
+      const shareData = {
+        title: EP.name + ' — AnVira Private Estates',
+        text: EP.desc,
+        url: location.href,
+      };
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        try { await navigator.share(shareData); } catch (_) {}
+      } else {
+        navigator.clipboard.writeText(location.href).then(() => {
+          copied.classList.add('show');
+          setTimeout(() => copied.classList.remove('show'), 2000);
+        });
+      }
+    });
+  }
+
+  /* ── Gallery touch swipe (Task 5) ───────────────────────── */
+  const galGrid = document.getElementById('pd-gallery');
+  if (galGrid) {
+    let swipeStartX = null, swipeStartY = null;
+    galGrid.addEventListener('touchstart', e => {
+      swipeStartX = e.touches[0].clientX;
+      swipeStartY = e.touches[0].clientY;
+    }, { passive: true });
+    galGrid.addEventListener('touchend', e => {
+      if (swipeStartX === null) return;
+      const dx = e.changedTouches[0].clientX - swipeStartX;
+      const dy = e.changedTouches[0].clientY - swipeStartY;
+      /* Only act on clearly horizontal swipes */
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        const vis = galTiles.filter(t => !t.classList.contains('gal-hide'));
+        if (!vis.length) return;
+        /* Find the most visible tile and open lightbox at that position */
+        const midX = window.innerWidth / 2;
+        const midY = window.innerHeight / 2;
+        const center = vis.reduce((best, t) => {
+          const r = t.getBoundingClientRect();
+          const score = Math.abs(r.left + r.width / 2 - midX) + Math.abs(r.top + r.height / 2 - midY);
+          return score < best.score ? { el: t, score } : best;
+        }, { el: vis[0], score: Infinity }).el;
+        const visIdx = visibleIdx();
+        const startIdx = visIdx.indexOf(+center.dataset.idx);
+        const target = dx < 0
+          ? Math.min(startIdx + 1, visIdx.length - 1)
+          : Math.max(startIdx - 1, 0);
+        openLb(visIdx.map(i => epImages[i]), target, EP.name);
+      }
+      swipeStartX = null; swipeStartY = null;
+    }, { passive: true });
+  }
+
   /* ── Local guide map links ───────────────────────────────── */
   if (EP.localGuide) {
     const lgItems = document.querySelectorAll('.lg-item');
