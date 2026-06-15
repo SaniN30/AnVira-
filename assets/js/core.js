@@ -40,28 +40,38 @@ function onScroll() {
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
-/* ── Burger / menu ──────────────────────────────────────── */
+/* ── Burger / menu (right-side slide panel) ─────────────── */
 const burger = document.getElementById('burger');
 const menu   = document.getElementById('menu');
+
+/* Inject the dim-scrim behind the panel */
+const scrim = document.createElement('div');
+scrim.id = 'menu-scrim';
+document.body.appendChild(scrim);
+
 let menuOpen = false;
 let releaseMenuTrap = null;
-burger.addEventListener('click', () => {
-  menuOpen = !menuOpen;
-  burger.classList.toggle('open', menuOpen);
-  menu.classList.toggle('open', menuOpen);
-  document.body.style.overflow = menuOpen ? 'hidden' : '';
-  if (menuOpen) releaseMenuTrap = trapFocus(menu);
-  else if (releaseMenuTrap) { releaseMenuTrap(); releaseMenuTrap = null; }
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && menuOpen) burger.click();
-});
-menu.querySelectorAll('.mlink').forEach(a => {
-  a.addEventListener('click', () => {
-    menuOpen = false; burger.classList.remove('open'); menu.classList.remove('open');
-    document.body.style.overflow = '';
-  });
-});
+
+function openMenu() {
+  menuOpen = true;
+  burger.classList.add('open');
+  menu.classList.add('open');
+  scrim.classList.add('show');
+  if (releaseMenuTrap) { releaseMenuTrap(); }
+  releaseMenuTrap = trapFocus(menu);
+}
+function closeMenu() {
+  menuOpen = false;
+  burger.classList.remove('open');
+  menu.classList.remove('open');
+  scrim.classList.remove('show');
+  if (releaseMenuTrap) { releaseMenuTrap(); releaseMenuTrap = null; }
+}
+
+burger.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+scrim.addEventListener('click', closeMenu);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMenu(); });
+menu.querySelectorAll('.mlink').forEach(a => a.addEventListener('click', closeMenu));
 
 /* ── Scroll fade-ins ─────────────────────────────────────── */
 const fObs = new IntersectionObserver(entries => {
@@ -140,3 +150,33 @@ function trapFocus(container) {
 function toISO(dt) {
   return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
 }
+
+/* ── Lead-capture popup ──────────────────────────────────── */
+(function initLeadPopup() {
+  const wrap = document.getElementById('lead-popup-wrap');
+  if (!wrap) return;
+  if (localStorage.getItem('av_lead_captured')) return;
+
+  const closePopup = () => wrap.classList.remove('show');
+  document.getElementById('lead-popup-close').addEventListener('click', closePopup);
+  wrap.addEventListener('click', e => { if (e.target === wrap) closePopup(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && wrap.classList.contains('show')) closePopup();
+  });
+
+  document.getElementById('lead-popup-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const name  = document.getElementById('lp-name').value.trim();
+    const email = document.getElementById('lp-email').value.trim();
+    const phone = document.getElementById('lp-phone').value.trim();
+    if (!name || !email) return;
+    if (typeof logToSheet === 'function') {
+      logToSheet('lead', { name, email, phone, page: location.pathname });
+    }
+    localStorage.setItem('av_lead_captured', '1');
+    closePopup();
+  });
+
+  /* Show after 3.5 s — allows intro animation to finish */
+  setTimeout(() => wrap.classList.add('show'), 3500);
+})();

@@ -196,40 +196,52 @@
     #burger.open .bl:nth-child(1) { transform: rotate(45deg) translate(3px, 3px); }
     #burger.open .bl:nth-child(2) { opacity: 0; }
 
-    /* ── Full-screen menu (light) ────────────────────────────── */
+    /* ── Slide-in menu panel (right → left) ──────────────────── */
     #menu {
-      position: fixed; inset: 0; z-index: 90;
-      background: rgba(245,241,232,0.97);
-      backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+      position: fixed; top: 0; right: 0; bottom: 0; z-index: 90;
+      width: clamp(300px, 38vw, 440px);
+      background: rgba(245,241,232,0.98);
+      backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+      border-left: 1px solid var(--rule);
       display: flex; flex-direction: column; justify-content: center;
-      padding: 0 8%;
-      opacity: 0; pointer-events: none;
-      transition: opacity .45s var(--lux);
+      padding: 5rem 3rem 3rem;
+      transform: translateX(100%);
+      pointer-events: none;
+      transition: transform .55s var(--lux);
+      box-shadow: -8px 0 48px rgba(24,24,26,.07);
     }
-    #menu.open { opacity: 1; pointer-events: all; }
-    #menu nav { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 4rem; }
+    #menu.open { transform: translateX(0); pointer-events: all; }
+    #menu nav { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 3rem; }
     .mwrap { overflow: hidden; }
     .mlink {
       display: block;
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.4rem, 6vw, 5.5rem);
-      font-weight: 300; line-height: 1.15;
+      font-size: clamp(1.9rem, 4vw, 3.2rem);
+      font-weight: 300; line-height: 1.2;
       color: var(--text); text-decoration: none;
-      transform: translateY(110%);
-      transition: transform .6s var(--lux), color .25s ease;
+      transform: translateX(40px); opacity: 0;
+      transition: transform .5s var(--lux), opacity .45s ease, color .25s ease;
     }
     .mlink:hover { color: var(--gold); font-style: italic; }
-    #menu.open .mlink { transform: translateY(0); }
-    #menu.open .mlink:nth-child(1) { transition-delay:   0ms; }
-    #menu.open .mlink:nth-child(2) { transition-delay:  70ms; }
-    #menu.open .mlink:nth-child(3) { transition-delay: 140ms; }
-    #menu.open .mlink:nth-child(4) { transition-delay: 210ms; }
+    #menu.open .mlink { transform: translateX(0); opacity: 1; }
+    #menu.open .mlink:nth-child(1) { transition-delay:  60ms; }
+    #menu.open .mlink:nth-child(2) { transition-delay: 120ms; }
+    #menu.open .mlink:nth-child(3) { transition-delay: 180ms; }
+    #menu.open .mlink:nth-child(4) { transition-delay: 240ms; }
     #menu-foot {
-      position: absolute; bottom: 3rem; right: 3rem;
+      position: absolute; bottom: 2.5rem; left: 3rem;
       font-size: 10px; letter-spacing: .38em; text-transform: uppercase;
       color: var(--faint); opacity: 0; transition: opacity .6s ease .4s;
     }
     #menu.open #menu-foot { opacity: 1; }
+    /* Dim-scrim — sits behind the panel, main page stays visible */
+    #menu-scrim {
+      position: fixed; inset: 0; z-index: 89;
+      background: rgba(24,24,26,.18);
+      opacity: 0; pointer-events: none;
+      transition: opacity .45s ease;
+    }
+    #menu-scrim.show { opacity: 1; pointer-events: all; }
 
     /* ── Page reveal ─────────────────────────────────────────── */
     #page {
@@ -1457,6 +1469,143 @@
       0% { background: var(--gold-light); border-color: var(--gold); }
       100% { background: transparent; }
     }
+
+    /* ── Lead-capture popup ──────────────────────────────────── */
+    #lead-popup-wrap {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(24,24,26,.45);
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .45s ease;
+    }
+    #lead-popup-wrap.show { opacity: 1; pointer-events: all; }
+    #lead-popup {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      width: min(92vw, 480px);
+      padding: 2.8rem 2.4rem 2.4rem;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(24,24,26,.18);
+      transform: translateY(18px); opacity: 0;
+      transition: transform .5s var(--lux) .1s, opacity .4s ease .1s;
+    }
+    #lead-popup-wrap.show #lead-popup { transform: translateY(0); opacity: 1; }
+    #lead-popup-close {
+      position: absolute; top: 1rem; right: 1.1rem;
+      background: none; border: none;
+      font-size: 1.2rem; color: var(--mid);
+      line-height: 1; padding: 4px 8px;
+      cursor: pointer; transition: color .2s ease;
+    }
+    #lead-popup-close:hover { color: var(--text); }
+    #lead-popup .lp-eye {
+      font-size: 9px; letter-spacing: .44em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .8rem; font-weight: 400;
+    }
+    #lead-popup .lp-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 300; line-height: 1.25; margin-bottom: .6rem;
+    }
+    #lead-popup .lp-sub {
+      font-size: .8rem; color: var(--mid); margin-bottom: 1.8rem; line-height: 1.55;
+    }
+    #lead-popup-form { display: flex; flex-direction: column; gap: 1rem; }
+    #lead-popup-form .lp-field { display: flex; flex-direction: column; gap: .3rem; }
+    #lead-popup-form label { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--mid); }
+    #lead-popup-form input {
+      border: 1px solid var(--border-mid); border-radius: 2px;
+      background: var(--bg); color: var(--text);
+      padding: .65rem .85rem; font-size: .88rem; font-family: inherit;
+      transition: border-color .2s ease;
+    }
+    #lead-popup-form input:focus { outline: none; border-color: var(--gold); }
+    #lead-popup-form .lp-submit {
+      margin-top: .4rem;
+      background: var(--text); color: var(--bg);
+      border: none; border-radius: 2px;
+      padding: .85rem 1.5rem; font-size: .78rem;
+      letter-spacing: .22em; text-transform: uppercase; font-family: inherit;
+      cursor: pointer; transition: background .25s ease;
+    }
+    #lead-popup-form .lp-submit:hover { background: var(--gold); }
+    #lead-popup .lp-privacy {
+      font-size: .68rem; color: var(--faint); margin-top: 1rem; text-align: center;
+    }
+
+    /* ── Google rating badge ─────────────────────────────────── */
+    .google-rating-badge {
+      display: flex; align-items: center; gap: .9rem;
+      background: var(--surface); border: 1px solid var(--rule);
+      border-radius: 4px; padding: .9rem 1.2rem;
+      margin-bottom: 1.6rem; width: fit-content;
+    }
+    .grb-logo {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--mid); font-weight: 500;
+    }
+    .grb-logo svg { flex-shrink: 0; }
+    .grb-divider { width: 1px; height: 2rem; background: var(--rule); }
+    .grb-score { display: flex; flex-direction: column; align-items: flex-start; gap: .2rem; }
+    .grb-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 300; line-height: 1; color: var(--text);
+    }
+    .grb-stars { display: flex; gap: 2px; }
+    .grb-star { color: #F5B100; font-size: .75rem; }
+    .grb-count { font-size: .65rem; color: var(--faint); letter-spacing: .06em; }
+
+    /* ── Availability real calendar ──────────────────────────── */
+    .avail-cal-wrap { display: flex; flex-direction: column; gap: 1.6rem; }
+    .avail-cal-nav {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: .4rem;
+    }
+    .avail-cal-nav-btn {
+      background: none; border: 1px solid var(--border-mid);
+      border-radius: 2px; padding: .3rem .7rem;
+      font-size: .8rem; color: var(--mid); cursor: pointer;
+      transition: border-color .2s ease, color .2s ease;
+    }
+    .avail-cal-nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .avail-cal-months { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+    .avail-cal-month { flex: 1; min-width: 200px; max-width: 280px; }
+    .avail-cal-month-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; font-weight: 400; letter-spacing: .06em;
+      color: var(--text); margin-bottom: .7rem; text-align: center;
+    }
+    .avail-cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+    }
+    .avail-cal-dow {
+      font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--faint); text-align: center; padding-bottom: .3rem;
+    }
+    .avail-cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; border-radius: 2px;
+      transition: background .15s ease, color .15s ease;
+    }
+    .avail-cal-day.available { background: rgba(31,158,95,.12); color: var(--text); cursor: pointer; }
+    .avail-cal-day.available:hover { background: rgba(31,158,95,.28); }
+    .avail-cal-day.partial { background: rgba(168,124,69,.13); color: var(--text); cursor: pointer; }
+    .avail-cal-day.partial:hover { background: rgba(168,124,69,.28); }
+    .avail-cal-day.booked { background: rgba(181,81,58,.1); color: var(--faint); text-decoration: line-through; }
+    .avail-cal-day.empty { background: transparent; }
+    .avail-cal-day.past { color: var(--rule); }
+    .avail-cal-day.today { outline: 1px solid var(--gold); }
+
+    /* ── Local guide map link ────────────────────────────────── */
+    .lg-map-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none; margin-top: .5rem;
+      transition: opacity .2s ease;
+    }
+    .lg-map-link:hover { opacity: .72; }
 
     /* ── Reduced motion: every Phase 4 effect resolves to its end state ── */
     @media (prefers-reduced-motion: reduce) {

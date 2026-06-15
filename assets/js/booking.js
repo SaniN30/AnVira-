@@ -2,43 +2,117 @@
 'use strict';
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_FULL  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW_SHORT   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+
+let calOffset = 0; /* months from today shown as first calendar month */
+
+function prefilDate(dateObj) {
+  const inEl  = document.getElementById('bw-in');
+  const outEl = document.getElementById('bw-out');
+  inEl.value  = toISO(dateObj);
+  const end   = new Date(dateObj); end.setDate(end.getDate() + 2);
+  outEl.value = toISO(end);
+  [inEl, outEl].forEach(el => {
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  });
+  document.getElementById('bw')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 function renderAvailability(p) {
-  const grid = document.getElementById('pd-avail-grid');
-  const now  = new Date();
+  const container = document.getElementById('pd-avail-grid');
+  if (!container) return;
+
   const overrides = AVAILABILITY[p.id] || {};
-  grid.innerHTML = '';
-  for (let k = 0; k < 6; k++) {
-    const d  = new Date(now.getFullYear(), now.getMonth() + k, 1);
-    const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    const status = overrides[ym] || 'available';
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `avail-month ${status}`;
-    btn.setAttribute('data-cursor', '');
-    btn.textContent = `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
-    btn.disabled = status === 'booked';
-    btn.setAttribute('aria-label', `${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()} — ${status}`);
-    if (status !== 'booked') {
-      btn.addEventListener('click', () => {
-        /* pre-fill booking widget with the 1st of the month (or today) */
-        const start = k === 0 ? now : d;
-        const inEl  = document.getElementById('bw-in');
-        const outEl = document.getElementById('bw-out');
-        inEl.value = toISO(start);
-        const end = new Date(start); end.setDate(end.getDate() + 2);
-        outEl.value = toISO(end);
-        /* brief brass flash confirms the dates landed in the widget */
-        [inEl, outEl].forEach(el => {
-          el.classList.remove('flash');
-          void el.offsetWidth; /* restart the animation on repeat clicks */
-          el.classList.add('flash');
-        });
-        document.getElementById('bw')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const today     = new Date(); today.setHours(0,0,0,0);
+
+  function buildCalendar() {
+    container.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.className = 'avail-cal-wrap';
+
+    /* nav row */
+    const nav = document.createElement('div');
+    nav.className = 'avail-cal-nav';
+    const prevBtn = document.createElement('button');
+    prevBtn.type = 'button'; prevBtn.className = 'avail-cal-nav-btn';
+    prevBtn.textContent = '‹ Earlier'; prevBtn.disabled = calOffset <= 0;
+    prevBtn.addEventListener('click', () => { calOffset = Math.max(0, calOffset - 2); buildCalendar(); });
+    const nextBtn = document.createElement('button');
+    nextBtn.type = 'button'; nextBtn.className = 'avail-cal-nav-btn';
+    nextBtn.textContent = 'Later ›';
+    nextBtn.addEventListener('click', () => { calOffset += 2; buildCalendar(); });
+    nav.appendChild(prevBtn); nav.appendChild(nextBtn);
+    wrap.appendChild(nav);
+
+    /* months row */
+    const months = document.createElement('div');
+    months.className = 'avail-cal-months';
+
+    for (let k = 0; k < 2; k++) {
+      const base    = new Date(today.getFullYear(), today.getMonth() + calOffset + k, 1);
+      const yr      = base.getFullYear();
+      const mo      = base.getMonth();
+      const ym      = `${yr}-${String(mo + 1).padStart(2, '0')}`;
+      const status  = overrides[ym] || 'available';
+      const daysInMonth = new Date(yr, mo + 1, 0).getDate();
+      const startDow    = base.getDay(); /* 0 = Sun */
+
+      const col = document.createElement('div');
+      col.className = 'avail-cal-month';
+
+      const title = document.createElement('div');
+      title.className = 'avail-cal-month-title';
+      title.textContent = `${MONTH_FULL[mo]} ${yr}`;
+      col.appendChild(title);
+
+      const grid = document.createElement('div');
+      grid.className = 'avail-cal-grid';
+
+      /* day-of-week headers */
+      DOW_SHORT.forEach(d => {
+        const hdr = document.createElement('div');
+        hdr.className = 'avail-cal-dow';
+        hdr.textContent = d;
+        grid.appendChild(hdr);
       });
+
+      /* empty cells before 1st */
+      for (let i = 0; i < startDow; i++) {
+        const empty = document.createElement('div'); empty.className = 'avail-cal-day empty'; grid.appendChild(empty);
+      }
+
+      /* date cells */
+      for (let day = 1; day <= daysInMonth; day++) {
+        const cell = document.createElement('div');
+        const dt = new Date(yr, mo, day);
+        const isPast = dt < today;
+        const isToday = dt.getTime() === today.getTime();
+        let cls = 'avail-cal-day';
+        if (isPast) { cls += ' past'; }
+        else { cls += ` ${status}`; }
+        if (isToday) cls += ' today';
+        cell.className = cls;
+        cell.textContent = day;
+        cell.setAttribute('aria-label', `${day} ${MONTH_NAMES[mo]} ${yr} — ${isPast ? 'past' : status}`);
+        if (!isPast && status !== 'booked') {
+          cell.setAttribute('tabindex', '0');
+          cell.setAttribute('role', 'button');
+          cell.addEventListener('click', () => prefilDate(dt));
+          cell.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prefilDate(dt); } });
+        }
+        grid.appendChild(cell);
+      }
+
+      col.appendChild(grid);
+      months.appendChild(col);
     }
-    grid.appendChild(btn);
+
+    wrap.appendChild(months);
+    container.appendChild(wrap);
   }
+
+  buildCalendar();
 }
 
 let currentProp = null;

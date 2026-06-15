@@ -55,6 +55,31 @@ if (EP) {
     heroName.innerHTML = wordSpans.join(' ');
   }
 
+  /* ── Local guide map links ───────────────────────────────── */
+  if (EP.localGuide) {
+    const lgItems = document.querySelectorAll('.lg-item');
+    lgItems.forEach((item, i) => {
+      const guide = EP.localGuide[i];
+      if (!guide || !guide.mapUrl) return;
+      const link = document.createElement('a');
+      link.href = guide.mapUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'lg-map-link';
+      link.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg> Get directions';
+      item.appendChild(link);
+    });
+  }
+
+  /* ── Guest count asterisk note ───────────────────────────── */
+  const guestsField = document.querySelector('.bw-field:has(#bw-guests)');
+  if (guestsField && EP.maxGuests) {
+    const note = document.createElement('p');
+    note.style.cssText = 'font-size:.68rem;color:var(--faint);margin-top:.35rem;line-height:1.45;';
+    note.innerHTML = `<span style="color:var(--gold)">*</span> Property accommodates up to ${EP.maxGuests} guests. Additional guests above the standard occupancy are chargeable &mdash; please mention in your enquiry.`;
+    guestsField.appendChild(note);
+  }
+
   /* Booking panel slides in on first scroll past the hero */
   const aside = document.querySelector('.ep-aside');
   const epHero = document.querySelector('.ep-hero');

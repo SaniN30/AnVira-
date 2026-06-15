@@ -30,10 +30,10 @@ const PROPERTIES = [
     },
     staff: [],                          /* owner input pending — section hidden until filled */
     localGuide: [
-      { name: 'Chail Palace', desc: "The Maharaja of Patiala's 1891 summer retreat — deodar walks, lawns, and high tea.", mins: 15, best: 'Heritage' },
-      { name: 'Kali Ka Tibba', desc: 'A hilltop temple with a 360° sweep of the Shivalik ranges. Go an hour before sunset.', mins: 25, best: 'Sunset views' },
-      { name: 'Chail Cricket Ground', desc: 'The highest cricket pitch in the world, ringed entirely by pine.', mins: 20, best: 'Morning walks' },
-      { name: 'Sadhupul Lake', desc: 'Riverside cafés where lunch is eaten with your feet in the stream.', mins: 35, best: 'Lazy afternoons' },
+      { name: 'Chail Palace', desc: "The Maharaja of Patiala's 1891 summer retreat — deodar walks, lawns, and high tea.", mins: 15, best: 'Heritage', mapUrl: 'https://www.google.com/maps/dir/Villa+AnVira,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/Chail+Palace,+Chail,+Solan,+Himachal+Pradesh' },
+      { name: 'Kali Ka Tibba', desc: 'A hilltop temple with a 360° sweep of the Shivalik ranges. Go an hour before sunset.', mins: 25, best: 'Sunset views', mapUrl: 'https://www.google.com/maps/dir/Villa+AnVira,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/Kali+Ka+Tibba,+Chail,+Himachal+Pradesh' },
+      { name: 'Chail Cricket Ground', desc: 'The highest cricket pitch in the world, ringed entirely by pine.', mins: 20, best: 'Morning walks', mapUrl: 'https://www.google.com/maps/dir/Villa+AnVira,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/Chail+Cricket+Ground,+Chail,+Solan,+Himachal+Pradesh' },
+      { name: 'Sadhupul Lake', desc: 'Riverside cafés where lunch is eaten with your feet in the stream.', mins: 35, best: 'Lazy afternoons', mapUrl: 'https://www.google.com/maps/dir/Villa+AnVira,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/Sadhupul,+Himachal+Pradesh' },
     ],
     reviews: [
       { name: 'Meera & Rohan S.', occ: 'Anniversary escape · March 2026', stars: 5, text: 'Villa AnVira was unlike anything we had experienced. The pine forest, the silence, the attentiveness of the staff — it reset something in us that a normal holiday never could.' },
@@ -131,10 +131,10 @@ const PROPERTIES = [
     },
     staff: [],
     localGuide: [
-      { name: 'Chhatarpur Temple', desc: 'One of Delhi\'s grandest temple complexes, minutes from the estate gate.', mins: 15, best: 'Quiet mornings' },
-      { name: 'Qutub Minar', desc: 'The 12th-century minaret and its ruin-strewn gardens — go at opening time.', mins: 30, best: 'Heritage' },
-      { name: 'The Seven Style Mile, Mehrauli', desc: 'Delhi\'s quietly glamorous strip of boutiques and destination dining.', mins: 25, best: 'Dinner out' },
-      { name: 'Garden of Five Senses', desc: 'Twenty acres of sculpture gardens and amphitheatre evenings.', mins: 25, best: 'Evening strolls' },
+      { name: 'Chhatarpur Temple', desc: 'One of Delhi\'s grandest temple complexes, minutes from the estate gate.', mins: 15, best: 'Quiet mornings', mapUrl: 'https://www.google.com/maps/dir/Dera+Village,+Dera+Mandi,+New+Delhi+110074/Chhatarpur+Mandir,+Chhatarpur,+New+Delhi' },
+      { name: 'Qutub Minar', desc: 'The 12th-century minaret and its ruin-strewn gardens — go at opening time.', mins: 30, best: 'Heritage', mapUrl: 'https://www.google.com/maps/dir/Dera+Village,+Dera+Mandi,+New+Delhi+110074/Qutub+Minar,+Mehrauli,+New+Delhi' },
+      { name: 'The Seven Style Mile, Mehrauli', desc: 'Delhi\'s quietly glamorous strip of boutiques and destination dining.', mins: 25, best: 'Dinner out', mapUrl: 'https://www.google.com/maps/dir/Dera+Village,+Dera+Mandi,+New+Delhi+110074/The+Seven+Style+Mile,+Mehrauli,+New+Delhi' },
+      { name: 'Garden of Five Senses', desc: 'Twenty acres of sculpture gardens and amphitheatre evenings.', mins: 25, best: 'Evening strolls', mapUrl: 'https://www.google.com/maps/dir/Dera+Village,+Dera+Mandi,+New+Delhi+110074/Garden+of+Five+Senses,+Saiyad+ul+Ajaib,+New+Delhi' },
     ],
     reviews: [
       { name: 'The Kapoor Family', occ: 'Family gathering · January 2026', stars: 5, text: 'Estate 10 gave us Delhi on our own terms. The lawn, the pool, the privacy — we hosted a family gathering of fifteen and it still felt intimate.' },
@@ -219,10 +219,10 @@ const PROPERTIES = [
     },
     staff: [],
     localGuide: [
-      { name: 'Bogmalo Beach', desc: 'A small, uncrowded bay the charter crowds never find. Calm water, two shacks.', mins: 12, best: 'A quiet swim' },
-      { name: 'Naval Aviation Museum', desc: 'India\'s only museum of its kind — vintage aircraft on a sea-cliff lawn.', mins: 12, best: 'Rainy mornings' },
-      { name: 'Issorcim Beach', desc: 'A fishing-village stretch of sand for long, empty evening walks.', mins: 15, best: 'Sunset walks' },
-      { name: "Martin's Corner", desc: 'The Goan institution for pork sorpotel and king prawns. Book ahead.', mins: 25, best: 'Goan dinner' },
+      { name: 'Bogmalo Beach', desc: 'A small, uncrowded bay the charter crowds never find. Calm water, two shacks.', mins: 12, best: 'A quiet swim', mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Goa+403711/Bogmalo+Beach,+Bogmalo,+Goa' },
+      { name: 'Naval Aviation Museum', desc: 'India\'s only museum of its kind — vintage aircraft on a sea-cliff lawn.', mins: 12, best: 'Rainy mornings', mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Goa+403711/Naval+Aviation+Museum,+Vasco+da+Gama,+Goa' },
+      { name: 'Issorcim Beach', desc: 'A fishing-village stretch of sand for long, empty evening walks.', mins: 15, best: 'Sunset walks', mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Goa+403711/Issorcim+Beach,+Goa' },
+      { name: "Martin's Corner", desc: 'The Goan institution for pork sorpotel and king prawns. Book ahead.', mins: 25, best: 'Goan dinner', mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Goa+403711/Martins+Corner,+Betalbatim,+Salcete,+Goa' },
     ],
     reviews: [
       { name: 'Priya N.', occ: 'Winter holiday · December 2025', stars: 5, text: 'Waking up to the Zuari River from the terrace — there is simply no comparison. Goa, finally, without the noise. The pool and the sunsets made every morning feel earned.' },

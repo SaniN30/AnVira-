@@ -350,6 +350,32 @@
   </div>
 
 
+  <!-- Lead-capture popup -->
+  <div id="lead-popup-wrap" role="dialog" aria-modal="true" aria-label="Welcome to AnVira">
+    <div id="lead-popup">
+      <button id="lead-popup-close" aria-label="Close">&times;</button>
+      <p class="lp-eye">Welcome</p>
+      <h2 class="lp-title">Stay in the Know</h2>
+      <p class="lp-sub">Share your details and our team will keep you informed of exclusive availability, private viewings, and curated offers — directly, without intermediaries.</p>
+      <form id="lead-popup-form" novalidate>
+        <div class="lp-field">
+          <label for="lp-name">Your Name</label>
+          <input type="text" id="lp-name" name="name" autocomplete="name" placeholder="e.g. Rahul Sharma" required />
+        </div>
+        <div class="lp-field">
+          <label for="lp-email">Email Address</label>
+          <input type="email" id="lp-email" name="email" autocomplete="email" placeholder="you@example.com" required />
+        </div>
+        <div class="lp-field">
+          <label for="lp-phone">Phone / WhatsApp</label>
+          <input type="tel" id="lp-phone" name="phone" autocomplete="tel" placeholder="+91 98765 43210" />
+        </div>
+        <button type="submit" class="lp-submit">Stay Connected &rarr;</button>
+      </form>
+      <p class="lp-privacy">We respect your privacy. Your details are never shared with third parties.</p>
+    </div>
+  </div>
+
   <script src="./assets/js/data.js"></script>
   <script src="./assets/js/core.js"></script>
   <script src="./assets/js/home.js"></script>
