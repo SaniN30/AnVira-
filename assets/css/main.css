@@ -1556,6 +1556,8 @@
     }
     .grb-stars { display: flex; gap: 2px; }
     .grb-star { color: #F5B100; font-size: .75rem; }
+    .grb-star.half { position: relative; color: var(--rule); }
+    .grb-star.half::before { content: '★'; position: absolute; left: 0; width: 55%; overflow: hidden; color: #F5B100; }
     .grb-count { font-size: .65rem; color: var(--faint); letter-spacing: .06em; }
 
     /* ── Availability real calendar ──────────────────────────── */
