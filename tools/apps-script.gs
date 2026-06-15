@@ -16,6 +16,7 @@ function doPost(e) {
     if (type === 'enquiry')  return handleEnquiry(body);
     if (type === 'waitlist') return handleWaitlist(body);
     if (type === 'review')   return handleReview(body);
+    if (type === 'lead')     return handleLead(body);
     return reply(false, 'Unknown type');
   } catch (err) {
     return reply(false, 'Bad request');
@@ -41,6 +42,12 @@ function handleWaitlist(b) {
   return reply(true);
 }
 
+function handleLead(b) {
+  if (str(b.name).length < 1 || str(b.email).length < 1) return reply(false, 'name and email are required');
+  appendRow('Leads', [timestamp(), str(b.name), str(b.email), str(b.phone), str(b.page)]);
+  return reply(true);
+}
+
 function handleReview(b) {
   var words = str(b.review).split(/\s+/).filter(String).length;
   var rating = Number(b.rating);
@@ -61,6 +68,7 @@ var HEADERS = {
   Enquiries: ['Timestamp', 'Property', 'Check-in', 'Check-out', 'Guests', 'Name', 'Note', 'Status'],
   Waitlist:  ['Timestamp', 'Estate', 'Name', 'WhatsApp', 'Consent'],
   Reviews:   ['Timestamp', 'Property', 'Name', 'Phone', 'Occasion', 'Rating', 'Review', 'Status'],
+  Leads:     ['Timestamp', 'Name', 'Email', 'Phone', 'Page'],
 };
 
 function appendRow(tab, values) {
