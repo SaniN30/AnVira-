@@ -5,19 +5,8 @@ const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct'
 const MONTH_FULL  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW_SHORT   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-let calOffset = 0; /* months from today shown as first calendar month */
-
-function prefilDate(dateObj) {
-  const inEl  = document.getElementById('bw-in');
-  const outEl = document.getElementById('bw-out');
-  inEl.value  = toISO(dateObj);
-  const end   = new Date(dateObj); end.setDate(end.getDate() + 2);
-  outEl.value = toISO(end);
-  [inEl, outEl].forEach(el => {
-    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
-  });
-  document.getElementById('bw')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
+let calOffset = 0;      /* months from today shown as first calendar month */
+let calPickIn  = null;  /* Date — check-in selected, waiting for check-out  */
 
 function renderAvailability(p) {
   const container = document.getElementById('pd-avail-grid');
@@ -26,37 +15,113 @@ function renderAvailability(p) {
   const overrides = AVAILABILITY[p.id] || {};
   const today     = new Date(); today.setHours(0,0,0,0);
 
+  /* All rendered day cells across both visible months, keyed by ISO date */
+  const cellMap = {};
+
+  /* ── Commit a finalised range to the booking inputs ── */
+  function commitRange(start, end) {
+    const inEl  = document.getElementById('bw-in');
+    const outEl = document.getElementById('bw-out');
+    inEl.value  = toISO(start);
+    outEl.value = toISO(end);
+    [inEl, outEl].forEach(el => {
+      el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+    });
+  }
+
+  /* ── Apply range highlight classes to every rendered cell ── */
+  function paintRange(start, end) {
+    const s = start ? start.getTime() : null;
+    const e = end   ? end.getTime()   : null;
+    Object.entries(cellMap).forEach(([iso, cell]) => {
+      const t = new Date(iso).getTime();
+      cell.classList.remove('cal-start', 'cal-end', 'cal-in-range', 'cal-hover-range');
+      if (s && t === s)           cell.classList.add('cal-start');
+      if (e && t === e)           cell.classList.add('cal-end');
+      if (s && e && t > s && t < e) cell.classList.add('cal-in-range');
+    });
+  }
+
+  /* ── Update the status bar text ── */
+  function setStatus(msg) {
+    const bar = container.querySelector('.avail-cal-status');
+    if (bar) bar.textContent = msg;
+  }
+
+  /* ── Handle a day click ── */
+  function onDayClick(dt) {
+    if (!calPickIn) {
+      /* First click — set check-in */
+      calPickIn = dt;
+      paintRange(calPickIn, null);
+      setStatus(`Check-in: ${fmtDate(toISO(dt))}  —  now select check-out`);
+    } else if (dt <= calPickIn) {
+      /* Clicked same day or earlier — restart */
+      calPickIn = dt;
+      paintRange(calPickIn, null);
+      setStatus(`Check-in: ${fmtDate(toISO(dt))}  —  now select check-out`);
+    } else {
+      /* Second click — set check-out */
+      commitRange(calPickIn, dt);
+      paintRange(calPickIn, dt);
+      setStatus(`Check-in: ${fmtDate(toISO(calPickIn))}  ·  Check-out: ${fmtDate(toISO(dt))}`);
+      calPickIn = null; /* reset for next selection */
+    }
+  }
+
+  /* ── Hover preview while waiting for check-out ── */
+  function onDayHover(dt) {
+    if (!calPickIn || dt <= calPickIn) return;
+    Object.entries(cellMap).forEach(([iso, cell]) => {
+      const t = new Date(iso).getTime();
+      cell.classList.toggle('cal-hover-range', t > calPickIn.getTime() && t < dt.getTime());
+    });
+  }
+
   function buildCalendar() {
     container.innerHTML = '';
+    Object.keys(cellMap).forEach(k => delete cellMap[k]); /* clear map */
+
     const wrap = document.createElement('div');
     wrap.className = 'avail-cal-wrap';
 
-    /* nav row */
+    /* ── Nav row ── */
     const nav = document.createElement('div');
     nav.className = 'avail-cal-nav';
+
     const prevBtn = document.createElement('button');
     prevBtn.type = 'button'; prevBtn.className = 'avail-cal-nav-btn';
     prevBtn.textContent = '‹ Earlier'; prevBtn.disabled = calOffset <= 0;
     prevBtn.addEventListener('click', () => { calOffset = Math.max(0, calOffset - 2); buildCalendar(); });
+
     const nextBtn = document.createElement('button');
     nextBtn.type = 'button'; nextBtn.className = 'avail-cal-nav-btn';
     nextBtn.textContent = 'Later ›';
     nextBtn.addEventListener('click', () => { calOffset += 2; buildCalendar(); });
+
     nav.appendChild(prevBtn); nav.appendChild(nextBtn);
     wrap.appendChild(nav);
 
-    /* months row */
+    /* ── Status bar ── */
+    const statusBar = document.createElement('div');
+    statusBar.className = 'avail-cal-status';
+    statusBar.textContent = calPickIn
+      ? `Check-in: ${fmtDate(toISO(calPickIn))}  —  now select check-out`
+      : 'Select your check-in date';
+    wrap.appendChild(statusBar);
+
+    /* ── Month grids ── */
     const months = document.createElement('div');
     months.className = 'avail-cal-months';
 
     for (let k = 0; k < 2; k++) {
-      const base    = new Date(today.getFullYear(), today.getMonth() + calOffset + k, 1);
-      const yr      = base.getFullYear();
-      const mo      = base.getMonth();
-      const ym      = `${yr}-${String(mo + 1).padStart(2, '0')}`;
-      const status  = overrides[ym] || 'available';
+      const base       = new Date(today.getFullYear(), today.getMonth() + calOffset + k, 1);
+      const yr         = base.getFullYear();
+      const mo         = base.getMonth();
+      const ym         = `${yr}-${String(mo + 1).padStart(2, '0')}`;
+      const status     = overrides[ym] || 'available';
       const daysInMonth = new Date(yr, mo + 1, 0).getDate();
-      const startDow    = base.getDay(); /* 0 = Sun */
+      const startDow   = base.getDay();
 
       const col = document.createElement('div');
       col.className = 'avail-cal-month';
@@ -69,38 +134,47 @@ function renderAvailability(p) {
       const grid = document.createElement('div');
       grid.className = 'avail-cal-grid';
 
-      /* day-of-week headers */
       DOW_SHORT.forEach(d => {
         const hdr = document.createElement('div');
-        hdr.className = 'avail-cal-dow';
-        hdr.textContent = d;
+        hdr.className = 'avail-cal-dow'; hdr.textContent = d;
         grid.appendChild(hdr);
       });
 
-      /* empty cells before 1st */
       for (let i = 0; i < startDow; i++) {
-        const empty = document.createElement('div'); empty.className = 'avail-cal-day empty'; grid.appendChild(empty);
+        const empty = document.createElement('div');
+        empty.className = 'avail-cal-day empty';
+        grid.appendChild(empty);
       }
 
-      /* date cells */
       for (let day = 1; day <= daysInMonth; day++) {
-        const cell = document.createElement('div');
-        const dt = new Date(yr, mo, day);
-        const isPast = dt < today;
-        const isToday = dt.getTime() === today.getTime();
+        const dt    = new Date(yr, mo, day);
+        const iso   = toISO(dt);
+        const isPast   = dt < today;
+        const isToday  = dt.getTime() === today.getTime();
+        const isBooked = !isPast && status === 'booked';
+
         let cls = 'avail-cal-day';
-        if (isPast) { cls += ' past'; }
-        else { cls += ` ${status}`; }
+        if (isPast)       cls += ' past';
+        else if (isBooked) cls += ' booked';
+        else               cls += ` ${status}`;
         if (isToday) cls += ' today';
+
+        const cell = document.createElement('div');
         cell.className = cls;
         cell.textContent = day;
         cell.setAttribute('aria-label', `${day} ${MONTH_NAMES[mo]} ${yr} — ${isPast ? 'past' : status}`);
-        if (!isPast && status !== 'booked') {
+
+        if (!isPast && !isBooked) {
           cell.setAttribute('tabindex', '0');
           cell.setAttribute('role', 'button');
-          cell.addEventListener('click', () => prefilDate(dt));
-          cell.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); prefilDate(dt); } });
+          cell.addEventListener('click',      () => onDayClick(dt));
+          cell.addEventListener('mouseenter', () => onDayHover(dt));
+          cell.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDayClick(dt); }
+          });
+          cellMap[iso] = cell;
         }
+
         grid.appendChild(cell);
       }
 
@@ -110,6 +184,12 @@ function renderAvailability(p) {
 
     wrap.appendChild(months);
     container.appendChild(wrap);
+
+    /* Restore any existing selection after a nav rebuild */
+    const inVal  = document.getElementById('bw-in')?.value;
+    const outVal = document.getElementById('bw-out')?.value;
+    if (inVal && outVal) paintRange(new Date(inVal), new Date(outVal));
+    else if (calPickIn)  paintRange(calPickIn, null);
   }
 
   buildCalendar();

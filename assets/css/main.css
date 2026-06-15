@@ -1657,14 +1657,41 @@
       font-size: .72rem; border-radius: 2px;
       transition: background .15s ease, color .15s ease;
     }
-    .avail-cal-day.available { background: rgba(31,158,95,.12); color: var(--text); cursor: pointer; }
-    .avail-cal-day.available:hover { background: rgba(31,158,95,.28); }
-    .avail-cal-day.partial { background: rgba(168,124,69,.13); color: var(--text); cursor: pointer; }
-    .avail-cal-day.partial:hover { background: rgba(168,124,69,.28); }
-    .avail-cal-day.booked { background: rgba(181,81,58,.1); color: var(--faint); text-decoration: line-through; }
+    .avail-cal-day.available { background: rgba(31,158,95,.1); color: var(--text); cursor: pointer; }
+    .avail-cal-day.available:hover { background: rgba(31,158,95,.24); }
+    .avail-cal-day.partial { background: rgba(168,124,69,.1); color: var(--text); cursor: pointer; }
+    .avail-cal-day.partial:hover { background: rgba(168,124,69,.24); }
+    .avail-cal-day.booked { background: rgba(181,81,58,.08); color: var(--rule); text-decoration: line-through; cursor: default; }
     .avail-cal-day.empty { background: transparent; }
-    .avail-cal-day.past { color: var(--rule); }
+    .avail-cal-day.past { color: var(--rule); cursor: default; }
     .avail-cal-day.today { outline: 1px solid var(--gold); }
+    /* Range selection states */
+    .avail-cal-day.cal-start,
+    .avail-cal-day.cal-end {
+      background: var(--gold) !important;
+      color: var(--surface) !important;
+      border-radius: 50%;
+      font-weight: 500;
+    }
+    .avail-cal-day.cal-in-range {
+      background: rgba(153,116,71,.18) !important;
+      color: var(--text) !important;
+      border-radius: 0;
+    }
+    .avail-cal-day.cal-hover-range {
+      background: rgba(153,116,71,.1) !important;
+      border-radius: 0;
+    }
+    /* Status bar */
+    .avail-cal-status {
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+      padding: .5rem .75rem;
+      background: rgba(153,116,71,.07);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 2px 2px 0;
+      min-height: 2rem; line-height: 1.6;
+    }
 
     /* ── Local guide map link ────────────────────────────────── */
     .lg-map-link {
