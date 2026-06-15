@@ -9,6 +9,40 @@
 
 var SHEET_ID = '1sKq1Ctziur_iRWnS10sXctoPXJUQkyeBlemavOzQt6c'; // from the sheet URL: docs.google.com/spreadsheets/d/<THIS>/edit
 
+/* ── doGet: returns live availability JSON for the calendar ──────────────
+   Sheet "Availability" has columns: EstateID | YYYY-MM | Status
+   Status values: available | partial | booked
+   Call: ?action=availability   (no auth — read-only public data)
+   ────────────────────────────────────────────────────────────────────── */
+function doGet(e) {
+  var action = e && e.parameter && e.parameter.action;
+  if (action === 'availability') {
+    try {
+      var ss    = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheetByName('Availability');
+      var out   = {};
+      if (sheet) {
+        var rows = sheet.getDataRange().getValues();
+        for (var i = 1; i < rows.length; i++) {           /* skip header row */
+          var estateId = String(rows[i][0]).trim();
+          var ym       = String(rows[i][1]).trim();        /* YYYY-MM */
+          var status   = String(rows[i][2]).trim().toLowerCase();
+          if (!estateId || !ym || !status) continue;
+          if (!out[estateId]) out[estateId] = {};
+          out[estateId][ym] = status;
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true, data: out }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: String(err) }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents);

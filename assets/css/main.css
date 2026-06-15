@@ -950,6 +950,13 @@
       transition: color .25s ease;
     }
     .bw-call:hover { color: var(--text); }
+    .bw-email {
+      display: block; text-align: center; margin-top: .35rem;
+      font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none;
+      transition: color .25s ease;
+    }
+    .bw-email:hover { color: var(--gold); }
     /* Guests dropdown chargeable note */
     .bw-charge-note {
       font-size: 10.5px; color: var(--faint); line-height: 1.5;
@@ -996,6 +1003,7 @@
     }
     #mpc-wrap.open, #wl-wrap.open { opacity: 1; pointer-events: all; }
     #mpc, #wl {
+      position: relative;
       width: min(440px, 100%); max-height: 86vh; overflow-y: auto;
       background: var(--surface); border: 1px solid var(--border-mid); border-radius: 2px;
       padding: 1.8rem 1.7rem 1.5rem;
@@ -1031,6 +1039,26 @@
       transition: color .25s ease;
     }
     .mpc-cancel:hover { color: var(--text); }
+    /* Post-send confirmation overlay */
+    .mpc-confirm {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: .6rem;
+      background: var(--surface); border-radius: 3px;
+      animation: mpc-confirm-in .35s var(--lux) both;
+    }
+    @keyframes mpc-confirm-in {
+      from { opacity: 0; transform: scale(.94); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .mpc-confirm-icon {
+      display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(153,116,71,.12); color: var(--gold);
+      font-size: 22px; font-weight: 300;
+    }
+    .mpc-confirm p { margin: 0; font-size: 15px; letter-spacing: .08em; text-transform: uppercase; }
+    .mpc-confirm-sub { font-size: 11px !important; color: var(--mid); letter-spacing: .04em !important; text-transform: none !important; }
+    #mpc.mpc-sent > *:not(.mpc-confirm) { visibility: hidden; }
 
     /* ── Readability — body copy meets the 16px standard (claude.md §3.3) ── */
     .wlc-p   { font-size: 16px; line-height: 1.85; max-width: 46ch; }

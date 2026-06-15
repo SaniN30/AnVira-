@@ -200,6 +200,19 @@ let currentProp = null;
 /* Estate pages call this once their data object is resolved. */
 function initBooking(p) {
   currentProp = p;
+
+  /* ── Live availability fetch — merges Sheet data over hardcoded fallback ── */
+  fetch(API_ENDPOINT + '?action=availability')
+    .then(r => r.json())
+    .then(json => {
+      if (json.success && json.data && json.data[p.id]) {
+        Object.assign(AVAILABILITY[p.id] = AVAILABILITY[p.id] || {}, json.data[p.id]);
+      }
+    })
+    .catch(() => { /* silently fall back to hardcoded AVAILABILITY */ })
+    .finally(() => renderAvailability(p));
+
+  /* Render immediately from hardcoded data, then patch if fetch succeeds */
   renderAvailability(p);
 
   /* Parse base (included) vs max (chargeable above base) guests.
@@ -318,7 +331,6 @@ bwForm.addEventListener('submit', e => {
 });
 
 document.getElementById('mpc-send').addEventListener('click', () => {
-  /* Log to the owner's sheet in the background — WhatsApp opens regardless. */
   logToSheet('enquiry', {
     property: enquiry.prop,
     checkIn: enquiry.checkin,
@@ -329,7 +341,19 @@ document.getElementById('mpc-send').addEventListener('click', () => {
   });
   const msg = encodeURIComponent(buildMessage());
   window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
-  closeMpc();
+
+  /* ── Post-send confirmation state ── */
+  const mpcEl = document.getElementById('mpc');
+  mpcEl.classList.add('mpc-sent');
+  const confirm = document.createElement('div');
+  confirm.className = 'mpc-confirm';
+  confirm.innerHTML = '<span class="mpc-confirm-icon">✓</span><p>Enquiry sent!</p><p class="mpc-confirm-sub">We\'ll reply on WhatsApp within 2 hours.</p>';
+  mpcEl.appendChild(confirm);
+  setTimeout(() => {
+    mpcEl.classList.remove('mpc-sent');
+    mpcEl.removeChild(confirm);
+    closeMpc();
+  }, 2500);
 });
 document.getElementById('mpc-cancel').addEventListener('click', closeMpc);
 mpcWrap.addEventListener('click', e => { if (e.target === mpcWrap) closeMpc(); });
