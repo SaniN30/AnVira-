@@ -121,9 +121,41 @@ let currentProp = null;
 function initBooking(p) {
   currentProp = p;
   renderAvailability(p);
-  const guestsEl = document.getElementById('bw-guests');
-  guestsEl.max = p.maxGuests;
-  if (+guestsEl.value > p.maxGuests) guestsEl.value = Math.min(2, p.maxGuests);
+
+  /* Parse base (included) vs max (chargeable above base) guests.
+     p.guests can be '14 / 20' (base / max) or a plain number. */
+  const baseGuests = typeof p.guests === 'string'
+    ? parseInt(p.guests.split('/')[0].trim(), 10)
+    : p.maxGuests;
+
+  /* Replace <input type="number"> with a <select> so we can label
+     chargeable tiers directly inside the dropdown options. */
+  const numInput = document.getElementById('bw-guests');
+  const sel = document.createElement('select');
+  sel.id        = 'bw-guests';
+  sel.name      = 'guests';
+  sel.className = 'bw-input';
+  sel.required  = true;
+  for (let i = 1; i <= p.maxGuests; i++) {
+    const opt = document.createElement('option');
+    opt.value       = i;
+    opt.textContent = i > baseGuests
+      ? `${i} guests  (+  chargeable)`
+      : `${i} guest${i > 1 ? 's' : ''}`;
+    if (i === 2) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  numInput.replaceWith(sel);
+
+  /* Chargeable note below the guests field */
+  const guestsField = sel.closest('.bw-field');
+  if (guestsField && !guestsField.querySelector('.bw-charge-note')) {
+    const note = document.createElement('p');
+    note.className = 'bw-charge-note';
+    note.innerHTML = `<span class="bw-charge-asterisk">*</span> Up to <strong>${baseGuests}</strong> guests included. Additional guests above this limit are chargeable — mention in your note.`;
+    guestsField.appendChild(note);
+  }
+
   document.getElementById('bw-in').min  = toISO(new Date());
   document.getElementById('bw-out').min = toISO(new Date());
 }

@@ -910,39 +910,55 @@
       border: 1px solid var(--border-mid); border-radius: 2px;
       padding: 1.6rem 1.5rem 1.4rem;
     }
+    #bw {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+      padding: 1.8rem 1.6rem 1.5rem;
+    }
     #bw .bw-title {
       font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 1.15rem; font-weight: 300; color: var(--text); margin-bottom: 1.1rem;
+      font-size: 1.18rem; font-weight: 300; color: var(--text);
+      margin-bottom: 1.4rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--rule);
     }
-    .bw-field { margin-bottom: .85rem; }
+    .bw-field { margin-bottom: .9rem; }
     .bw-label {
-      display: block; font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
+      display: block; font-size: 9.5px; letter-spacing: .28em; text-transform: uppercase;
       color: var(--mid); margin-bottom: 5px; font-weight: 500;
     }
     .bw-input {
       width: 100%; height: 42px;
       font-family: 'DM Sans', sans-serif; font-size: 13.5px;
       color: var(--text); background: var(--bg);
-      border: 1px solid var(--rule); border-radius: 1px;
+      border: 1px solid var(--rule); border-radius: 2px;
       padding: 9px 10px; outline: none;
-      transition: border-color .25s ease;
+      transition: border-color .25s ease, box-shadow .25s ease;
     }
     textarea.bw-input { height: auto; }
     .bw-input::placeholder { color: var(--faint); }
-    /* native date pickers keep the brand face and a consistent box */
     .bw-input[type="date"] { -webkit-appearance: none; appearance: none; }
-    .bw-input:focus { border-color: var(--gold); }
-    .bw-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; align-items: end; }
-    .bw-row .bw-field { margin-bottom: .85rem; min-width: 0; }
+    .bw-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(153,116,71,.08); }
+    .bw-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; align-items: start; }
+    .bw-row .bw-field { margin-bottom: .9rem; min-width: 0; }
     .bw-err { font-size: 11.5px; color: var(--error); margin: .2rem 0 .6rem; min-height: 14px; }
-    #bw .cta { width: 100%; text-align: center; }
+    #bw .cta { width: 100%; text-align: center; margin-top: .4rem; }
     .bw-call {
-      display: block; text-align: center; margin-top: .7rem;
+      display: block; text-align: center; margin-top: .75rem;
       font-size: 10px; letter-spacing: .26em; text-transform: uppercase;
       color: var(--mid); text-decoration: none;
       transition: color .25s ease;
     }
     .bw-call:hover { color: var(--text); }
+    /* Guests dropdown chargeable note */
+    .bw-charge-note {
+      font-size: 10.5px; color: var(--faint); line-height: 1.5;
+      margin-top: .45rem; padding: .5rem .6rem;
+      background: rgba(153,116,71,.055);
+      border-left: 2px solid var(--gold);
+      border-radius: 0 2px 2px 0;
+    }
+    .bw-charge-asterisk { color: var(--gold); font-weight: 600; margin-right: 2px; }
 
     /* ── Availability calendar — month-level ────────────────── */
     #pd-avail { margin-bottom: 3rem; }
