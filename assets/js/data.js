@@ -231,7 +231,7 @@ const PROPERTIES = [
       title: "Tarika's Seascapes, Goa — 3-BHK River-View Pool Villa | AnVira",
       desc: 'A bayside 3-bedroom holiday home on the Zuari River, Goa — private pool, river-view deck, sleeps six. Book directly with AnVira.',
     },
-    card: 'Goa/tarikas-seascapes-4c718c.webp',
+    card: 'Goa/tarikas-seascapes-2d5a5c.webp',
     address: 'Infiniti Bay, Holy Cross Colony\nMormugao, Ijorshi, Goa — 403 711',
     mapUrl: 'https://www.google.com/maps/dir/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/Infiniti+Bay,+Holy+Cross+Colony,+Mormugao,+Ijorshi,+Goa+403711/@15.3978297,73.8537601,17.6z/data=!4m13!4m12!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042!1m5!1m1!1s0x3bbfb86dd979769b:0xc7a61f530f5a48b5!2m2!1d73.854648!2d15.3983042?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D',
     arrive: {
@@ -251,7 +251,7 @@ const PROPERTIES = [
     },
     amenities: ['Private Pool','Sea View Terrace','Home Theatre','Smart TV','Full Kitchen','Workspace','2 Balconies','Private Entrance','24/7 Staff','Parking'],
     images: [
-      'Goa/tarikas-seascapes-4c718c.webp',
+      'Goa/tarikas-seascapes-2d5a5c.webp',
       'Goa/tarikas-seascapes-dabolim-3-bhk-villa-in-goa-with-private-pool-and-spacious-rooms-1a519f.webp',
       'Goa/tarikas-seascapes-7f1d7d.jpg',
       'Goa/tarikas-seascapes-79fbc7.webp',
