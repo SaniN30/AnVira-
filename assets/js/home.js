@@ -261,7 +261,7 @@ const tNext   = document.getElementById('testi-next');
 const PROP_DISPLAY = {
   'villa-anvira':      'Villa AnVira, Chail',
   'estate-10':         'Estate 10, New Delhi',
-  'tarikas-seascapes': “Tarika's Seascapes, Goa”,
+  'tarikas-seascapes': "Tarika's Seascapes, Goa",
 };
 
 function buildReviewCard(r) {
