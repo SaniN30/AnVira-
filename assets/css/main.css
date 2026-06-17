@@ -800,7 +800,7 @@
     #story-attr { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; font-size: 12px; letter-spacing: .14em; color: var(--mid); }
 
     /* ── Testimonials ──────────────────────────────────────── */
-    #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; overflow: hidden; }
+    #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; }
     #testimonials .sec-bar { padding: 0 clamp(1.5rem,5vw,3.5rem); margin-bottom: 3rem; }
     #testi-track-wrap {
       overflow-x: scroll; overflow-y: hidden;

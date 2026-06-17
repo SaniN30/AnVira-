@@ -307,13 +307,14 @@ function initTeCarousel() {
   wrap.addEventListener('mouseleave', teStart);
 }
 
-/* Fetch approved reviews from Sheet, inject into carousel, then init */
+/* Init carousel immediately with hardcoded cards, then append approved Sheet reviews */
 if (track) {
+  initTeCarousel();
+
   fetch(API_ENDPOINT + '?action=reviews')
     .then(r => r.json())
     .then(json => {
       if (!json.success || !json.data) return;
-      /* Flatten all estates' approved reviews into one list */
       const all = Object.entries(json.data).flatMap(([estateId, reviews]) =>
         reviews.map(r => ({ ...r, estateId }))
       );
@@ -329,8 +330,7 @@ if (track) {
         </div>`;
       }).join(''));
     })
-    .catch(() => { /* keep hardcoded cards on any error */ })
-    .finally(() => initTeCarousel());
+    .catch(() => {});
 }
 
 /* ── CTA buttons → WhatsApp ─────────────────────────────── */
