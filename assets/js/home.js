@@ -253,82 +253,94 @@ if (!isTouchDevice) {
 }
 
 /* ── Testimonials carousel ──────────────────────────────── */
-const track     = document.getElementById('testi-track');
-const progBar   = document.getElementById('testi-prog-bar');
-const tPrev     = document.getElementById('testi-prev');
-const tNext     = document.getElementById('testi-next');
+const track   = document.getElementById('testi-track');
+const progBar = document.getElementById('testi-prog-bar');
+const tPrev   = document.getElementById('testi-prev');
+const tNext   = document.getElementById('testi-next');
 
-/* Property display names for homepage cards */
 const PROP_DISPLAY = {
   'villa-anvira':      'Villa AnVira, Chail',
   'estate-10':         'Estate 10, New Delhi',
-  'tarikas-seascapes': "Tarika's Seascapes, Goa",
+  'tarikas-seascapes': “Tarika's Seascapes, Goa”,
 };
 
-function initTeCarousel() {
+function buildReviewCard(r) {
+  const propLabel = PROP_DISPLAY[r.estateId] || r.prop || '';
+  const stars = '<span class=”testi-star”>&#9733;</span>'.repeat(Math.min(5, r.stars));
+  return `<div class=”testi-card”>
+    <div class=”testi-stars”>${stars}</div>
+    <p class=”testi-text”>“${r.text}”</p>
+    <div class=”testi-name”>${r.name}</div>
+    ${propLabel ? `<div class=”testi-prop”>${propLabel}</div>` : ''}
+    ${r.occ    ? `<div class=”testi-occ”>${r.occ}</div>`      : ''}
+  </div>`;
+}
+
+function startCarousel() {
   if (!track) return;
-  const wrap  = track.parentElement;
-  const cards = track.querySelectorAll('.testi-card');
-  const total = cards.length;
-  if (!total) return;
-  let tIdx   = 0;
+  const wrap = track.parentElement;
+
+  /* Live NodeList — always reflects current DOM including appended cards */
+  function cards()  { return track.querySelectorAll('.testi-card'); }
+  function total()  { return cards().length; }
+
+  let tIdx  = 0;
   let tTimer = null;
 
-  function teScrollTo(i) {
-    tIdx = ((i % total) + total) % total;
-    wrap.scrollTo({ left: cards[tIdx].offsetLeft - track.offsetLeft, behavior: 'smooth' });
+  function scrollToIdx(i) {
+    const all = cards();
+    if (!all.length) return;
+    tIdx = ((i % all.length) + all.length) % all.length;
+    /* getBoundingClientRect gives position relative to viewport — reliable across all layouts */
+    const wrapLeft = wrap.getBoundingClientRect().left;
+    const cardLeft = all[tIdx].getBoundingClientRect().left;
+    wrap.scrollBy({ left: cardLeft - wrapLeft, behavior: 'smooth' });
+    if (progBar) progBar.style.width = `${((tIdx + 1) / all.length) * 100}%`;
   }
 
-  /* Keep progress bar and tIdx in sync with native scroll (snap + buttons + swipe) */
-  let scrollRaf = null;
+  /* Sync progress bar with native scroll (swipe / snap) */
+  let raf = null;
   wrap.addEventListener('scroll', () => {
-    if (scrollRaf) cancelAnimationFrame(scrollRaf);
-    scrollRaf = requestAnimationFrame(() => {
-      const scrollMid = wrap.scrollLeft + wrap.clientWidth / 2;
-      let closest = 0;
-      cards.forEach((c, i) => {
-        const cMid = c.offsetLeft - track.offsetLeft + c.offsetWidth / 2;
-        if (Math.abs(cMid - scrollMid) < Math.abs(cards[closest].offsetLeft - track.offsetLeft + cards[closest].offsetWidth / 2 - scrollMid)) closest = i;
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const all   = cards();
+      if (!all.length) return;
+      const mid   = wrap.scrollLeft + wrap.clientWidth / 2;
+      let best = 0, bestDist = Infinity;
+      all.forEach((c, i) => {
+        const dist = Math.abs((c.offsetLeft + c.offsetWidth / 2) - mid);
+        if (dist < bestDist) { bestDist = dist; best = i; }
       });
-      tIdx = closest;
-      if (progBar) progBar.style.width = `${((tIdx + 1) / total) * 100}%`;
+      tIdx = best;
+      if (progBar) progBar.style.width = `${((tIdx + 1) / all.length) * 100}%`;
     });
   }, { passive: true });
 
-  function teStart() { tTimer = setInterval(() => teScrollTo(tIdx + 1), 5000); }
-  function teStop()  { clearInterval(tTimer); tTimer = null; }
+  function teStart() { tTimer = setInterval(() => scrollToIdx(tIdx + 1), 5000); }
+  function teStop()  { clearInterval(tTimer); }
 
-  if (tPrev) tPrev.addEventListener('click', () => { teStop(); teScrollTo(tIdx - 1); teStart(); });
-  if (tNext) tNext.addEventListener('click', () => { teStop(); teScrollTo(tIdx + 1); teStart(); });
+  if (tPrev) tPrev.addEventListener('click', () => { teStop(); scrollToIdx(tIdx - 1); teStart(); });
+  if (tNext) tNext.addEventListener('click', () => { teStop(); scrollToIdx(tIdx + 1); teStart(); });
 
-  if (progBar) progBar.style.width = `${(1 / total) * 100}%`;
-  teStart();
   wrap.addEventListener('mouseenter', teStop);
   wrap.addEventListener('mouseleave', teStart);
+
+  if (progBar) progBar.style.width = `${(1 / total()) * 100}%`;
+  teStart();
 }
 
-/* Init carousel immediately with hardcoded cards, then append approved Sheet reviews */
 if (track) {
-  initTeCarousel();
+  startCarousel();
 
+  /* Append approved Sheet reviews after carousel is running — scroll-snap picks them up automatically */
   fetch(API_ENDPOINT + '?action=reviews')
     .then(r => r.json())
     .then(json => {
       if (!json.success || !json.data) return;
-      const all = Object.entries(json.data).flatMap(([estateId, reviews]) =>
-        reviews.map(r => ({ ...r, estateId }))
+      const all = Object.entries(json.data).flatMap(([estateId, revs]) =>
+        revs.map(r => ({ ...r, estateId }))
       );
-      if (!all.length) return;
-      track.insertAdjacentHTML('beforeend', all.map(r => {
-        const propLabel = PROP_DISPLAY[r.estateId] || r.prop || r.estateId;
-        return `<div class=”testi-card”>
-          <div class=”testi-stars”>${'<span class=”testi-star”>&#9733;</span>'.repeat(Math.min(5, r.stars))}</div>
-          <p class=”testi-text”>”${r.text}”</p>
-          <div class=”testi-name”>${r.name}</div>
-          <div class=”testi-prop”>${propLabel}</div>
-          ${r.occ ? `<div class=”testi-occ”>${r.occ}</div>` : ''}
-        </div>`;
-      }).join(''));
+      if (all.length) track.insertAdjacentHTML('beforeend', all.map(buildReviewCard).join(''));
     })
     .catch(() => {});
 }
