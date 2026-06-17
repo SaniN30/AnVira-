@@ -68,7 +68,7 @@ function doGet(e) {
           var timestamp = String(rows[i][0]).trim();
           if (!estateId || !name || !text) continue;
           if (!out[estateId]) out[estateId] = [];
-          out[estateId].push({ name: name, occ: occasion, stars: rating, text: text, ts: timestamp });
+          out[estateId].push({ name: name, occ: occasion, stars: rating, text: text, ts: timestamp, prop: propName });
         }
       }
       return ContentService.createTextOutput(JSON.stringify({ success: true, data: out }))

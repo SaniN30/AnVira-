@@ -257,20 +257,30 @@ const track     = document.getElementById('testi-track');
 const progBar   = document.getElementById('testi-prog-bar');
 const tPrev     = document.getElementById('testi-prev');
 const tNext     = document.getElementById('testi-next');
-if (track) {
-  const cards   = track.querySelectorAll('.testi-card');
-  const total   = cards.length;
-  let   tIdx    = 0;
-  let   tTimer  = null;
+
+/* Property display names for homepage cards */
+const PROP_DISPLAY = {
+  'villa-anvira':      'Villa AnVira, Chail',
+  'estate-10':         'Estate 10, New Delhi',
+  'tarikas-seascapes': "Tarika's Seascapes, Goa",
+};
+
+function initTeCarousel() {
+  if (!track) return;
+  const cards = track.querySelectorAll('.testi-card');
+  const total = cards.length;
+  if (!total) return;
+  let tIdx   = 0;
+  let tTimer = null;
 
   function teScrollTo(i) {
     tIdx = (i + total) % total;
-    const card   = cards[tIdx];
-    const wrap   = track.parentElement;
-    const wrapL  = wrap.getBoundingClientRect().left;
-    const cardL  = card.getBoundingClientRect().left;
-    const scroll = track.parentElement.scrollLeft + (cardL - wrapL) - parseFloat(getComputedStyle(track).paddingLeft || 24);
-    track.parentElement.scrollTo({ left: scroll, behavior: 'smooth' });
+    const card  = cards[tIdx];
+    const wrap  = track.parentElement;
+    const wrapL = wrap.getBoundingClientRect().left;
+    const cardL = card.getBoundingClientRect().left;
+    const scroll = wrap.scrollLeft + (cardL - wrapL) - parseFloat(getComputedStyle(track).paddingLeft || 24);
+    wrap.scrollTo({ left: scroll, behavior: 'smooth' });
     if (progBar) progBar.style.width = `${((tIdx + 1) / total) * 100}%`;
   }
 
@@ -280,7 +290,6 @@ if (track) {
   if (tPrev) tPrev.addEventListener('click', () => { teStop(); teScrollTo(tIdx - 1); teStart(); });
   if (tNext) tNext.addEventListener('click', () => { teStop(); teScrollTo(tIdx + 1); teStart(); });
 
-  /* swipe on the track */
   let tTouchX = null;
   track.addEventListener('touchstart', e => { tTouchX = e.touches[0].clientX; }, { passive: true });
   track.addEventListener('touchend', e => {
@@ -290,13 +299,36 @@ if (track) {
     tTouchX = null;
   });
 
-  /* init progress bar + auto-advance */
   if (progBar) progBar.style.width = `${(1 / total) * 100}%`;
   teStart();
-
-  /* pause on hover */
   track.addEventListener('mouseenter', teStop);
   track.addEventListener('mouseleave', teStart);
+}
+
+/* Fetch approved reviews from Sheet, inject into carousel, then init */
+if (track) {
+  fetch(API_ENDPOINT + '?action=reviews')
+    .then(r => r.json())
+    .then(json => {
+      if (!json.success || !json.data) return;
+      /* Flatten all estates' approved reviews into one list */
+      const all = Object.entries(json.data).flatMap(([estateId, reviews]) =>
+        reviews.map(r => ({ ...r, estateId }))
+      );
+      if (!all.length) return;
+      track.innerHTML = all.map(r => {
+        const propLabel = PROP_DISPLAY[r.estateId] || r.prop || r.estateId;
+        return `<div class="testi-card">
+          <div class="testi-stars">${'<span class="testi-star">&#9733;</span>'.repeat(Math.min(5, r.stars))}</div>
+          <p class="testi-text">“${r.text}”</p>
+          <div class="testi-name">${r.name}</div>
+          <div class="testi-prop">${propLabel}</div>
+          ${r.occ ? `<div class="testi-occ">${r.occ}</div>` : ''}
+        </div>`;
+      }).join('');
+    })
+    .catch(() => { /* keep hardcoded cards on any error */ })
+    .finally(() => initTeCarousel());
 }
 
 /* ── CTA buttons → WhatsApp ─────────────────────────────── */
