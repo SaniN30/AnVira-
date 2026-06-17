@@ -267,6 +267,7 @@ const PROP_DISPLAY = {
 
 function initTeCarousel() {
   if (!track) return;
+  const wrap  = track.parentElement;
   const cards = track.querySelectorAll('.testi-card');
   const total = cards.length;
   if (!total) return;
@@ -274,15 +275,25 @@ function initTeCarousel() {
   let tTimer = null;
 
   function teScrollTo(i) {
-    tIdx = (i + total) % total;
-    const card  = cards[tIdx];
-    const wrap  = track.parentElement;
-    const wrapL = wrap.getBoundingClientRect().left;
-    const cardL = card.getBoundingClientRect().left;
-    const scroll = wrap.scrollLeft + (cardL - wrapL) - parseFloat(getComputedStyle(track).paddingLeft || 24);
-    wrap.scrollTo({ left: scroll, behavior: 'smooth' });
-    if (progBar) progBar.style.width = `${((tIdx + 1) / total) * 100}%`;
+    tIdx = ((i % total) + total) % total;
+    wrap.scrollTo({ left: cards[tIdx].offsetLeft - track.offsetLeft, behavior: 'smooth' });
   }
+
+  /* Keep progress bar and tIdx in sync with native scroll (snap + buttons + swipe) */
+  let scrollRaf = null;
+  wrap.addEventListener('scroll', () => {
+    if (scrollRaf) cancelAnimationFrame(scrollRaf);
+    scrollRaf = requestAnimationFrame(() => {
+      const scrollMid = wrap.scrollLeft + wrap.clientWidth / 2;
+      let closest = 0;
+      cards.forEach((c, i) => {
+        const cMid = c.offsetLeft - track.offsetLeft + c.offsetWidth / 2;
+        if (Math.abs(cMid - scrollMid) < Math.abs(cards[closest].offsetLeft - track.offsetLeft + cards[closest].offsetWidth / 2 - scrollMid)) closest = i;
+      });
+      tIdx = closest;
+      if (progBar) progBar.style.width = `${((tIdx + 1) / total) * 100}%`;
+    });
+  }, { passive: true });
 
   function teStart() { tTimer = setInterval(() => teScrollTo(tIdx + 1), 5000); }
   function teStop()  { clearInterval(tTimer); tTimer = null; }
@@ -290,19 +301,10 @@ function initTeCarousel() {
   if (tPrev) tPrev.addEventListener('click', () => { teStop(); teScrollTo(tIdx - 1); teStart(); });
   if (tNext) tNext.addEventListener('click', () => { teStop(); teScrollTo(tIdx + 1); teStart(); });
 
-  let tTouchX = null;
-  track.addEventListener('touchstart', e => { tTouchX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend', e => {
-    if (tTouchX === null) return;
-    const dx = e.changedTouches[0].clientX - tTouchX;
-    if (Math.abs(dx) > 44) { teStop(); teScrollTo(dx < 0 ? tIdx + 1 : tIdx - 1); teStart(); }
-    tTouchX = null;
-  });
-
   if (progBar) progBar.style.width = `${(1 / total) * 100}%`;
   teStart();
-  track.addEventListener('mouseenter', teStop);
-  track.addEventListener('mouseleave', teStart);
+  wrap.addEventListener('mouseenter', teStop);
+  wrap.addEventListener('mouseleave', teStart);
 }
 
 /* Fetch approved reviews from Sheet, inject into carousel, then init */
