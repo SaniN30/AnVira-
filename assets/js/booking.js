@@ -219,6 +219,28 @@ function initBooking(p) {
   /* Render immediately from hardcoded data, then patch if fetch succeeds */
   renderAvailability(p);
 
+  /* ── Live reviews fetch — replaces hardcoded cards with Sheet-approved reviews ── */
+  fetch(API_ENDPOINT + '?action=reviews')
+    .then(r => r.json())
+    .then(json => {
+      if (!json.success || !json.data || !json.data[p.id]) return;
+      const reviews = json.data[p.id];
+      if (!reviews.length) return;
+      const container = document.querySelector('.ep-reviews');
+      if (!container) return;
+      container.innerHTML = reviews.map(r => {
+        const stars = '&#9733;'.repeat(Math.min(5, Math.max(1, r.stars)));
+        const empty = '&#9734;'.repeat(5 - Math.min(5, Math.max(1, r.stars)));
+        return `<div class="testi-card">
+          <div class="testi-stars">${[...Array(r.stars)].map(() => '<span class="testi-star">&#9733;</span>').join('')}</div>
+          <p class="testi-text">&ldquo;${r.text}&rdquo;</p>
+          <div class="testi-name">${r.name}</div>
+          ${r.occ ? `<div class="testi-occ">${r.occ}</div>` : ''}
+        </div>`;
+      }).join('');
+    })
+    .catch(() => { /* silently keep hardcoded reviews */ });
+
   /* Parse base (included) vs max (chargeable above base) guests.
      p.guests can be '14 / 20' (base / max) or a plain number. */
   const baseGuests = typeof p.guests === 'string'

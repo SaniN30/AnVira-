@@ -9,13 +9,21 @@
 
 var SHEET_ID = '1sKq1Ctziur_iRWnS10sXctoPXJUQkyeBlemavOzQt6c'; // from the sheet URL: docs.google.com/spreadsheets/d/<THIS>/edit
 
-/* ── doGet: returns live availability JSON for the calendar ──────────────
-   Sheet "Availability" has columns: EstateID | YYYY-MM | Status
-   Status values: available | partial | booked
-   Call: ?action=availability   (no auth — read-only public data)
+/* ── Property name → estate ID map (must match data.js PROPERTIES ids) ── */
+var ESTATE_ID_MAP = {
+  'Villa AnVira, Chail, Himachal Pradesh': 'villa-anvira',
+  "Estate 10, New Delhi":                  'estate-10',
+  "Tarika's Seascapes, Mormugao, Goa":    'tarikas-seascapes',
+};
+
+/* ── doGet: availability + approved reviews ──────────────────────────────
+   ?action=availability  → Sheet "Availability": EstateID | YYYY-MM | Status
+   ?action=reviews       → Sheet "Reviews": rows where Status = "Approved"
+   Both are read-only public data, no auth required.
    ────────────────────────────────────────────────────────────────────── */
 function doGet(e) {
   var action = e && e.parameter && e.parameter.action;
+
   if (action === 'availability') {
     try {
       var ss    = SpreadsheetApp.openById(SHEET_ID);
@@ -23,9 +31,9 @@ function doGet(e) {
       var out   = {};
       if (sheet) {
         var rows = sheet.getDataRange().getValues();
-        for (var i = 1; i < rows.length; i++) {           /* skip header row */
+        for (var i = 1; i < rows.length; i++) {
           var estateId = String(rows[i][0]).trim();
-          var ym       = String(rows[i][1]).trim();        /* YYYY-MM */
+          var ym       = String(rows[i][1]).trim();
           var status   = String(rows[i][2]).trim().toLowerCase();
           if (!estateId || !ym || !status) continue;
           if (!out[estateId]) out[estateId] = {};
@@ -39,6 +47,38 @@ function doGet(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
   }
+
+  if (action === 'reviews') {
+    try {
+      var ss    = SpreadsheetApp.openById(SHEET_ID);
+      var sheet = ss.getSheetByName('Reviews');
+      var out   = {};
+      if (sheet) {
+        var rows = sheet.getDataRange().getValues();
+        /* Columns: Timestamp | Property | Name | Phone | Occasion | Rating | Review | Status */
+        for (var i = 1; i < rows.length; i++) {
+          var status = String(rows[i][7]).trim();
+          if (status.toLowerCase() !== 'approved') continue;
+          var propName  = String(rows[i][1]).trim();
+          var estateId  = ESTATE_ID_MAP[propName] || propName;
+          var name      = String(rows[i][2]).trim();
+          var occasion  = String(rows[i][4]).trim();
+          var rating    = Number(rows[i][5]) || 5;
+          var text      = String(rows[i][6]).trim();
+          var timestamp = String(rows[i][0]).trim();
+          if (!estateId || !name || !text) continue;
+          if (!out[estateId]) out[estateId] = [];
+          out[estateId].push({ name: name, occ: occasion, stars: rating, text: text, ts: timestamp });
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true, data: out }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: String(err) }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unknown action' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
