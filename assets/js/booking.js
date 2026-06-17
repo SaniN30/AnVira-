@@ -119,7 +119,7 @@ function renderAvailability(p) {
       const yr         = base.getFullYear();
       const mo         = base.getMonth();
       const ym         = `${yr}-${String(mo + 1).padStart(2, '0')}`;
-      const status     = overrides[ym] || 'available';
+      const monthStatus = overrides[ym];
       const daysInMonth = new Date(yr, mo + 1, 0).getDate();
       const startDow   = base.getDay();
 
@@ -151,20 +151,22 @@ function renderAvailability(p) {
         const iso   = toISO(dt);
         const isPast   = dt < today;
         const isToday  = dt.getTime() === today.getTime();
-        const isBooked = !isPast && status === 'booked';
+        /* Day-level override takes priority over month-level */
+        const dayStatus = overrides[iso] ||
+          (monthStatus && typeof monthStatus === 'string' ? monthStatus : 'available');
+        const isBlocked = !isPast && (dayStatus === 'booked' || dayStatus === 'tentative' || dayStatus === 'owner');
 
         let cls = 'avail-cal-day';
-        if (isPast)       cls += ' past';
-        else if (isBooked) cls += ' booked';
-        else               cls += ` ${status}`;
+        if (isPast)        cls += ' past';
+        else               cls += ` ${dayStatus}`;
         if (isToday) cls += ' today';
 
         const cell = document.createElement('div');
         cell.className = cls;
         cell.textContent = day;
-        cell.setAttribute('aria-label', `${day} ${MONTH_NAMES[mo]} ${yr} — ${isPast ? 'past' : status}`);
+        cell.setAttribute('aria-label', `${day} ${MONTH_NAMES[mo]} ${yr} — ${isPast ? 'past' : dayStatus}`);
 
-        if (!isPast && !isBooked) {
+        if (!isPast && !isBlocked) {
           cell.setAttribute('tabindex', '0');
           cell.setAttribute('role', 'button');
           cell.addEventListener('click',      () => onDayClick(dt));
@@ -173,6 +175,8 @@ function renderAvailability(p) {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDayClick(dt); }
           });
           cellMap[iso] = cell;
+        } else if (!isPast) {
+          cell.setAttribute('tabindex', '-1');
         }
 
         grid.appendChild(cell);

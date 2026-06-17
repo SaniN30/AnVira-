@@ -291,7 +291,21 @@ const PROPERTIES = [
    Override per property/month: AVAILABILITY['estate-10']['2026-08'] = 'partial' | 'booked'
    Months not listed default to 'available'. */
 const AVAILABILITY = {
-  'villa-anvira':      {},
+  'villa-anvira': {
+    /* June 2026 — sourced from inventory calendar 2026-06-17 */
+    '2026-06-01': 'booked',
+    '2026-06-04': 'booked',
+    '2026-06-05': 'booked',
+    '2026-06-06': 'booked',
+    '2026-06-07': 'booked',
+    '2026-06-11': 'tentative',
+    '2026-06-16': 'owner',
+    '2026-06-17': 'owner',
+    '2026-06-22': 'owner',
+    '2026-06-24': 'owner',
+    '2026-06-26': 'owner',
+    '2026-06-27': 'owner',
+  },
   'estate-10':         {},
   'tarikas-seascapes': {},
 };
