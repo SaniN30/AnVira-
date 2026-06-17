@@ -316,16 +316,16 @@ if (track) {
         reviews.map(r => ({ ...r, estateId }))
       );
       if (!all.length) return;
-      track.innerHTML = all.map(r => {
+      track.insertAdjacentHTML('beforeend', all.map(r => {
         const propLabel = PROP_DISPLAY[r.estateId] || r.prop || r.estateId;
-        return `<div class="testi-card">
-          <div class="testi-stars">${'<span class="testi-star">&#9733;</span>'.repeat(Math.min(5, r.stars))}</div>
-          <p class="testi-text">“${r.text}”</p>
-          <div class="testi-name">${r.name}</div>
-          <div class="testi-prop">${propLabel}</div>
-          ${r.occ ? `<div class="testi-occ">${r.occ}</div>` : ''}
+        return `<div class=”testi-card”>
+          <div class=”testi-stars”>${'<span class=”testi-star”>&#9733;</span>'.repeat(Math.min(5, r.stars))}</div>
+          <p class=”testi-text”>”${r.text}”</p>
+          <div class=”testi-name”>${r.name}</div>
+          <div class=”testi-prop”>${propLabel}</div>
+          ${r.occ ? `<div class=”testi-occ”>${r.occ}</div>` : ''}
         </div>`;
-      }).join('');
+      }).join(''));
     })
     .catch(() => { /* keep hardcoded cards on any error */ })
     .finally(() => initTeCarousel());

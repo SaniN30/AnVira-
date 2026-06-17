@@ -228,7 +228,7 @@ function initBooking(p) {
       if (!reviews.length) return;
       const container = document.querySelector('.ep-reviews');
       if (!container) return;
-      container.innerHTML = reviews.map(r => {
+      container.insertAdjacentHTML('beforeend', reviews.map(r => {
         const stars = '&#9733;'.repeat(Math.min(5, Math.max(1, r.stars)));
         const empty = '&#9734;'.repeat(5 - Math.min(5, Math.max(1, r.stars)));
         return `<div class="testi-card">
@@ -237,7 +237,7 @@ function initBooking(p) {
           <div class="testi-name">${r.name}</div>
           ${r.occ ? `<div class="testi-occ">${r.occ}</div>` : ''}
         </div>`;
-      }).join('');
+      }).join(''));
     })
     .catch(() => { /* silently keep hardcoded reviews */ });
 
