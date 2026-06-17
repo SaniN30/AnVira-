@@ -802,20 +802,14 @@
     /* ── Testimonials ──────────────────────────────────────── */
     #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; }
     #testimonials .sec-bar { padding: 0 clamp(1.5rem,5vw,3.5rem); margin-bottom: 3rem; }
-    #testi-track-wrap {
-      overflow-x: scroll; overflow-y: hidden;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -ms-overflow-style: none; scrollbar-width: none;
-    }
-    #testi-track-wrap::-webkit-scrollbar { display: none; }
+    #testi-track-wrap { overflow: hidden; }
     #testi-track {
       display: flex; gap: 1.4rem;
-      padding: .4rem clamp(1.5rem,5vw,3.5rem) 1.4rem;
+      padding: .4rem clamp(1.5rem,5vw,3.5rem) 1rem;
+      will-change: transform; transition: transform .7s var(--lux);
     }
     .testi-card {
       flex: 0 0 clamp(270px,34vw,400px);
-      scroll-snap-align: start;
       background: var(--surface); border: 1px solid var(--border);
       padding: 2.2rem 2.2rem 1.8rem; border-radius: 2px;
     }
