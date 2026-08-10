@@ -74,6 +74,11 @@ const fonts = `
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&family=Spectral:ital,wght@1,300&display=swap" rel="stylesheet" />`;
 
+/* Google Ads gtag.js (conversion ID: AW-18140671098) */
+const gtag = `
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18140671098"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18140671098');</script>`;
+
 const chrome = {
   nav: `
   <div id="cursor-ring"><span id="cursor-label">View</span></div>
@@ -262,6 +267,7 @@ function estatePage(p) {
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+${gtag}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(p.seo.title)}</title>
   <meta name="description" content="${esc(p.seo.desc)}" />
@@ -442,6 +448,7 @@ ${chrome.footer}
 
   <script src="../assets/js/data.js"></script>
   <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/wa-tracking.js"></script>
   <script src="../assets/js/gallery.js"></script>
   <script src="../assets/js/booking.js"></script>
   <script src="../assets/js/estate.js"></script>
@@ -505,6 +512,7 @@ function listingPage() {
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+${gtag}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Estate Collection — Private Luxury Villas in India | AnVira</title>
   <meta name="description" content="The complete AnVira portfolio — hand-selected private estates in Chail, New Delhi, and Goa. Browse, compare, and book directly." />
@@ -584,6 +592,7 @@ ${chrome.footer}
 
   <script src="../assets/js/data.js"></script>
   <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/wa-tracking.js"></script>
   <script src="../assets/js/listing.js"></script>
 </body>
 </html>
@@ -596,6 +605,7 @@ function shell({ title, desc, robots = 'index, follow', canonicalPath, body, scr
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+${gtag}
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(desc)}" />
@@ -618,6 +628,7 @@ ${chrome.footer}
 
   <script src="../assets/js/data.js"></script>
   <script src="../assets/js/core.js"></script>
+  <script src="../assets/js/wa-tracking.js"></script>
 ${scripts}</body>
 </html>
 `;
