@@ -61,7 +61,8 @@ const PROPERTIES = [
       ],
       bring: ['Warm layers for the evenings', 'Walking shoes for the forest trails', 'Government ID for all adult guests', 'Any regular medication — the nearest chemist is 20 minutes away'],
     },
-    amenities: ['Private Terrace','Bonfire Pit','Valley Views','Curated Dining','Chef on Request','Gazebo','Indoor Games','24/7 Staff','Free Parking'],
+    amenities: ['Private Terrace','Bonfire Pit','Valley Views','Curated Dining','Chef on Request','Gazebo','Indoor Games','24/7 Staff','Free Parking','Pet Friendly'],
+    petFriendly: true,
     images: [
       'chail/anvira-terrace.webp',
       'chail/villa-anvira-by-gtv-estate-6e2617.jpg',
@@ -161,7 +162,8 @@ const PROPERTIES = [
       ],
       bring: ['Swimwear', 'Government ID for all adult guests', 'Event plans, if any — lawn setups are arranged in advance'],
     },
-    amenities: ['Private Pool','Manicured Lawn','Bonfire Area','Home Chef','Party Lawn','Indoor Lounge','24/7 Security','Concierge','Parking'],
+    amenities: ['Private Pool','Manicured Lawn','Bonfire Area','Home Chef','Party Lawn','Indoor Lounge','24/7 Security','Concierge','Parking','Pet Friendly'],
+    petFriendly: true,
     images: [
       'Delhi/estate10-exterior.webp',
       'Delhi/estate-10-by-gtv-estate-b9e624.jpg',

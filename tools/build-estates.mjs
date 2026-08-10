@@ -224,6 +224,7 @@ function estatePage(p) {
         <div class="prop-card" data-cursor onclick="location.href='./${o.id}.html'">
           <div class="ci-wrap"><img class="ci" src="../${o.card}" alt="${esc(o.name)}" loading="lazy" /></div>
           <div class="ctag">${esc(o.tag)}</div>
+          ${o.petFriendly ? '<span class="pet-badge">Pet Friendly</span>' : ''}
           <div class="crow">
             <div><div class="cname">${esc(o.name)}</div><div class="cloc">${esc(o.loc)}</div></div>
             <div class="cprice">${esc(o.price)}</div>
@@ -486,6 +487,7 @@ function listingPage() {
         <div class="prop-card" data-region="${esc(p.region)}" data-guests="${p.maxGuests}" data-cursor onclick="location.href='./${p.id}.html'">
           <div class="ci-wrap"><img class="ci" src="../${p.card}" alt="${esc(p.name)}" loading="lazy" /></div>
           <div class="ctag">${esc(p.tag)}</div>
+          ${p.petFriendly ? '<span class="pet-badge">Pet Friendly</span>' : ''}
           <div class="crow">
             <div><div class="cname">${esc(p.name)}</div><div class="cloc">${esc(p.loc)}</div></div>
             <div class="cprice">${esc(p.price)}</div>
