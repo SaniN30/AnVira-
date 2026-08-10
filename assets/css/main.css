@@ -453,6 +453,11 @@
     }
     .prop-card:hover .ci { transform: scale(1.04); }
     .ctag { font-size: 9.5px; letter-spacing: .38em; text-transform: uppercase; color: var(--faint); margin-bottom: 7px; }
+    .pet-badge {
+      display: inline-block; font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--gold); border: 1px solid var(--gold); background: var(--gold-light);
+      padding: 4px 10px; border-radius: 1px; margin-bottom: 8px;
+    }
     .crow { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
     .cname { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 300; font-style: italic; color: var(--text); }
     .cloc  { font-size: 10.5px; letter-spacing: .2em; color: var(--mid); margin-top: 3px; }

@@ -222,6 +222,7 @@ PROPERTIES.forEach(p => {
   el.innerHTML = `
     <div class="ci-wrap"><img class="ci" src="${img(p.card)}" alt="${p.name}" loading="lazy" /></div>
     <div class="ctag">${p.tag}</div>
+    ${p.petFriendly ? '<span class="pet-badge">Pet Friendly</span>' : ''}
     <div class="crow">
       <div><div class="cname">${p.name}</div><div class="cloc">${p.loc}</div></div>
       <div class="cprice">${p.price}</div>
