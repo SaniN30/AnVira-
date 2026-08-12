@@ -4,4 +4,4 @@ Disallow: /arrive/
 Disallow: /reviews/submit.html
 Disallow: /presentation/
 
-Sitemap: https://anvira.in/sitemap.xml
+Sitemap: https://anvira.co/sitemap.xml

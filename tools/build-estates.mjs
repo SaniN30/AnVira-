@@ -12,7 +12,7 @@ import vm from 'node:vm';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /* Set the production origin before launch so OG/canonical URLs are absolute. */
-const SITE_URL = 'https://anvira.in';
+const SITE_URL = 'https://anvira.co';
 
 const ctx = {};
 vm.createContext(ctx);
