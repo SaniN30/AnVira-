@@ -307,8 +307,13 @@ const AVAILABILITY = {
     '2026-06-24': 'owner',
     '2026-06-26': 'owner',
     '2026-06-27': 'owner',
+    '2026-08-12': 'booked',
+    '2026-08-15': 'booked',
   },
-  'estate-10':         {},
+  'estate-10':         {
+    '2026-08-10': 'booked',
+    '2026-08-11': 'booked',
+  },
   'tarikas-seascapes': {},
 };
 
