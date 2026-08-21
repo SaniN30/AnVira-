@@ -28,7 +28,7 @@ Static, hand-authored HTML/CSS/JS. No framework, no build step, deployable anywh
 /                             Home — hero, story teaser, gallery highlight, WhatsApp CTA
 /villa.html                   Villa — full story, stats, amenities, local guide, pricing
 /gallery.html                 Gallery — full filterable photo grid + lightbox
-/plan-a-stay.html             Plan a Stay — booking widget, Message Preview Card, availability
+/plan-a-stay.html             Plan a Stay — booking widget, Message Preview Card
 /contact.html                 Contact — map, contact methods, Guest Voices reviews
 /estates/villa-anvira.html    Redirect stub → / (kept for old bookmarks/QR codes)
 /arrive/villa-anvira.html     Private pre-arrival page (noindex) — directions, check-in notes
@@ -78,7 +78,7 @@ Every design and content decision maps to one of six stages:
 |-------|--------------------|
 | Discovery | OG image, sub-2s load, WhatsApp-share-ready links |
 | Consideration | 30+ gallery photos, local guide, anchor pricing, verified reviews |
-| Decision | Sticky booking panel, availability calendar, Message Preview Card |
+| Decision | Sticky booking panel, Message Preview Card |
 | Pre-Arrival | Private `/arrive/villa-anvira.html` — directions, caretaker contact, house notes |
 | Stay | Local staff-curated recommendations |
 | Post-Stay | `/reviews/submit` → Google Sheet approval queue |

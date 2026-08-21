@@ -469,10 +469,13 @@ nav 1:1 — every page shares the same dark permanent header/menu/footer
   lightbox (recovered from a prior interrupted pass; see git log for
   `av-sketch-bg`, `#dnav a::after` nav-underline hover, and the
   `initBooking`/`estate.js` null-guards described below).
-- `plan-a-stay.html` — **Plan a Stay**: the only page carrying `#bw`
-  (the floating `.ep-hero-book` form over its own hero) and the
-  `#mpc-wrap` Message Preview Card modal, plus the availability
-  calendar and the price/included aside.
+- `plan-a-stay.html` — **Plan a Stay**: the dedicated booking page every
+  Book/Check-availability CTA site-wide points to. The only page carrying
+  `#bw` (the floating `.ep-hero-book` form over its own hero) and the
+  `#mpc-wrap` Message Preview Card modal, plus the price/included aside.
+  It no longer carries an availability calendar (removed 2026-08) — the
+  booking flow is guest count, check-in/out fields, and WhatsApp/inquiry
+  submission only.
 - `contact.html` — **Contact**: location/map, WhatsApp/call/email
   contact-method cards, and the Guest Voices reviews section.
 
