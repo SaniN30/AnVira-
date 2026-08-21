@@ -58,31 +58,38 @@
     /* ── Cursor ──────────────────────────────────────────────── */
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 36px; height: 36px;
-      border: 1px solid rgba(24,24,26,0.22);
+      width: 30px; height: 30px;
+      border: 1px solid #FFFFFF;
       border-radius: 50%; pointer-events: none;
       display: flex; align-items: center; justify-content: center;
       transition: width .35s var(--lux), height .35s var(--lux),
                   border-color .3s ease, background .3s ease,
                   margin .35s var(--lux);
       will-change: transform;
+      mix-blend-mode: difference;
     }
     #cursor-ring.on {
-      width: 54px; height: 54px; margin: -9px 0 0 -9px;
-      border-color: var(--gold);
-      background: var(--gold-light);
+      width: 52px; height: 52px; margin: -11px 0 0 -11px;
+      background: rgba(255,255,255,.16);
     }
     #cursor-label {
       font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
-      color: var(--gold); opacity: 0; font-weight: 300;
+      color: #FFFFFF; opacity: 0; font-weight: 300;
       transition: opacity .3s ease;
     }
     #cursor-ring.on #cursor-label { opacity: 1; }
     #cursor-dot {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 4px; height: 4px;
-      background: var(--text); border-radius: 50%;
+      width: 5px; height: 5px;
+      background: #FFFFFF; border-radius: 50%;
       pointer-events: none; will-change: transform;
+      mix-blend-mode: difference;
+    }
+    @media (hover: none), (pointer: coarse) {
+      #cursor-ring, #cursor-dot { display: none !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #cursor-ring { transition: none; }
     }
 
     /* ── Intro (brand logo reveal on cream) ─────────────────── */
@@ -158,11 +165,24 @@
        phone + CTA right. Collapses to the existing burger drawer below 900px. */
     #dnav { display: flex; align-items: center; gap: clamp(1.6rem, 3vw, 2.6rem); }
     #dnav a {
+      position: relative;
       font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
       color: var(--dark-text); text-decoration: none; font-weight: 500;
       transition: color .3s ease;
+      padding-bottom: 3px;
     }
+    #dnav a::after {
+      content: ''; position: absolute; left: 0; right: 100%; bottom: 0;
+      height: 1px; background: var(--gold);
+      transition: right .35s var(--lux);
+    }
+    #dnav a:hover::after,
+    #dnav a[aria-current="page"]::after { right: 0; }
     #dnav a:hover { color: var(--gold); }
+    #dnav a[aria-current="page"] { color: var(--gold); }
+    @media (prefers-reduced-motion: reduce) {
+      #dnav a::after { transition: none; }
+    }
     #dnav-right { display: flex; align-items: center; gap: 1.4rem; }
     #dnav-tel {
       font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .02em;
@@ -1991,6 +2011,17 @@
       border: 1px solid var(--gold); box-shadow: 0 24px 60px rgba(23,37,28,.22);
     }
 
+    /* Pencil-sketch mountain/cloud contour texture — Aurelia's signature
+       faint line-art backdrop. Reusable on any section via .av-sketch-bg;
+       #pd-gallery-wrap keeps its id-scoped rule for the radial wash it adds. */
+    .av-sketch-bg { position: relative; }
+    .av-sketch-bg::before {
+      content: ''; position: absolute; inset: 0; opacity: .5; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23B08D4F' stroke-width='0.6' opacity='0.35'%3E%3Cpath d='M0 220 Q 80 180 160 210 T 320 195 T 480 215 T 600 190'/%3E%3Cpath d='M0 250 Q 100 210 200 240 T 400 225 T 600 235'/%3E%3Cpath d='M40 60 L 90 10 L 140 60 Z'/%3E%3Cpath d='M420 90 L 470 30 L 520 90 Z'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat-x; background-size: 600px 300px;
+    }
+    .av-sketch-bg > * { position: relative; z-index: 1; }
+
     /* Gallery — pencil-sketch texture backdrop + rounded, shadowed tiles,
        large photo (2 rows) + 2x2 grid composition on the right */
     #pd-gallery-wrap {
@@ -2035,4 +2066,92 @@
 
     @media (max-width: 900px) {
       .ep-hero { height: 100svh; min-height: 100svh; }
+    }
+
+    /* ── Multi-page restructure additions ─────────────────────────── */
+
+    /* Portrait (9:16) background video, arch-topped frame — same
+       signature shape as .ep-story-media img, sized for the real clip
+       aspect ratio instead of the landscape crop. Wraps <video>+<img
+       poster fallback> so slow connections show a still, never a blank
+       box, and JS never needs to swap sources. */
+    .av-video-frame {
+      position: relative; width: 260px; aspect-ratio: 9 / 16;
+      border-radius: 34% 34% 8px 8px; overflow: hidden;
+      border: 1px solid var(--gold); box-shadow: 0 24px 60px rgba(23,37,28,.22);
+      background: var(--dark-bg, #12211A);
+    }
+    .av-video-frame video, .av-video-frame img.av-video-poster {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      object-position: center 30%;
+    }
+    .av-video-frame img.av-video-poster { z-index: 1; transition: opacity .5s ease; }
+    .av-video-frame video { z-index: 2; }
+    .av-video-frame.loaded img.av-video-poster { opacity: 0; }
+    @media (max-width: 900px) { .av-video-frame { width: 220px; margin: 0 auto; } }
+
+    /* Small square/landscape video card variant — used in the gallery
+       highlight grid on the homepage, sits flush among photo tiles. */
+    .av-video-card { position: relative; border-radius: 4px; overflow: hidden; }
+    .av-video-card video, .av-video-card img.av-video-poster {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .av-video-card img.av-video-poster { z-index: 1; transition: opacity .5s ease; }
+    .av-video-card video { z-index: 2; }
+    .av-video-card.loaded img.av-video-poster { opacity: 0; }
+    .av-video-card .av-video-tag {
+      position: absolute; z-index: 3; left: 10px; bottom: 10px;
+      font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+      color: #FAF8F3; background: rgba(18,33,26,.55); padding: 4px 9px; border-radius: 2px;
+    }
+
+    /* ── Homepage: short story teaser (replaces the full prose block) ── */
+    .home-teaser {
+      display: grid; grid-template-columns: minmax(0,1fr) auto; gap: clamp(2rem, 5vw, 4rem);
+      align-items: center;
+    }
+    .home-teaser-copy { max-width: 560px; }
+    .home-teaser-copy p { color: var(--dark-mid); line-height: 1.75; margin-top: 1rem; }
+    @media (max-width: 900px) {
+      .home-teaser { grid-template-columns: 1fr; }
+      .home-teaser-copy { max-width: none; }
+    }
+
+    /* ── Homepage: gallery highlight grid ─────────────────────────── */
+    .home-gal-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem;
+      margin: 2.2rem 0 2.4rem;
+    }
+    .home-gal-grid a, .home-gal-grid .av-video-card { aspect-ratio: 3 / 4; display: block; overflow: hidden; border-radius: 4px; }
+    .home-gal-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--lux); }
+    .home-gal-grid a:hover img { transform: scale(1.06); }
+    @media (max-width: 900px) { .home-gal-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ── Villa page: quick-facts featured card ────────────────────── */
+    .villa-feature-card {
+      border: 1px solid var(--dark-border); border-radius: 6px; padding: 1.8rem 2rem;
+      background: var(--bone, #FAF8F3); box-shadow: 0 18px 46px rgba(23,37,28,.10);
+      margin-top: 1.6rem;
+    }
+    .villa-feature-card .ep-stats { margin-top: 0; }
+
+    /* ── Contact page: method cards ───────────────────────────────── */
+    .contact-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 1.6rem; }
+    .contact-method {
+      border: 1px solid var(--dark-border); border-radius: 6px; padding: 1.4rem 1.5rem;
+      transition: transform .35s var(--lux), box-shadow .35s var(--lux), border-color .35s ease;
+    }
+    .contact-method:hover { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(23,37,28,.14); border-color: var(--gold); }
+    .contact-method .cm-label { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--faint); }
+    .contact-method .cm-value { font-family: 'DM Mono', monospace; font-size: .98rem; margin-top: .5rem; display: block; }
+    @media (max-width: 900px) { .contact-methods { grid-template-columns: 1fr; } }
+
+    /* ── Card hover lift — reused on any .fi card-like block that opts in ── */
+    .av-card-hover { transition: transform .4s var(--lux), box-shadow .4s var(--lux); }
+    .av-card-hover:hover { transform: translateY(-6px); box-shadow: 0 22px 50px rgba(23,37,26,.16); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .home-gal-grid img { transition: none; }
+      .contact-method, .av-card-hover { transition: none; }
+      .av-video-frame img.av-video-poster, .av-video-card img.av-video-poster { transition: none; }
     }

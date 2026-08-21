@@ -443,24 +443,61 @@ and Tarika's Seascapes (Goa) — their pages, images (`Delhi/`, `Goa/`), and
 one entry in `PROPERTIES` (`villa-anvira`).
 
 `tools/build-estates.mjs`, the old multi-estate HTML generator, was deleted.
-`index.html` is now the canonical, fully hand-authored Villa AnVira page
-(merged former homepage chrome — intro overlay, nav, lead-capture popup —
-with the former `estates/villa-anvira.html` property-detail markup and
-Aurelia-template-inspired visual styling). `estates/villa-anvira.html` is
-kept only as a `<meta http-equiv="refresh">` redirect stub to `../index.html`
-for old bookmarks/QR codes. `arrive/villa-anvira.html` (the private
-pre-arrival guide) is unchanged in structure, restyled via the same
-`assets/css/main.css`. If you need to hand-edit page content, edit the
-shipped HTML directly — there is no generator step to run.
+There is no generator step for any page — every page below is hand-authored
+static HTML sharing `assets/css/main.css` and the scripts in `assets/js/`.
+`estates/villa-anvira.html` is kept only as a `<meta http-equiv="refresh">`
+redirect stub to `../index.html` for old bookmarks/QR codes.
+
+## Multi-page structure (2026-08 — split from the single merged index.html)
+
+The site was originally one giant `index.html` carrying hero, full story,
+amenities, availability, gallery, local guide, reviews, and the booking
+widget all on one page. It is now split to mirror the Aurelia reference
+nav 1:1 — every page shares the same dark permanent header/menu/footer
+(`Home` / `Villa` / `Gallery` / `Plan a Stay` / `Contact`, with
+`aria-current="page"` on the active link):
+
+- `index.html` — **Home**: full-bleed hero (two CTAs, no inline booking
+  form), a short story teaser with the story-section background video,
+  a 4-tile gallery highlight (photos + one looping video card), closing
+  WhatsApp CTA. No `#bw` form, no `#mpc-wrap` modal, no availability grid.
+- `villa.html` — **Villa** (Aurelia's "Rooms" equivalent): the full
+  story/prose, room/guest/bath stats, a "featured" quick-facts card,
+  amenities & features panel, local guide, and the price/included
+  aside — everything that used to be `index.html`'s middle section.
+- `gallery.html` — **Gallery**: the full 37-photo filterable grid +
+  lightbox (recovered from a prior interrupted pass; see git log for
+  `av-sketch-bg`, `#dnav a::after` nav-underline hover, and the
+  `initBooking`/`estate.js` null-guards described below).
+- `plan-a-stay.html` — **Plan a Stay**: the only page carrying `#bw`
+  (the floating `.ep-hero-book` form over its own hero) and the
+  `#mpc-wrap` Message Preview Card modal, plus the availability
+  calendar and the price/included aside.
+- `contact.html` — **Contact**: location/map, WhatsApp/call/email
+  contact-method cards, and the Guest Voices reviews section.
+
+Because `#bw`, `#mpc-wrap`, `#pd-gallery`, `.ep-aside` etc. no longer all
+live on one document, `assets/js/booking.js` and `assets/js/estate.js`
+null-guard every lookup for markup that may not exist on the current
+page (e.g. `booking.js`'s whole Message-Preview-Card wiring block is
+gated behind `if (bwForm && mpcWrap) { ... }`, not just `initBooking()`).
+`estate.js` still calls `initBooking(EP)` unconditionally on every page
+(it's cheap — `renderAvailability`/the live reviews fetch just no-op if
+their container isn't present) — do not re-gate that call itself, only
+guard the DOM lookups inside.
+
+Shared background-video frames (`.av-video-frame` for the tall arch-topped
+portrait slot, `.av-video-card` for the small gallery-highlight tile) live
+in `assets/css/main.css` and `core.js` (`canplay` → adds `.loaded`, fading
+the `<img class="av-video-poster">` fallback). Reuse these classes for any
+future video slot instead of hand-rolling new markup.
 
 ## Page generation & CSP
 
 `index.html` is the only page carrying a `Content-Security-Policy` meta tag.
-All pages (`index.html`, `estates/villa-anvira.html` redirect, `arrive/`,
-`legal/`, `reviews/submit.html`) are hand-authored static HTML sharing
-`assets/css/main.css` and the scripts in `assets/js/`. `assets/js/data.js`
-is still the single source of truth for the property's copy/specs/images/
-availability, read at runtime by `booking.js`, `gallery.js`, and `estate.js`.
+`assets/js/data.js` is still the single source of truth for the property's
+copy/specs/images/availability, read at runtime by `booking.js`,
+`gallery.js`, and `estate.js`.
 
 Analytics: Google Ads gtag.js (conversion ID `AW-18140671098`) is loaded on
 every page; `assets/js/wa-tracking.js` delegates a `document` click listener

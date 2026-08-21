@@ -249,9 +249,13 @@ function initBooking(p) {
     : p.maxGuests;
   currentBaseGuests = baseGuests;
 
+  /* Booking widget fields (bw-guests, bw-in, bw-out) only exist on the
+     page carrying the booking form — skip wiring them elsewhere. */
+  const numInput = document.getElementById('bw-guests');
+  if (!numInput) return;
+
   /* Replace <input type="number"> with a <select> so we can label
      chargeable tiers directly inside the dropdown options. */
-  const numInput = document.getElementById('bw-guests');
   const sel = document.createElement('select');
   sel.id        = 'bw-guests';
   sel.name      = 'guests';
@@ -277,13 +281,19 @@ function initBooking(p) {
     guestsField.appendChild(note);
   }
 
-  document.getElementById('bw-in').min  = toISO(new Date());
-  document.getElementById('bw-out').min = toISO(new Date());
+  const bwInEl = document.getElementById('bw-in');
+  const bwOutEl = document.getElementById('bw-out');
+  if (bwInEl)  bwInEl.min  = toISO(new Date());
+  if (bwOutEl) bwOutEl.min = toISO(new Date());
 }
 
 /* ── Booking widget → Message Preview Card ──────────────── */
+/* #bw and its #mpc-wrap modal only ship on the page carrying the
+   booking form (plan-a-stay.html) — skip this wiring elsewhere. */
 const bwForm   = document.getElementById('bw');
 const mpcWrap  = document.getElementById('mpc-wrap');
+
+if (bwForm && mpcWrap) {
 const mpcName  = document.getElementById('mpc-name');
 const mpcNote  = document.getElementById('mpc-note');
 const mpcPrev  = document.getElementById('mpc-preview');
@@ -395,4 +405,5 @@ document.getElementById('mpc-send').addEventListener('click', () => {
 document.getElementById('mpc-cancel').addEventListener('click', closeMpc);
 mpcWrap.addEventListener('click', e => { if (e.target === mpcWrap) closeMpc(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && mpcWrap.classList.contains('open')) closeMpc(); });
+}
 

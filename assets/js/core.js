@@ -180,3 +180,11 @@ function toISO(dt) {
   /* Show after 3.5 s — allows intro animation to finish */
   setTimeout(() => wrap.classList.add('show'), 3500);
 })();
+
+/* ── Background video frames — swap poster for the real loop once it
+   can play, so slow connections always show a still, never a blank
+   box. Reused by every .av-video-frame / .av-video-card. ─────────── */
+document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach(v => {
+  const wrap = v.closest('.av-video-frame, .av-video-card');
+  v.addEventListener('canplay', () => wrap.classList.add('loaded'), { once: true });
+});
