@@ -8,15 +8,14 @@ Mark each cell when verified.
 Test on: **iPhone Safari · Android Chrome · iPad Safari · Desktop Chrome · Desktop Safari**
 
 Per device:
-- [ ] Homepage loads < 2s on 4G, no horizontal scroll 320–1920px
+- [ ] Homepage (`/`) loads < 2s on 4G, no horizontal scroll 320–1920px
 - [ ] Intro reveal plays once and is skippable
-- [ ] All 3 estate pages: hero, gallery, lightbox (swipe + arrows + Esc), availability calendar
+- [ ] Villa AnVira page: hero, gallery, lightbox (swipe + arrows + Esc), availability calendar
 - [ ] Booking widget → Message Preview Card → WhatsApp opens with the exact message
 - [ ] "Call instead" tel: link rings the right number
-- [ ] Floating WhatsApp appears after the hero, pre-filled with property name on estate pages
-- [ ] /estates/ filter (region + guests) and "Notify me" waitlist flow
+- [ ] Floating WhatsApp appears after the hero, pre-filled with property name
 - [ ] /reviews/submit: star rating, word counter, success state
-- [ ] Sticky bottom booking bar on mobile estate pages
+- [ ] Sticky bottom booking bar on mobile
 
 ## Backend (after owner deploys Apps Script — tools/APPS_SCRIPT_SETUP.md)
 
@@ -27,15 +26,15 @@ Per device:
 
 ## SEO / sharing
 
-- [ ] Share each estate URL in WhatsApp → image + title + description preview renders
-- [ ] `https://anvira.in/sitemap.xml` and `/robots.txt` reachable in production
+- [ ] Share the site URL in WhatsApp → image + title + description preview renders
+- [ ] `https://anvira.co/sitemap.xml` and `/robots.txt` reachable in production
 - [ ] /arrive/ pages return noindex (view-source: `robots` meta) and are absent from sitemap
-- [ ] Rich Results test passes for `LodgingBusiness` JSON-LD on all 3 estate pages
+- [ ] Rich Results test passes for `LodgingBusiness` JSON-LD on `/`
 
 ### Google Search Console (owner, one time)
-1. Add property `anvira.in` (domain verification via DNS TXT).
-2. Submit `https://anvira.in/sitemap.xml`.
-3. Request indexing for `/`, `/estates/`, and the 3 estate URLs.
+1. Add property `anvira.co` (domain verification via DNS TXT).
+2. Submit `https://anvira.co/sitemap.xml`.
+3. Request indexing for `/`.
 4. After 1 week: check Coverage for errors, confirm /arrive/* not indexed.
 
 ## Accessibility (re-verify after any UI change)
@@ -48,7 +47,7 @@ Per device:
 
 ## Performance targets
 
-- [ ] Lighthouse ≥ 90 all categories (mobile) on / and one estate page
+- [ ] Lighthouse ≥ 90 all categories (mobile) on /
 - [ ] LCP < 2.5s · CLS < 0.1 (gallery images carry explicit width/height)
 - [ ] Images: remaining JPGs are the ones smaller than their WebP equivalent (verified at build)
 
@@ -57,7 +56,7 @@ Per device:
 | Input | Where it lands |
 |---|---|
 | "From ₹/night" anchor prices | `data.js → pricing.from` |
-| Caretaker names/photos/bios | `data.js → staff[]` (estate + arrive pages auto-show) |
-| GSTIN | footer (`tools/build-estates.mjs` + index.html) |
-| Legal text sign-off | `tools/build-estates.mjs → LEGAL_PAGES` |
+| Caretaker names/photos/bios | `data.js → staff[]` (index + arrive pages auto-show) |
+| GSTIN | footer (hand-edit `index.html`) |
+| Legal text sign-off | hand-edit `legal/*.html` |
 | Apps Script deployment | `data.js → API_ENDPOINT` |

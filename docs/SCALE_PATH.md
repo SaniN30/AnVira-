@@ -12,13 +12,15 @@
 
 ## Deferred: Next.js + Sanity migration
 **Trigger (do not migrate before one of these):**
-1. A 4th estate signs, or
+1. A second estate signs, or
 2. A non-technical person needs to edit content without Git.
 
 **When triggered:** `serverless_api_spec.md` is the ready-made backend spec
 (the 3 API routes replace tools/apps-script.gs 1:1). The `AnViraEstate` data
-in `assets/js/data.js` is already schema-shaped for a Sanity import; the SSG
-templates in `tools/build-estates.mjs` map directly to React components.
+in `assets/js/data.js` is already schema-shaped for a Sanity import. There is
+no HTML generator to port from anymore (see AGENTS.md, "Single-property
+site") — the shipped markup in `index.html` and `arrive/villa-anvira.html`
+maps directly to React components.
 
 ## Owner inputs that improve Phase 6
 - A square 512×512 app icon (current manifest uses the 850×640 logo).

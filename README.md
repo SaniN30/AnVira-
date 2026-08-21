@@ -1,41 +1,33 @@
-# AnVira — Private Estates
+# AnVira — Villa AnVira, Chail
 
-A direct-booking website for a curated collection of private luxury villa estates across India. Built as a zero-framework static site — no build pipeline, no dependencies, sub-2s loads on 4G.
+A direct-booking website for Villa AnVira, a private luxury villa estate in Chail, Himachal Pradesh. Built as a zero-framework static site — no build pipeline, no dependencies, sub-2s loads on 4G.
 
-**Live:** [anvira.in](https://anvira.in)
+**Live:** [anvira.co](https://anvira.co)
 
 ---
 
 ## About
 
-AnVira curates hand-selected private estates across India's most coveted landscapes. Guests book directly — no OTA middlemen, no hidden fees, direct line to the estate. The platform competes on digital experience with the standard set by Aman, Oberoi, and Six Senses.
+AnVira is a single-property direct-booking site for Villa AnVira. Guests book directly — no OTA middlemen, no hidden fees, direct line to the estate. The platform competes on digital experience with the standard set by Aman, Oberoi, and Six Senses.
 
 ---
 
-## Properties
+## Property
 
 | Estate | Location | Rooms | Capacity |
 |--------|----------|-------|----------|
 | Villa AnVira | Chail, Himachal Pradesh | 7 bedrooms | Up to 20 guests |
-| Estate 10 | New Delhi | Private urban estate | — |
-| Tarika's Seascapes | Mormugao, Goa | Sea-view villa | — |
-| Mukteshwar Orchard House | Mukteshwar, Uttarakhand | Under curation | — |
 
 ---
 
 ## Site Architecture
 
-Static multi-page HTML/CSS/JS. No framework, no build step for content changes, deployable anywhere.
+Static, hand-authored HTML/CSS/JS. No framework, no build step, deployable anywhere. See [AGENTS.md](AGENTS.md) for how the pages relate to `assets/js/data.js` and why there's no generator step.
 
 ```
-/                             Homepage — hero, estates accordion, testimonials, booking widget
-/estates/                     Listing — all active estates + under-curation coming-soon cards
-/estates/villa-anvira.html    Estate page — gallery, booking panel, local guide, reviews
-/estates/estate-10.html
-/estates/tarikas-seascapes.html
+/                             Villa AnVira page — hero, story, gallery, booking, reviews, FAQ
+/estates/villa-anvira.html    Redirect stub → / (kept for old bookmarks/QR codes)
 /arrive/villa-anvira.html     Private pre-arrival page (noindex) — directions, check-in notes
-/arrive/estate-10.html
-/arrive/tarikas-seascapes.html
 /reviews/submit.html          Post-stay review form (noindex)
 /legal/privacy.html           Privacy Policy
 /legal/terms.html             Terms of Stay
@@ -50,17 +42,16 @@ Static multi-page HTML/CSS/JS. No framework, no build step for content changes, 
 ```
 assets/
   css/main.css              Complete design system — tokens, layout, all components
-  js/data.js                Single source of truth: all property data + API config
+  js/data.js                Single source of truth: property data + API config
   js/core.js                Nav, cursor, scroll, section animations
+  js/intro.js                Page-load intro animation
   js/booking.js             Booking widget + WhatsApp Message Preview Card
-  js/estate.js              Estate page runtime — gallery, lightbox, booking panel slide-in
-  js/home.js                Homepage accordion, hero stagger, testimonial cycling
-  js/listing.js             Estate listing page — cards, under-curation waitlist form
+  js/estate.js              Property page runtime — gallery, lightbox, booking panel slide-in
   js/gallery.js             Shared lightbox
   js/review.js              Review form → Google Apps Script → Google Sheet
+  js/wa-tracking.js          Google Ads conversion tracking on wa.me clicks
 
 tools/
-  build-estates.mjs         Generates all HTML pages from data.js (single source of truth)
   apps-script.gs            Google Apps Script backend — enquiry / waitlist / review logging
   APPS_SCRIPT_SETUP.md      Step-by-step Apps Script deployment guide
   build-images.mjs          Image optimisation helper
@@ -68,12 +59,9 @@ tools/
 brand/
   logo.png
   logo-transparent.png
-  mukteshwar-placeholder.svg  Blurred SVG placeholder for under-curation estate
 
-legal/                      Generated HTML — edit source in tools/build-estates.mjs LEGAL_PAGES
+legal/                      Hand-authored HTML
 chail/                      Villa AnVira image assets
-Delhi/                      Estate 10 image assets
-Goa/                        Tarika's Seascapes image assets
 ```
 
 ---
@@ -84,10 +72,10 @@ Every design and content decision maps to one of six stages:
 
 | Stage | Platform mechanism |
 |-------|--------------------|
-| Discovery | OG image per property, sub-2s load, WhatsApp-share-ready links |
+| Discovery | OG image, sub-2s load, WhatsApp-share-ready links |
 | Consideration | 30+ gallery photos, local guide, anchor pricing, verified reviews |
 | Decision | Sticky booking panel, availability calendar, Message Preview Card |
-| Pre-Arrival | Private `/arrive/[slug]` — directions, caretaker contact, house notes |
+| Pre-Arrival | Private `/arrive/villa-anvira.html` — directions, caretaker contact, house notes |
 | Stay | Local staff-curated recommendations |
 | Post-Stay | `/reviews/submit` → Google Sheet approval queue |
 
@@ -95,7 +83,7 @@ Every design and content decision maps to one of six stages:
 
 ## Booking & Enquiry Flow
 
-1. Guest fills the booking widget (property, dates, guests, name)
+1. Guest fills the booking widget (dates, guests, name)
 2. Clicks **Send on WhatsApp** — a pre-filled message preview opens
 3. One tap sends the enquiry to the owner's WhatsApp
 4. Simultaneously, the enquiry is logged to a private Google Sheet (Timestamp | Property | Check-in | Check-out | Guests | Name | Status)
@@ -107,16 +95,10 @@ Pricing is shared over WhatsApp at enquiry stage.
 
 ## Review Flow
 
-1. Guest visits `/reviews/submit.html` (linked from estate pages and footer)
-2. Fills name, phone (kept private), estate, occasion, star rating, and review text (5–200 words)
+1. Guest visits `/reviews/submit.html` (linked from the property page and footer)
+2. Fills name, phone (kept private), occasion, star rating, and review text (5–200 words)
 3. Submits → logged to **Reviews** tab of Google Sheet with Status `Pending`
-4. Owner reads and approves; approved reviews are added to `data.js` and the site is rebuilt
-
----
-
-## Waitlist (Under-Curation Estates)
-
-Coming-soon estate cards on `/estates/` have a **Notify me** form. Name + WhatsApp number → logged to **Waitlist** tab. When the estate launches, owner filters by estate name and sends a WhatsApp Business broadcast.
+4. Owner reads and approves; approved reviews are added to `assets/js/data.js`
 
 ---
 
@@ -154,7 +136,7 @@ Setup guide: `tools/APPS_SCRIPT_SETUP.md`
 
 | Font | Use |
 |------|-----|
-| Cormorant Garamond | Estate names, hero headings (italic) |
+| Cormorant Garamond | Estate name, hero headings (italic) |
 | DM Sans | Body copy, UI labels |
 | DM Mono | Stats strip, prices, tags |
 | Spectral | Pull-quotes, eyebrow labels |
@@ -175,7 +157,7 @@ Unhurried but precise — every animation has a purpose and an end.
 
 ## Security
 
-- **Content Security Policy** meta tag on every page — restricts scripts to same-origin, fonts to Google Fonts, API calls to Google Apps Script only
+- **Content Security Policy** meta tag on the homepage (`index.html`) — restricts scripts to same-origin, fonts to Google Fonts, API calls to Google Apps Script only
 - **robots.txt** blocks `/arrive/`, `/reviews/submit.html`, `/presentation/` from crawlers
 - `/arrive/` and `/reviews/submit.html` are `noindex, nofollow`
 - All external links use `rel="noopener noreferrer"`
@@ -196,13 +178,13 @@ Unhurried but precise — every animation has a purpose and an end.
 | Smoking | Indoors prohibited |
 | Quiet hours | After 10:00 PM |
 
-Full terms: [anvira.in/legal/terms.html](https://anvira.in/legal/terms.html)
+Full terms: [anvira.co/legal/terms.html](https://anvira.co/legal/terms.html)
 
 ---
 
 ## Development
 
-No build step needed for most edits. Serve locally:
+No build step. Serve locally:
 
 ```bash
 npx serve .
@@ -210,13 +192,7 @@ npx serve .
 python3 -m http.server 8080
 ```
 
-After editing `data.js` (property data, legal copy, API endpoint), regenerate all pages:
-
-```bash
-node tools/build-estates.mjs
-```
-
-This rebuilds estate pages, arrive pages, legal pages, sitemap, robots.txt, and stamps the service worker cache version.
+There is no generator step — edit the shipped HTML directly. `assets/js/data.js` remains the source of truth for property data read at runtime by `booking.js`, `gallery.js`, and `estate.js`. See [AGENTS.md](AGENTS.md) for details.
 
 ---
 
@@ -240,4 +216,4 @@ git push origin main
 
 ---
 
-*AnVira — Est. 2018 — Private Estates*
+*AnVira — Est. 2018 — Villa AnVira, Chail*

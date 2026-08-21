@@ -4,24 +4,19 @@
    so a guest who opened an estate once can reread it offline. */
 'use strict';
 
-/* Stamped by tools/build-estates.mjs from a hash of css/js contents —
-   any asset change produces a new cache and retires the old one. */
-const VERSION = 'anvira-a9e50bef22'; /* BUILD_VERSION */
+/* Bump on any asset change to retire the old cache. */
+const VERSION = 'anvira-chail-1';
 
 const PRECACHE = [
   './',
   './index.html',
-  './estates/index.html',
-  './estates/villa-anvira.html',
-  './estates/estate-10.html',
-  './estates/tarikas-seascapes.html',
   './assets/css/main.css',
   './assets/js/data.js',
   './assets/js/core.js',
+  './assets/js/intro.js',
   './assets/js/booking.js',
   './assets/js/gallery.js',
   './assets/js/estate.js',
-  './assets/js/listing.js',
 ];
 
 self.addEventListener('install', e => {
