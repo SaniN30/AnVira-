@@ -287,7 +287,7 @@ Each entry: Name · one-line description in AnVira voice · distance in minutes 
 
 **1.3 Property Page (`/estates/[slug]`)**
 - [ ] 100vh parallax hero, estate name bottom-left (Cormorant Italic), location in Spectral
-- [ ] Sticky booking panel (desktop right column)
+- [x] Floating booking bar overlapping hero (Aurelia-match layout, superseding earlier sticky right-column plan)
 - [ ] Property story prose (600px max width)
 - [x] Quick stats (rooms · guests · baths)
 - [x] Masonry gallery (3-column, lightbox on click)
