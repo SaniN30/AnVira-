@@ -25,7 +25,11 @@ AnVira is a single-property direct-booking site for Villa AnVira. Guests book di
 Static, hand-authored HTML/CSS/JS. No framework, no build step, deployable anywhere. See [AGENTS.md](AGENTS.md) for how the pages relate to `assets/js/data.js` and why there's no generator step.
 
 ```
-/                             Villa AnVira page — hero, story, gallery, booking, reviews, FAQ
+/                             Home — hero, story teaser, gallery highlight, WhatsApp CTA
+/villa.html                   Villa — full story, stats, amenities, local guide, pricing
+/gallery.html                 Gallery — full filterable photo grid + lightbox
+/plan-a-stay.html             Plan a Stay — booking widget, Message Preview Card, availability
+/contact.html                 Contact — map, contact methods, Guest Voices reviews
 /estates/villa-anvira.html    Redirect stub → / (kept for old bookmarks/QR codes)
 /arrive/villa-anvira.html     Private pre-arrival page (noindex) — directions, check-in notes
 /reviews/submit.html          Post-stay review form (noindex)
