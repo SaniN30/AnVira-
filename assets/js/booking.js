@@ -200,6 +200,7 @@ function renderAvailability(p) {
 }
 
 let currentProp = null;
+let currentBaseGuests = null;
 
 /* Estate pages call this once their data object is resolved. */
 function initBooking(p) {
@@ -246,6 +247,7 @@ function initBooking(p) {
   const baseGuests = typeof p.guests === 'string'
     ? parseInt(p.guests.split('/')[0].trim(), 10)
     : p.maxGuests;
+  currentBaseGuests = baseGuests;
 
   /* Replace <input type="number"> with a <select> so we can label
      chargeable tiers directly inside the dropdown options. */
@@ -317,6 +319,15 @@ function openMpc() {
   document.getElementById('mpc-out').textContent    = fmtDate(enquiry.checkout);
   document.getElementById('mpc-nights').textContent = enquiry.nights;
   document.getElementById('mpc-guests').textContent = enquiry.guests;
+  const chargeNote = document.getElementById('mpc-charge-note');
+  if (chargeNote) {
+    if (currentBaseGuests != null && enquiry.guests > currentBaseGuests) {
+      chargeNote.innerHTML = `<span class="bw-charge-asterisk">*</span> Up to <strong>${currentBaseGuests}</strong> guests included. Additional guests above this limit are chargeable — mention in your note.`;
+      chargeNote.hidden = false;
+    } else {
+      chargeNote.hidden = true;
+    }
+  }
   mpcName.value = enquiry.name;
   refreshPreview();
   mpcWrap.classList.add('open');

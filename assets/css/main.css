@@ -149,6 +149,29 @@
       border-bottom: 1px solid var(--border);
     }
 
+    /* Aurelia-style horizontal desktop nav: logo left, links centered,
+       phone + CTA right. Collapses to the existing burger drawer below 900px. */
+    #dnav { display: flex; align-items: center; gap: clamp(1.6rem, 3vw, 2.6rem); }
+    #dnav a {
+      font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--text); text-decoration: none; font-weight: 500;
+      transition: color .3s ease;
+    }
+    #dnav a:hover { color: var(--gold); }
+    #dnav-right { display: flex; align-items: center; gap: 1.4rem; }
+    #dnav-tel {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .02em;
+      color: var(--text); text-decoration: none;
+    }
+    .cta-nav { padding: 10px 22px; font-size: 10.5px; }
+    body[data-estate] #nav:not(.scrolled) #dnav a,
+    body[data-estate] #nav:not(.scrolled) #dnav-tel {
+      color: #faf8f3; text-shadow: 0 1px 14px rgba(24,24,26,.5);
+    }
+    @media (max-width: 900px) {
+      #dnav, #dnav-right { display: none; }
+    }
+
     /* AnVira wordmark — shared across nav, hero, footer */
     .av {
       font-family: 'Cormorant Garamond', serif;
@@ -1314,13 +1337,51 @@
       position: absolute; inset: 0;
       background: linear-gradient(to top, rgba(24,24,26,.78) 0%, rgba(24,24,26,.08) 52%, transparent 100%);
     }
-    .ep-hero-caption { position: absolute; bottom: var(--space-5); left: var(--pad-x); right: var(--pad-x); }
-    .ep-hero { position: relative; } /* ensures share btn positions within hero */
+    .ep-hero-caption { position: absolute; bottom: clamp(6.5rem, 14vh, 9.5rem); left: var(--pad-x); right: var(--pad-x); }
+    .ep-hero { position: relative; padding-bottom: 44px; } /* ensures share btn positions within hero + room for floating bar */
+
+    /* Aurelia-style floating booking bar — dark bar overlapping the hero's
+       bottom edge, horizontal fields on desktop, stacked on mobile. */
+    .ep-hero-book {
+      position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: -44px;
+      background: var(--dark-bg); border: 1px solid var(--dark-border);
+      border-radius: 3px; padding: 1.1rem 1.5rem;
+      box-shadow: 0 24px 60px rgba(0,0,0,.28);
+    }
+    .ep-hero-book #bw {
+      display: flex; align-items: flex-end; gap: 1.1rem; flex-wrap: wrap;
+    }
+    .ep-hero-book .bw-field { margin-bottom: 0; flex: 1 1 130px; min-width: 110px; }
+    .ep-hero-book .bw-label { color: var(--dark-mid); }
+    .ep-hero-book .bw-input {
+      background: transparent; border: none; border-bottom: 1px solid var(--dark-border);
+      color: var(--dark-text); border-radius: 0; height: 34px; padding: 4px 2px;
+    }
+    .ep-hero-book .bw-input::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .7; }
+    .ep-hero-book .bw-input:focus { border-color: var(--gold); box-shadow: none; }
+    .ep-hero-book .cta {
+      flex: 0 0 auto; width: auto; margin-top: 0;
+      background: var(--olive); color: var(--dark-text);
+      padding: 12px 26px; white-space: nowrap;
+    }
+    .ep-hero-book .cta:hover { background: var(--olive-dark); }
+    .ep-hero-book .bw-err { position: absolute; left: 1.5rem; bottom: -1.4rem; margin: 0; }
+    .ep-hero-book .bw-charge-note { display: none; }
+    @media (min-width: 901px) {
+      .ep-hero-book #bw { flex-wrap: nowrap; }
+    }
+    @media (max-width: 900px) {
+      .ep-hero-book { position: static; margin: -44px var(--pad-x) 0; bottom: auto; }
+      .ep-hero { padding-bottom: 0; }
+      .ep-hero-book #bw { flex-direction: column; align-items: stretch; gap: .8rem; }
+      .ep-hero-book .cta { width: 100%; text-align: center; }
+    }
     .ep-crumb { font-size: 9.5px; letter-spacing: .4em; text-transform: uppercase; margin-bottom: .7rem; }
     .ep-crumb, .ep-crumb a { color: rgba(255,255,255,.55); text-decoration: none; }
     .ep-crumb a:hover { color: #FAF8F3; }
 
-    .ep-wrap { max-width: 1180px; margin: 0 auto; padding: var(--space-6) var(--pad-x); }
+    .ep-wrap { max-width: 1180px; margin: 0 auto; padding: calc(var(--space-6) + 60px) var(--pad-x) var(--space-6); }
+    .ep-aside-links { display: flex; flex-direction: column; gap: .35rem; margin-top: 1rem; }
     .ep-main { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; }
     .ep-aside {
       position: sticky; top: 92px; display: flex; flex-direction: column; gap: var(--space-3);
@@ -1339,6 +1400,23 @@
     }
     .ep-section:first-child { padding-top: 0; margin-top: 0; border-top: none; }
     .ep-sec-title { font-size: 10px; letter-spacing: .4em; text-transform: uppercase; color: var(--faint); margin-bottom: 1.2rem; font-weight: 500; }
+
+    /* Aurelia-style "more than a destination" split: prose left,
+       circular framed image right. */
+    .ep-story-split {
+      display: grid; grid-template-columns: minmax(0,1fr) 300px;
+      gap: clamp(2rem, 5vw, 4rem); align-items: center;
+    }
+    .ep-story-media { justify-self: end; }
+    .ep-story-media img {
+      width: 260px; height: 260px; object-fit: cover;
+      border-radius: 50%; border: 1px solid var(--dark-border);
+      box-shadow: 0 20px 50px rgba(23,37,28,.18);
+    }
+    @media (max-width: 900px) {
+      .ep-story-split { grid-template-columns: 1fr; }
+      .ep-story-media { justify-self: center; order: -1; }
+    }
 
     /* Story prose — readable measure, no orphan space */
     .ep-story-text { max-width: 600px; }
