@@ -469,6 +469,20 @@ remarketing pixels hit arbitrary Google ccTLDs (e.g. `google.co.in`) that
 CSP intentionally does not whitelist — only the core conversion-tracking
 origins are allowed; the primary conversion signal still fires.
 
+## CSS id/class reuse — check for dead-rule collisions before trusting styles
+
+`assets/css/main.css` still carries CSS from an older multi-estate homepage
+layout (giant wordmark hero, centered owner's-quote block, a standalone
+340px booking-widget card, etc.) whose HTML no longer exists. The current
+single-property `index.html` reuses some of the same ids/classes
+(`#hero`, `#story`, `#bw`, `.ep-story-col`) for unrelated new markup, so
+those dead rules silently apply and corrupt layout (wrong widths, forced
+`text-align: center`, fixed narrow card sizing) with no visual cue in the
+source order. If a section's computed layout doesn't match its authored
+rule, grep the id/class across the whole stylesheet (not just the nearest
+block) and check for an unrelated older rule targeting the same selector —
+delete it if the old HTML is confirmed gone, don't just patch around it.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 

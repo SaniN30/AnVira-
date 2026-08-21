@@ -7,8 +7,9 @@
       --text:        #17251C;   /* Deep forest green-black — headings, primary text */
       --mid:         #4B5049;   /* Muted sage-grey — body copy */
       --faint:       #6C7167;   /* Lightened sage — micro labels */
-      --gold:        #B08D4F;   /* Brass — accent, eyebrows, rules */
+      --gold:        #B08D4F;   /* Brass — accent, rules, borders, gold-on-dark text */
       --gold-light:  rgba(176,141,79,0.1);
+      --gold-text:   #8C6B33;   /* Darker brass — WCAG AA-safe (4.5:1) for gold text on cream/bone */
       --wash:        #E7DFC7;   /* Warm sand wash — alt section background */
       --rule:        #D8CFB8;   /* Linen rule */
       --wa:          #1B8A54;   /* WhatsApp green — unchanged, brand-locked */
@@ -141,12 +142,16 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 1.4rem 2.5rem;
       display: flex; align-items: center; justify-content: space-between;
-      transition: background .5s ease, backdrop-filter .5s ease;
+      transition: background .5s ease, backdrop-filter .5s ease, padding .4s ease;
+      background: rgba(22,38,29,0.82);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(176,141,79,0.18);
     }
     #nav.scrolled {
-      background: rgba(245,241,232,0.88);
+      background: rgba(22,38,29,0.96);
       backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--dark-border);
+      padding: 1rem 2.5rem;
     }
 
     /* Aurelia-style horizontal desktop nav: logo left, links centered,
@@ -154,20 +159,23 @@
     #dnav { display: flex; align-items: center; gap: clamp(1.6rem, 3vw, 2.6rem); }
     #dnav a {
       font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-      color: var(--text); text-decoration: none; font-weight: 500;
+      color: var(--dark-text); text-decoration: none; font-weight: 500;
       transition: color .3s ease;
     }
     #dnav a:hover { color: var(--gold); }
     #dnav-right { display: flex; align-items: center; gap: 1.4rem; }
     #dnav-tel {
       font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .02em;
-      color: var(--text); text-decoration: none;
+      color: var(--dark-text); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
     }
+    #dnav-tel:hover { color: var(--gold); }
+    #dnav-loc {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: .02em;
+      color: var(--dark-mid); display: inline-flex; align-items: center; gap: 6px;
+    }
+    @media (max-width: 1180px) { #dnav-loc { display: none; } }
     .cta-nav { padding: 10px 22px; font-size: 10.5px; }
-    body[data-estate] #nav:not(.scrolled) #dnav a,
-    body[data-estate] #nav:not(.scrolled) #dnav-tel {
-      color: #faf8f3; text-shadow: 0 1px 14px rgba(24,24,26,.5);
-    }
     @media (max-width: 900px) {
       #dnav, #dnav-right { display: none; }
     }
@@ -191,35 +199,26 @@
 
     #nav-logo { font-size: 1.22rem; }
 
-    /* Estate pages: the nav floats over the hero photograph, so the
-       wordmark + burger render light (with a soft shadow for bright
-       skies) until the nav gains its solid backdrop on scroll — then
-       they settle back to brand colors. */
-    body[data-estate] #nav:not(.scrolled) #nav-logo,
-    body[data-estate] #nav:not(.scrolled) #nav-logo .av-an,
-    body[data-estate] #nav:not(.scrolled) #nav-logo .av-vira {
+    /* AnVira header chrome is a permanent dark bar (Aurelia reference) —
+       wordmark, nav links and burger all render light at every scroll
+       position; only the menu-open state (light drawer) flips them dark. */
+    #nav-logo, #nav-logo .av-an, #nav-logo .av-vira {
       color: #faf8f3;
-      text-shadow: 0 1px 14px rgba(24,24,26,.5);
     }
-    body[data-estate] #nav:not(.scrolled) #burger .bl {
-      background: rgba(250,248,243,.92);
-    }
-    /* …but revert to dark while the light full-screen menu is open */
-    body[data-estate] #nav:not(.scrolled):has(#burger.open) #nav-logo,
-    body[data-estate] #nav:not(.scrolled):has(#burger.open) #nav-logo .av-an,
-    body[data-estate] #nav:not(.scrolled):has(#burger.open) #nav-logo .av-vira {
+    #burger .bl { background: rgba(250,248,243,.92); }
+    #nav:has(#burger.open) #nav-logo,
+    #nav:has(#burger.open) #nav-logo .av-an,
+    #nav:has(#burger.open) #nav-logo .av-vira {
       color: var(--text); text-shadow: none;
     }
-    body[data-estate] #nav:not(.scrolled) #burger.open .bl {
-      background: rgba(24,24,26,.5);
-    }
+    #nav #burger.open .bl { background: rgba(24,24,26,.5); }
 
     #burger {
       background: none; border: none;
       display: flex; flex-direction: column; gap: 5px; padding: 4px;
     }
     .bl {
-      display: block; height: 1px; background: rgba(24,24,26,0.5);
+      display: block; height: 1px; background: rgba(250,248,243,.92);
       transition: transform .35s var(--lux), opacity .25s ease, background .45s ease;
     }
     .bl:nth-child(1) { width: 22px; }
@@ -291,20 +290,6 @@
     #page.show .hero-btm .eyebrow { opacity: 1; transform: none; transition-delay: .55s; }
     #page.show .hero-btm .ed      { opacity: 1; transform: none; transition-delay: .75s; }
     #page.show .hero-btm .stats   { opacity: 1; transform: none; transition-delay: .95s; }
-
-    /* ── Hero ────────────────────────────────────────────────── */
-    #hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      padding: clamp(110px,14vh,160px) clamp(1.5rem,5vw,3.5rem) clamp(4rem,8vh,6rem);
-      position: relative; overflow: hidden;
-    }
-    #hero::before {
-      content: '';
-      position: absolute; inset: 0; pointer-events: none;
-      background-image: radial-gradient(rgba(24,24,26,0.04) 1px, transparent 1px);
-      background-size: 46px 46px;
-    }
 
     /* Hero wordmark — large, centered, parallaxes on scroll */
     #hwrap {
@@ -817,25 +802,6 @@
     @media (max-width: 768px) { #exp-grid { grid-template-columns: repeat(2,1fr); } .exp-card:nth-child(3n) { border-right: 1px solid var(--border); } .exp-card:nth-child(2n) { border-right: none; } }
     @media (max-width: 480px) { #exp-grid { grid-template-columns: 1fr; } .exp-card { border-right: none !important; } }
 
-    /* ── Story / owner's quote ─────────────────────────────── */
-    #story {
-      padding: clamp(5.5rem,11vh,9rem) clamp(1.5rem,5vw,3.5rem);
-      background: var(--wash); text-align: center; position: relative; overflow: hidden;
-    }
-    #story::before {
-      content: '\201C'; position: absolute; top: -5rem; left: 50%; transform: translateX(-50%);
-      font-family: 'Cormorant Garamond', serif; font-size: 22rem; line-height: 1;
-      color: rgba(168,124,69,0.07); pointer-events: none; user-select: none;
-    }
-    .story-eye { font-size: 10px; letter-spacing: .52em; text-transform: uppercase; color: var(--gold); margin-bottom: 3rem; font-weight: 400; }
-    #story-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.35rem,2.6vw,2.15rem); font-weight: 300; font-style: italic;
-      line-height: 1.78; max-width: 730px; margin: 0 auto 2.4rem;
-      color: var(--text); letter-spacing: .01em;
-    }
-    #story-attr { font-family: 'Spectral', serif; font-style: italic; font-weight: 300; font-size: 12px; letter-spacing: .14em; color: var(--mid); }
-
     /* ── Testimonials ──────────────────────────────────────── */
     #testimonials { padding: clamp(4.5rem,8vh,6.5rem) 0; }
     #testimonials .sec-bar { padding: 0 clamp(1.5rem,5vw,3.5rem); margin-bottom: 3rem; }
@@ -1048,7 +1014,7 @@
       transition: transform .5s cubic-bezier(.22,1.4,.36,1), opacity .35s ease;
     }
     #mpc-wrap.open #mpc, #wl-wrap.open #wl { transform: scale(1) translateY(0); opacity: 1; }
-    .mpc-eye { font-size: 10px; letter-spacing: .42em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; font-weight: 500; }
+    .mpc-eye { font-size: 10px; letter-spacing: .42em; text-transform: uppercase; color: var(--gold-text); margin-bottom: .5rem; font-weight: 500; }
     .mpc-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.45rem; font-weight: 300; color: var(--text); margin-bottom: 1.1rem; }
     .mpc-rows { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: .8rem 0; margin-bottom: 1rem; }
     .mpc-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; color: var(--mid); }
@@ -1350,6 +1316,7 @@
     }
     .ep-hero-book #bw {
       display: flex; align-items: flex-end; gap: 1.1rem; flex-wrap: wrap;
+      width: 100%; max-width: none; background: transparent; border: none; padding: 0;
     }
     .ep-hero-book .bw-field { margin-bottom: 0; flex: 1 1 130px; min-width: 110px; }
     .ep-hero-book .bw-label { color: var(--dark-mid); }
@@ -1371,9 +1338,10 @@
       .ep-hero-book #bw { flex-wrap: nowrap; }
     }
     @media (max-width: 900px) {
-      .ep-hero-book { position: static; margin: -44px var(--pad-x) 0; bottom: auto; }
+      .ep-hero-book { position: static; margin: 0 var(--pad-x); bottom: auto; }
       .ep-hero { padding-bottom: 0; }
       .ep-hero-book #bw { flex-direction: column; align-items: stretch; gap: .8rem; }
+      .ep-hero-book .bw-field { flex-basis: auto; }
       .ep-hero-book .cta { width: 100%; text-align: center; }
     }
     .ep-crumb { font-size: 9.5px; letter-spacing: .4em; text-transform: uppercase; margin-bottom: .7rem; }
@@ -1439,7 +1407,7 @@
     .ep-price-from { font-size: 9.5px; letter-spacing: .36em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; }
     .ep-price-amt  { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.2; }
     .ep-price-note { font-size: 11.5px; color: var(--mid); margin-top: 6px; line-height: 1.6; }
-    .ep-price-min  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold); margin-top: 8px; letter-spacing: .06em; }
+    .ep-price-min  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--gold-text); margin-top: 8px; letter-spacing: .06em; }
     .ep-incl { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
     .ep-incl-title { font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; font-weight: 500; }
     .ep-incl li { font-size: 12px; line-height: 1.9; color: var(--mid); list-style: none; padding-left: 16px; position: relative; }
@@ -1450,7 +1418,7 @@
     .lg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-4); }
     .lg-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; font-style: italic; color: var(--text); }
     .lg-desc { font-size: 13px; line-height: 1.75; color: var(--mid); margin: 5px 0 7px; }
-    .lg-meta { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold); }
+    .lg-meta { font-size: 9.5px; letter-spacing: .24em; text-transform: uppercase; color: var(--gold-text); }
     .lg-meta span { color: var(--faint); }
 
     /* Reviews on estate page */
@@ -1922,7 +1890,7 @@
     }
     .ep-star { font-size: 11px; opacity: .75; }
     .ep-hero-caption .ep-eyebrow { color: rgba(241,236,221,.85); justify-content: flex-start; }
-    .ep-eyebrow-dark { color: var(--gold); }
+    .ep-eyebrow-dark { color: var(--gold-text); }
 
     /* ── Hero — full-bleed image, dark gradient, large serif headline ── */
     .ep-hero-caption {
@@ -1990,4 +1958,81 @@
 
     @media (max-width: 900px) {
       .ep-hero-sub { max-width: 100%; }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       Aurelia v3 pixel-match — captain-supplied Framer screenshots
+       ════════════════════════════════════════════════════════════ */
+
+    /* Hero fills the full viewport on load, no letterboxing — the
+       booking bar overlaps the bottom edge rather than shrinking it. */
+    .ep-hero { height: 100vh; min-height: 100vh; padding-bottom: 0; }
+    .ep-hero-caption { bottom: clamp(9.5rem, 20vh, 13rem); }
+
+    /* Ghost/outline hero CTA, matching the reference "Discover Rooms" button */
+    .ep-hero-cta.cta {
+      background: transparent; color: #FAF8F3;
+      border: 1px solid rgba(250,248,243,.65);
+      padding: 14px 30px;
+    }
+    .ep-hero-cta.cta:hover { background: rgba(250,248,243,.12); color: #FAF8F3; border-color: #FAF8F3; }
+
+    /* Booking bar labels — small tan/olive uppercase letterspaced,
+       matching the reference field-label treatment */
+    .ep-hero-book .bw-label {
+      color: var(--gold); font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase;
+    }
+    .ep-hero-book { bottom: -50px; }
+    @media (max-width: 900px) { .ep-hero-book { margin-top: 0; } }
+
+    /* Story photo — arch/oval top (Aurelia signature shape), not a plain circle */
+    .ep-story-media img {
+      width: 300px; height: 380px; border-radius: 999px 999px 8px 8px;
+      border: 1px solid var(--gold); box-shadow: 0 24px 60px rgba(23,37,28,.22);
+    }
+
+    /* Gallery — pencil-sketch texture backdrop + rounded, shadowed tiles,
+       large photo (2 rows) + 2x2 grid composition on the right */
+    #pd-gallery-wrap {
+      position: relative; padding: var(--space-5) 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 20% 15%, rgba(176,141,79,.06), transparent 70%),
+        radial-gradient(ellipse 50% 30% at 85% 75%, rgba(176,141,79,.05), transparent 70%);
+    }
+    #pd-gallery-wrap::before {
+      content: ''; position: absolute; inset: 0; opacity: .5; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23B08D4F' stroke-width='0.6' opacity='0.35'%3E%3Cpath d='M0 220 Q 80 180 160 210 T 320 195 T 480 215 T 600 190'/%3E%3Cpath d='M0 250 Q 100 210 200 240 T 400 225 T 600 235'/%3E%3Cpath d='M40 60 L 90 10 L 140 60 Z'/%3E%3Cpath d='M420 90 L 470 30 L 520 90 Z'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat-x; background-size: 600px 300px;
+    }
+    #pd-gallery img {
+      border-radius: 6px;
+      box-shadow: 0 14px 34px rgba(23,37,28,.16);
+      transition: opacity .35s ease, transform .6s var(--lux), box-shadow .35s ease;
+    }
+    #pd-gallery img.lead { grid-column: span 1; grid-row: span 2; }
+    #pd-gallery img:hover { box-shadow: 0 20px 46px rgba(23,37,28,.24); }
+
+    /* scattered-to-grid settle animation for the first five (highlight) tiles */
+    #pd-gallery img { opacity: 0; transform: translateY(18px) rotate(-2deg) scale(.97); }
+    .ep-section.vis #pd-gallery img,
+    .ep-section.fi.vis #pd-gallery img {
+      opacity: 1; transform: translateY(0) rotate(0) scale(1);
+      transition: opacity .8s var(--lux), transform .8s var(--lux);
+    }
+    #pd-gallery img:nth-of-type(1) { transition-delay: .05s; }
+    #pd-gallery img:nth-of-type(2) { transition-delay: .15s; transform: translateY(18px) rotate(2deg) scale(.97); }
+    #pd-gallery img:nth-of-type(3) { transition-delay: .22s; transform: translateY(18px) rotate(-1.5deg) scale(.97); }
+    #pd-gallery img:nth-of-type(4) { transition-delay: .29s; transform: translateY(18px) rotate(1.5deg) scale(.97); }
+    #pd-gallery img:nth-of-type(5) { transition-delay: .36s; transform: translateY(18px) rotate(-2deg) scale(.97); }
+    .ep-section.vis #pd-gallery img:nth-of-type(2),
+    .ep-section.vis #pd-gallery img:nth-of-type(3),
+    .ep-section.vis #pd-gallery img:nth-of-type(4),
+    .ep-section.vis #pd-gallery img:nth-of-type(5) { transform: translateY(0) rotate(0) scale(1); }
+
+    @media (prefers-reduced-motion: reduce) {
+      #pd-gallery img { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+
+    @media (max-width: 900px) {
+      .ep-hero { height: 100svh; min-height: 100svh; }
     }
