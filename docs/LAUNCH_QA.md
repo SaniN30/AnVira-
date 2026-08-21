@@ -10,7 +10,7 @@ Test on: **iPhone Safari · Android Chrome · iPad Safari · Desktop Chrome · D
 Per device:
 - [ ] Homepage (`/`) loads < 2s on 4G, no horizontal scroll 320–1920px
 - [ ] Intro reveal plays once and is skippable
-- [ ] Villa AnVira page: hero, gallery, lightbox (swipe + arrows + Esc), availability calendar
+- [ ] Villa AnVira page: hero, gallery, lightbox (swipe + arrows + Esc)
 - [ ] Booking widget → Message Preview Card → WhatsApp opens with the exact message
 - [ ] "Call instead" tel: link rings the right number
 - [ ] Floating WhatsApp appears after the hero, pre-filled with property name

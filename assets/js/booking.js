@@ -199,6 +199,40 @@ function renderAvailability(p) {
   buildCalendar();
 }
 
+/* ── Homepage quick-check bar — routes to the dedicated booking page
+   (plan-a-stay.html) with the picked dates/guests carried as query
+   params, rather than booking inline on the homepage. ─────────── */
+(function initHomeBw() {
+  const form = document.getElementById('home-bw');
+  if (!form) return;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const checkin  = document.getElementById('home-bw-in').value;
+    const checkout = document.getElementById('home-bw-out').value;
+    const guests   = document.getElementById('home-bw-guests').value;
+    const params = new URLSearchParams();
+    if (checkin)  params.set('checkin', checkin);
+    if (checkout) params.set('checkout', checkout);
+    if (guests)   params.set('guests', guests);
+    const qs = params.toString();
+    window.location.href = `${ASSET_BASE}plan-a-stay.html${qs ? '?' + qs : ''}#bw`;
+  });
+})();
+
+/* ── Pre-fill the booking form from query params carried over by the
+   homepage quick-check bar (checkin/checkout/guests). ─────────── */
+(function prefillBwFromQuery() {
+  const bwInEl = document.getElementById('bw-in');
+  if (!bwInEl) return;
+  const params = new URLSearchParams(window.location.search);
+  const checkin  = params.get('checkin');
+  const checkout = params.get('checkout');
+  const guests   = params.get('guests');
+  if (checkin)  bwInEl.value = checkin;
+  if (checkout) { const el = document.getElementById('bw-out'); if (el) el.value = checkout; }
+  if (guests) { const el = document.getElementById('bw-guests'); if (el) el.value = guests; }
+})();
+
 let currentProp = null;
 let currentBaseGuests = null;
 
@@ -261,13 +295,14 @@ function initBooking(p) {
   sel.name      = 'guests';
   sel.className = 'bw-input';
   sel.required  = true;
+  const preselected = parseInt(numInput.value, 10) || 2;
   for (let i = 1; i <= p.maxGuests; i++) {
     const opt = document.createElement('option');
     opt.value       = i;
     opt.textContent = i > baseGuests
       ? `${i} guests  (+  chargeable)`
       : `${i} guest${i > 1 ? 's' : ''}`;
-    if (i === 2) opt.selected = true;
+    if (i === preselected) opt.selected = true;
     sel.appendChild(opt);
   }
   numInput.replaceWith(sel);
