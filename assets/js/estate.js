@@ -1,4 +1,4 @@
-/* ── AnVira — estate.js — estate page runtime (content is pre-baked by tools/build-estates.mjs) ── */
+/* ── AnVira — estate.js — Villa AnVira property-page runtime (gallery, hero, booking wiring) ── */
 'use strict';
 
 const EP = PROPERTIES.find(p => p.id === document.body.dataset.estate);

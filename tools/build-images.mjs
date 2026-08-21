@@ -1,6 +1,6 @@
 /* ── AnVira — responsive image variants ──────────────────────────
    Generates 640w / 1280w .webp variants next to each original so
-   build-estates.mjs can emit srcset and phones stop downloading
+   shipped HTML can use srcset and phones stop downloading
    1920px desktop images. Idempotent: skips variants that already
    exist and are newer than the source. Never upscales.
    Run:  node tools/build-images.mjs   (needs tools/node_modules/sharp) */

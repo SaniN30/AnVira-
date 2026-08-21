@@ -1,21 +1,30 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
 
     :root {
-      /* AnVira design tokens — see CLAUDE.md §3 */
-      --bg:          #EFEBE0;   /* Lime Wash — deepened */
-      --surface:     #F5F2EA;   /* Bone — softened */
-      --text:        #221F1C;   /* Ink — warmed */
-      --mid:         #57534D;   /* Dust, darkened for readability */
-      --faint:       #6B665D;   /* Dust, lightened — micro labels */
-      --gold:        #997447;   /* Patina Brass — muted */
-      --gold-light:  rgba(153,116,71,0.08);
-      --wash:        #E6DCC4;   /* Turmeric Mist — muted */
-      --rule:        #CFC7B8;   /* Linen Rule */
-      --wa:          #1B8A54;   /* Monsoon Green — deepened */
+      /* AnVira design tokens — Aurelia-inspired palette (see AGENTS.md) */
+      --bg:          #F3EEE3;   /* Warm cream — page background */
+      --surface:     #FAF7EF;   /* Bone — card / surface background */
+      --text:        #17251C;   /* Deep forest green-black — headings, primary text */
+      --mid:         #4B5049;   /* Muted sage-grey — body copy */
+      --faint:       #6C7167;   /* Lightened sage — micro labels */
+      --gold:        #B08D4F;   /* Brass — accent, eyebrows, rules */
+      --gold-light:  rgba(176,141,79,0.1);
+      --wash:        #E7DFC7;   /* Warm sand wash — alt section background */
+      --rule:        #D8CFB8;   /* Linen rule */
+      --wa:          #1B8A54;   /* WhatsApp green — unchanged, brand-locked */
       --error:       #B5513A;   /* Fired Clay */
-      --border:      rgba(24,24,26,0.08);
-      --border-mid:  rgba(24,24,26,0.14);
+      --border:      rgba(23,37,28,0.1);
+      --border-mid:  rgba(23,37,28,0.16);
       --lux:         cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* Aurelia dark section (forest green) tokens */
+      --dark-bg:      #16261D;
+      --dark-bg-2:    #1B2E22;
+      --dark-text:    #F1ECDD;
+      --dark-mid:     rgba(241,236,221,0.72);
+      --dark-border:  rgba(176,141,79,0.35);
+      --olive:        #6E7B5F;   /* olive-green button fill, Aurelia-style */
+      --olive-dark:   #5C6750;
 
       /* Spacing scale — every section padding / gap / margin draws
          from this so vertical rhythm stays symmetric site-wide */
@@ -1819,4 +1828,88 @@
       /* clear the iPhone home-indicator gesture area */
       #sticky-book { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
       #float-wa { margin-bottom: env(safe-area-inset-bottom); }
+    }
+
+    /* ════════════════════════════════════════════════════════════
+       Aurelia-inspired reskin — Villa AnVira, Chail (single-property site)
+       Layered on top of the design tokens above; keeps every existing
+       #id / .class the JS relies on (booking, gallery, lightbox, menu).
+       ════════════════════════════════════════════════════════════ */
+
+    /* ── Eyebrow — brass tracked label with star flanks (Aurelia mark) ── */
+    .ep-eyebrow {
+      display: flex; align-items: center; gap: .6em; justify-content: flex-start;
+      font-size: 10px; letter-spacing: .38em; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 1rem;
+    }
+    .ep-star { font-size: 11px; opacity: .75; }
+    .ep-hero-caption .ep-eyebrow { color: rgba(241,236,221,.85); justify-content: flex-start; }
+    .ep-eyebrow-dark { color: var(--gold); }
+
+    /* ── Hero — full-bleed image, dark gradient, large serif headline ── */
+    .ep-hero-caption {
+      display: flex; flex-direction: column; align-items: flex-start;
+      max-width: 720px;
+    }
+    #pd-hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 7.5vw, 6rem);
+      font-weight: 300; font-style: italic;
+      color: #FAF8F3; line-height: 1.04; letter-spacing: .005em;
+    }
+    .ep-hero-sub {
+      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-size: clamp(.92rem, 1.4vw, 1.05rem); line-height: 1.7;
+      color: rgba(241,236,221,.86);
+      max-width: 480px; margin: 1.1rem 0 1.3rem;
+    }
+    .ep-hero-cta { text-decoration: none; }
+
+    /* ── Section headline — serif, Aurelia "More than just…" style ── */
+    .ep-sec-h {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 400; font-style: normal;
+      font-size: clamp(2rem, 4.2vw, 3.1rem);
+      line-height: 1.08; color: var(--text);
+      margin-bottom: 1.4rem;
+    }
+    .ep-sec-h-light { color: var(--dark-text); }
+
+    /* ── Dark (forest-green) section variant — "Beyond Your Stay" band ── */
+    .ep-section-dark {
+      background: var(--dark-bg);
+      color: var(--dark-mid);
+      padding: var(--space-4) clamp(1.4rem, 4vw, 2.6rem);
+      border: 1px solid var(--dark-border);
+      border-radius: 3px;
+    }
+    .ep-section-dark::before { background: var(--gold); opacity: .55; }
+    .ep-section-dark .pd-amen-tag {
+      color: var(--dark-text);
+      border-color: var(--dark-border);
+      background: rgba(241,236,221,.04);
+    }
+    .ep-section-dark .pd-amen-tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Buttons — Aurelia olive-green fill, brass on hover ── */
+    .cta {
+      background: var(--olive); color: var(--dark-text);
+      border-radius: 2px;
+    }
+    .cta:hover { background: var(--gold); color: var(--text); }
+    .cta-ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border-mid);
+    }
+    .cta-ghost:hover { background: var(--gold); color: #FAF8F3; border-color: var(--gold); }
+
+    /* ── Amenity tags — softened pill, brass border on hover ── */
+    .pd-amen-tag { border-radius: 999px; transition: border-color .3s ease, color .3s ease; }
+    .pd-amen-tag:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Section divider rule reused from Aurelia's thin brass lines ── */
+    .ep-section::before { opacity: .4; }
+
+    @media (max-width: 900px) {
+      .ep-hero-sub { max-width: 100%; }
     }
