@@ -10,13 +10,21 @@ const img = path => ASSET_BASE + path;
 /* ── Cursor ─────────────────────────────────────────────── */
 const ring = document.getElementById('cursor-ring');
 const dot  = document.getElementById('cursor-dot');
-if (!isTouchDevice) {
+if (!isTouchDevice && ring && dot) {
   document.addEventListener('mousemove', e => {
     const x = e.clientX, y = e.clientY;
     ring.style.transform = `translate(${x - 18}px, ${y - 18}px)`;
     dot.style.transform  = `translate(${x - 2}px,  ${y - 2}px)`;
+    ring.classList.add('active');
+    dot.classList.add('active');
     const el = document.elementFromPoint(x, y);
     el && el.closest('[data-cursor]') ? ring.classList.add('on') : ring.classList.remove('on');
+  });
+  /* Hide again the moment the pointer leaves the viewport (e.g. to the
+     browser chrome) so it never lingers mid-page. */
+  document.addEventListener('mouseleave', () => {
+    ring.classList.remove('active');
+    dot.classList.remove('active');
   });
 }
 
@@ -116,6 +124,45 @@ if (floatWa && heroEl) {
   waObs.observe(heroEl);
 }
 
+/* ── Homepage hero — slow auto-advancing crossfade through the real
+   photo set (same images used in the gallery), instead of one fixed
+   frame. Reduced-motion: stays on the first frame, no cycling. ─── */
+(function initHeroShuffle() {
+  const hero = document.getElementById('hero');
+  const media = hero && (hero.querySelector('.ep-hero-media') || hero);
+  const baseImg = media && media.querySelector(':scope > img');
+  if (!hero || !media || !baseImg || typeof PROPERTIES === 'undefined') return;
+  const prop = PROPERTIES.find(p => p.id === document.body.dataset.estate) || PROPERTIES[0];
+  const images = (prop && prop.images) ? prop.images.slice(1, 9) : [];
+  if (!images.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const layers = images.map(src => {
+    const el = baseImg.cloneNode(false);
+    el.removeAttribute('srcset');
+    el.removeAttribute('sizes');
+    el.src = img(src);
+    el.loading = 'eager';
+    el.decoding = 'async';
+    el.style.position = 'absolute';
+    el.style.inset = '0';
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 1.8s ease';
+    media.insertBefore(el, media.querySelector('.ep-hero-overlay'));
+    return el;
+  });
+  baseImg.style.transition = 'opacity 1.8s ease';
+
+  const frames = [baseImg, ...layers];
+  let idx = 0;
+  setInterval(() => {
+    const next = (idx + 1) % frames.length;
+    frames[next].style.opacity = '1';
+    frames[idx].style.opacity = '0';
+    idx = next;
+  }, 6000);
+})();
+
 /* ── PWA — offline estate pages (Phase 6) ─────────────────── */
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
   window.addEventListener('load', () => {
@@ -188,3 +235,71 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
   const wrap = v.closest('.av-video-frame, .av-video-card');
   v.addEventListener('canplay', () => wrap.classList.add('loaded'), { once: true });
 });
+
+/* ── Video playlist cycling — every background-video slot rotates
+   through ALL of the site's clips back-to-back (not just its own),
+   crossfading between two stacked <video> layers so a clip ending
+   never shows a blank frame before the next one starts. ─────────── */
+(function initVideoPlaylists() {
+  const PLAYLIST = [
+    'assets/video/villa-terrace-firepit-story.mp4',
+    'assets/video/valley-terrace-golden-hour.mp4'
+  ].map(img);
+  if (PLAYLIST.length < 2) return;
+
+  document.querySelectorAll('.av-video-frame, .av-video-card').forEach(wrap => {
+    const vA = wrap.querySelector('video');
+    if (!vA) return;
+
+    const srcEl = vA.querySelector('source');
+    const startFile = (srcEl ? srcEl.getAttribute('src') : vA.getAttribute('src') || '').split('/').pop();
+    let idx = PLAYLIST.findIndex(p => p.endsWith(startFile));
+    if (idx < 0) idx = 0;
+
+    vA.loop = false;
+    vA.removeAttribute('loop');
+    if (srcEl) srcEl.remove();
+    vA.src = PLAYLIST[idx];
+    vA.load();
+    vA.play().catch(() => {});
+
+    const vB = vA.cloneNode(false);
+    vB.removeAttribute('id');
+    vB.muted = true; vB.playsInline = true; vB.autoplay = false; vB.preload = 'auto';
+    vB.style.opacity = '0';
+    vB.style.transition = 'opacity .6s ease';
+    vA.style.transition = 'opacity .6s ease';
+    wrap.appendChild(vB);
+
+    let active = vA, standby = vB, activeIdx = idx;
+
+    function armStandby() {
+      const nextIdx = (activeIdx + 1) % PLAYLIST.length;
+      standby.dataset.idx = String(nextIdx);
+      standby.src = PLAYLIST[nextIdx];
+      standby.currentTime = 0;
+      standby.load();
+    }
+    armStandby();
+
+    function crossfade() {
+      standby.style.opacity = '1';
+      active.style.opacity = '0';
+      standby.play().catch(() => {});
+      setTimeout(() => {
+        active.pause();
+        const tmp = active; active = standby; standby = tmp;
+        activeIdx = Number(active.dataset.idx || 0);
+        armStandby();
+      }, 620);
+    }
+
+    const poll = setInterval(() => {
+      if (!wrap.isConnected) { clearInterval(poll); return; }
+      if (!active.duration || active.seeking) return;
+      if (active.duration - active.currentTime < 0.45 && standby.readyState >= 3) {
+        crossfade();
+      }
+    }, 150);
+  });
+})();

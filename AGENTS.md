@@ -520,6 +520,35 @@ rule, grep the id/class across the whole stylesheet (not just the nearest
 block) and check for an unrelated older rule targeting the same selector —
 delete it if the old HTML is confirmed gone, don't just patch around it.
 
+## Hero structure — `.ep-hero-media` wrapper (2026-08 — cosmetic/animation pass)
+
+`.ep-hero` (used by `index.html` and `plan-a-stay.html`) wraps its `<img>`,
+`.ep-hero-overlay` and `.ep-hero-caption` in a `.ep-hero-media` div.
+`.ep-hero-media` — not `.ep-hero` — is what carries `position:absolute;
+inset:0; overflow:hidden` (the Ken Burns clip). `.ep-hero` itself stays
+unclipped so the booking bar (`.ep-hero-book` on plan-a-stay,
+`.home-bw` on the homepage) can flow in normal document flow below the
+hero on mobile without being clipped along with the image — on
+`max-width:900px` those bars go `position:static` and `.ep-hero-media`
+switches from absolute-inset0 to a real-height block (`78svh`) so the
+static bar renders after it instead of overlapping at the section's
+top edge. `.ep-hero-caption`'s absolute positioning is anchored to
+`.ep-hero-media` (its nearest positioned ancestor), not `.ep-hero`, so
+its `bottom` offset stays pinned to the photo's own box on both
+breakpoints. If a hero image/booking-bar layout looks broken again,
+check this structure before re-deriving it from scratch — and note
+`main.css` is served with no cache headers by most static file
+servers, so a stale cached copy after edits is a common false lead;
+re-fetch it (a `?cb=` query bump or hard reload) before trusting
+`getComputedStyle` output while iterating live.
+
+Background `<video>` slots (`.av-video-frame` / `.av-video-card`)
+cycle through every clip in `assets/video/` back-to-back via a
+crossfading two-layer player wired in `core.js`'s
+`initVideoPlaylists()` — don't reintroduce a single hardcoded
+`<source>` per slot, and add any new clip to the `PLAYLIST` array
+there so every slot picks it up.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
