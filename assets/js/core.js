@@ -271,7 +271,7 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     vA.style.transition = 'opacity .6s ease';
     wrap.appendChild(vB);
 
-    let active = vA, standby = vB, activeIdx = idx;
+    let active = vA, standby = vB, activeIdx = idx, transitioning = false;
 
     function armStandby() {
       const nextIdx = (activeIdx + 1) % PLAYLIST.length;
@@ -283,6 +283,7 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     armStandby();
 
     function crossfade() {
+      transitioning = true;
       standby.style.opacity = '1';
       active.style.opacity = '0';
       standby.play().catch(() => {});
@@ -291,12 +292,13 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
         const tmp = active; active = standby; standby = tmp;
         activeIdx = Number(active.dataset.idx || 0);
         armStandby();
+        transitioning = false;
       }, 620);
     }
 
     const poll = setInterval(() => {
       if (!wrap.isConnected) { clearInterval(poll); return; }
-      if (!active.duration || active.seeking) return;
+      if (transitioning || !active.duration || active.seeking) return;
       if (active.duration - active.currentTime < 0.45 && standby.readyState >= 3) {
         crossfade();
       }
