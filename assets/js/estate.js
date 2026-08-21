@@ -4,8 +4,10 @@
 const EP = PROPERTIES.find(p => p.id === document.body.dataset.estate);
 
 if (EP) {
-  /* Booking widget: capacity cap, date floors, availability calendar */
-  initBooking(EP);
+  /* Booking widget: capacity cap, date floors, availability calendar.
+     booking.js (and its #bw/#mpc-wrap markup) only ships on the page
+     that carries the booking form — skip elsewhere. */
+  if (typeof initBooking === 'function') initBooking(EP);
 
   /* Gallery → lightbox (lightbox follows the active category filter) */
   const epImages = EP.images.map(img);
