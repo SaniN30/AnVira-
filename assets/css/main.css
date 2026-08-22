@@ -573,6 +573,7 @@
       max-width: 440px; margin-top: .55rem; color: var(--text);
     }
     .cta {
+      display: inline-block;
       font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
       background: var(--text); color: var(--bg); border: none;
       padding: 14px 32px; font-weight: 300;
