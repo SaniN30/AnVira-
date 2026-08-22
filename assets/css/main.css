@@ -61,28 +61,41 @@
     ::-webkit-scrollbar-thumb { background: var(--border-mid); }
 
     /* ── Cursor ──────────────────────────────────────────────── */
+    /* ── Custom cursor — brass jaali mark with a magnetic trail ──
+       A thin diamond (not a circle) echoes the site's dot-grid/jaali
+       motif and star dividers; mix-blend-mode keeps it legible over
+       both the dark hero and the Lime Wash body. The ring trails the
+       true pointer by a short linear delay (dot stays glued to the
+       cursor) for a deliberate, weighted "magnetic" feel rather than
+       an instant 1:1 follow. */
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 30px; height: 30px;
+      width: 26px; height: 26px;
       border: 1px solid #FFFFFF;
-      border-radius: 50%; pointer-events: none;
+      transform-origin: center;
+      pointer-events: none;
       display: flex; align-items: center; justify-content: center;
       opacity: 0;
       transition: width .35s var(--lux), height .35s var(--lux),
                   border-color .3s ease, background .3s ease,
-                  margin .35s var(--lux), opacity .25s ease;
+                  margin .35s var(--lux), opacity .25s ease,
+                  transform .18s linear;
       will-change: transform;
       mix-blend-mode: difference;
+      rotate: 45deg;
     }
     /* Stay hidden until the first real mousemove, so a stale ring
        never flashes at (0,0) before the cursor has actually moved. */
     #cursor-ring.active, #cursor-dot.active { opacity: 1; }
     #cursor-ring.on {
-      width: 52px; height: 52px; margin: -11px 0 0 -11px;
-      background: rgba(255,255,255,.16);
+      width: 58px; height: 58px; margin: -16px 0 0 -16px;
+      background: rgba(255,255,255,.14);
+      border-color: rgba(255,255,255,.7);
     }
     #cursor-label {
-      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+      rotate: -45deg;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 13px; letter-spacing: .04em;
       color: #FFFFFF; opacity: 0; font-weight: 300;
       transition: opacity .3s ease;
     }
