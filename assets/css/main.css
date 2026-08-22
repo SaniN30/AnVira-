@@ -1,4 +1,8 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
+    /* No underlines anywhere on the site — emphasis/active state is conveyed
+       through weight, color, or the Cormorant Garamond italic already used
+       for editorial accents, never a text-decoration or growing rule line. */
+    a { text-decoration: none; }
 
     :root {
       /* AnVira design tokens — Aurelia-inspired palette (see AGENTS.md) */
@@ -7,8 +11,8 @@
       --text:        #17251C;   /* Deep forest green-black — headings, primary text */
       --mid:         #4B5049;   /* Muted sage-grey — body copy */
       --faint:       #6C7167;   /* Lightened sage — micro labels */
-      --gold:        #B08D4F;   /* Brass — accent, rules, borders, gold-on-dark text */
-      --gold-light:  rgba(176,141,79,0.1);
+      --gold:        #B99A6B;   /* Brass — accent, rules, borders, gold-on-dark text */
+      --gold-light:  rgba(185,154,107,0.1);
       --gold-text:   #8C6B33;   /* Darker brass — WCAG AA-safe (4.5:1) for gold text on cream/bone */
       --wash:        #E7DFC7;   /* Warm sand wash — alt section background */
       --rule:        #D8CFB8;   /* Linen rule */
@@ -40,13 +44,14 @@
     }
 
     html { scroll-behavior: smooth; overflow-x: hidden; }
+    section[id], .ep-section[id], [id] { scroll-margin-top: 100px; }
 
     :focus-visible { outline: 1.5px solid var(--gold); outline-offset: 2px; }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
     }
@@ -175,22 +180,12 @@
     #dnav a {
       position: relative;
       font-size: 12.5px; letter-spacing: .18em; text-transform: uppercase;
-      color: var(--dark-text); text-decoration: none; font-weight: 500;
-      transition: color .3s ease;
+      color: var(--dark-text); font-weight: 500;
+      transition: color .3s ease, font-weight .3s ease, letter-spacing .3s ease;
       padding-bottom: 3px;
     }
-    #dnav a::after {
-      content: ''; position: absolute; left: 0; right: 100%; bottom: 0;
-      height: 1px; background: var(--gold);
-      transition: right .35s var(--lux);
-    }
-    #dnav a:hover::after,
-    #dnav a[aria-current="page"]::after { right: 0; }
-    #dnav a:hover { color: var(--gold); }
-    #dnav a[aria-current="page"] { color: var(--gold); }
-    @media (prefers-reduced-motion: reduce) {
-      #dnav a::after { transition: none; }
-    }
+    #dnav a:hover,
+    #dnav a[aria-current="page"] { color: var(--gold); font-weight: 700; letter-spacing: .22em; }
     #dnav-right { display: flex; align-items: center; gap: 1.4rem; }
     #dnav-tel {
       font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: .02em;
@@ -335,7 +330,7 @@
       letter-spacing: .22em; padding-left: .22em;
     }
     #hwm .tagline {
-      font-family: 'DM Sans', sans-serif; font-size: 11px;
+      font-family: 'Manrope', sans-serif; font-size: 11px;
       letter-spacing: .48em; text-transform: uppercase;
       color: var(--mid); opacity: .75; margin-top: 1.1rem; font-weight: 300;
     }
@@ -623,7 +618,6 @@
       position: absolute; bottom: 2.5rem;
       left: clamp(1.5rem,5vw,3.5rem); right: clamp(1.5rem,5vw,3.5rem);
     }
-    #pd-hero-tag  { font-size: 10px; letter-spacing: .42em; text-transform: uppercase; color: rgba(255,255,255,.78); margin-bottom: .5rem; }
     #pd-hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.2rem,5.5vw,5rem); font-weight: 300; font-style: italic;
@@ -695,8 +689,9 @@
       cursor: pointer !important;
       transition: opacity .35s ease, transform .45s var(--lux);
     }
-    /* editorial lead image — .lead is reassigned by estate.js when filtering */
-    #pd-gallery img.lead { grid-column: span 2; grid-row: span 2; }
+    /* editorial lead image — .lead is reassigned by estate.js when filtering;
+       sizing lives in the single #pd-gallery img.lead rule further down,
+       alongside the rest of the gallery's pencil-sketch-section styling. */
     #pd-gallery img.gal-hide { display: none; }
 
     /* gallery category chips */
@@ -959,7 +954,7 @@
     }
     .bw-input {
       width: 100%; height: 42px;
-      font-family: 'DM Sans', sans-serif; font-size: 13.5px;
+      font-family: 'Manrope', sans-serif; font-size: 13.5px;
       color: var(--text); background: var(--bg);
       border: 1px solid var(--rule); border-radius: 2px;
       padding: 9px 10px; outline: none;
@@ -1096,7 +1091,7 @@
     .exp-desc{ font-size: 16px; }
     #pd-address { font-size: 14px; }
     .testi-occ {
-      font-family: 'Spectral', serif; font-style: italic; font-weight: 300;
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 300;
       font-size: 12.5px; color: var(--mid); margin-top: 6px;
     }
     .fc-gst { font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); margin-top: 4px; }
@@ -1402,7 +1397,7 @@
     }
     .home-bw-field input {
       background: transparent; border: none; border-bottom: 1.5px solid var(--dark-border);
-      color: var(--dark-text); font-family: 'DM Sans', sans-serif; font-size: 1.05rem;
+      color: var(--dark-text); font-family: 'Manrope', sans-serif; font-size: 1.05rem;
       height: 42px; padding: 6px 2px; width: 100%;
       transition: border-color .3s ease;
     }
@@ -1699,7 +1694,7 @@
     /* ════════════════════════════════════════════════════════════
        Phase 4 — Interaction & motion polish (claude.md §3:
        unhurried but precise; nav links / body text / buttons
-       stay un-animated beyond color & underline)
+       stay un-animated beyond color & weight — no underlines site-wide)
        ════════════════════════════════════════════════════════════ */
 
     /* ── Jaali dot-grid marker above every section title ── */
@@ -1711,15 +1706,10 @@
       opacity: .85;
     }
 
-    /* ── Brass underline grows under the estate name on card hover ── */
-    .cname { position: relative; display: inline-block; padding-bottom: 2px; }
-    .cname::after {
-      content: ''; position: absolute; left: 0; bottom: 0;
-      width: 100%; height: 1px; background: var(--gold);
-      transform: scaleX(0); transform-origin: left center;
-      transition: transform .6s var(--lux);
-    }
-    .prop-card:hover .cname::after { transform: scaleX(1); }
+    /* ── Estate name shifts to a heavier italic weight on card hover
+       (no underline — emphasis reads through weight + brass color) ── */
+    .cname { display: inline-block; transition: color .5s var(--lux), font-weight .3s ease; }
+    .prop-card:hover .cname { color: var(--gold-text); font-weight: 500; }
 
     /* ── Estate hero name — word stagger (40ms per word) ── */
     .hw {
@@ -1984,7 +1974,7 @@
       color: #FAF8F3; line-height: 1.04; letter-spacing: .005em;
     }
     .ep-hero-sub {
-      font-family: 'DM Sans', sans-serif; font-weight: 300;
+      font-family: 'Manrope', sans-serif; font-weight: 300;
       font-size: clamp(.92rem, 1.4vw, 1.05rem); line-height: 1.7;
       color: rgba(241,236,221,.86);
       max-width: 480px; margin: 1.1rem 0 1.3rem;
@@ -2076,9 +2066,9 @@
        #pd-gallery-wrap keeps its id-scoped rule for the radial wash it adds. */
     .av-sketch-bg { position: relative; }
     .av-sketch-bg::before {
-      content: ''; position: absolute; inset: 0; opacity: .5; pointer-events: none; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23B08D4F' stroke-width='0.6' opacity='0.35'%3E%3Cpath d='M0 220 Q 80 180 160 210 T 320 195 T 480 215 T 600 190'/%3E%3Cpath d='M0 250 Q 100 210 200 240 T 400 225 T 600 235'/%3E%3Cpath d='M40 60 L 90 10 L 140 60 Z'/%3E%3Cpath d='M420 90 L 470 30 L 520 90 Z'/%3E%3C/g%3E%3C/svg%3E");
-      background-repeat: repeat-x; background-size: 600px 300px;
+      content: ''; position: absolute; inset: 0; opacity: .9; pointer-events: none; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23A87C45' stroke-width='1.1' opacity='0.6'%3E%3Cpath d='M0 220 Q 80 180 160 210 T 320 195 T 480 215 T 600 190'/%3E%3Cpath d='M0 250 Q 100 210 200 240 T 400 225 T 600 235'/%3E%3Cpath d='M40 60 L 90 10 L 140 60 Z'/%3E%3Cpath d='M420 90 L 470 30 L 520 90 Z'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat; background-size: 600px 300px;
     }
     .av-sketch-bg > * { position: relative; z-index: 1; }
 
@@ -2100,7 +2090,7 @@
       box-shadow: 0 14px 34px rgba(23,37,28,.16);
       transition: opacity .35s ease, transform .6s var(--lux), box-shadow .35s ease;
     }
-    #pd-gallery img.lead { grid-column: span 1; grid-row: span 2; }
+    #pd-gallery img.lead { grid-column: span 2; grid-row: span 2; }
     #pd-gallery img:hover { box-shadow: 0 20px 46px rgba(23,37,28,.24); }
 
     /* scattered-to-grid settle animation for the first five (highlight) tiles */
@@ -2173,8 +2163,8 @@
     .av-video-card video, .av-video-card img.av-video-poster {
       position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
     }
-    .av-video-card img.av-video-poster { z-index: 1; transition: opacity .5s ease; }
-    .av-video-card video { z-index: 2; }
+    .av-video-card img.av-video-poster { z-index: 1; transition: opacity .5s ease, transform .6s var(--lux); }
+    .av-video-card video { z-index: 2; transition: transform .6s var(--lux); }
     .av-video-card.loaded img.av-video-poster { opacity: 0; }
     .av-video-card .av-video-tag {
       position: absolute; z-index: 3; left: 10px; bottom: 10px;
@@ -2199,9 +2189,23 @@
       display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem;
       margin: 2.2rem 0 2.4rem;
     }
-    .home-gal-grid a, .home-gal-grid .av-video-card { aspect-ratio: 3 / 4; display: block; overflow: hidden; border-radius: 4px; }
+    .home-gal-grid a, .home-gal-grid .av-video-card {
+      aspect-ratio: 3 / 4; display: block; overflow: hidden; border-radius: 4px;
+      position: relative; transition: box-shadow .5s var(--lux);
+    }
+    .home-gal-grid a:hover, .home-gal-grid .av-video-card:hover {
+      box-shadow: 0 18px 40px rgba(23,37,26,.2);
+    }
+    .home-gal-grid a::after, .home-gal-grid .av-video-card::after {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background: linear-gradient(180deg, rgba(24,24,26,0) 55%, rgba(24,24,26,.38));
+      opacity: 0; transition: opacity .5s var(--lux);
+    }
+    .home-gal-grid a:hover::after, .home-gal-grid .av-video-card:hover::after { opacity: 1; }
     .home-gal-grid img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--lux); }
-    .home-gal-grid a:hover img { transform: scale(1.06); }
+    .home-gal-grid a:hover img,
+    .home-gal-grid .av-video-card:hover video,
+    .home-gal-grid .av-video-card:hover img.av-video-poster { transform: scale(1.06); }
     @media (max-width: 900px) { .home-gal-grid { grid-template-columns: repeat(2, 1fr); } }
 
     /* ── Villa page: quick-facts featured card ────────────────────── */
@@ -2229,6 +2233,9 @@
 
     @media (prefers-reduced-motion: reduce) {
       .home-gal-grid img { transition: none; }
+      .home-gal-grid a::after, .home-gal-grid .av-video-card::after,
+      .home-gal-grid a, .home-gal-grid .av-video-card { transition: none; }
       .contact-method, .av-card-hover { transition: none; }
-      .av-video-frame img.av-video-poster, .av-video-card img.av-video-poster { transition: none; }
+      .av-video-frame img.av-video-poster, .av-video-card img.av-video-poster,
+      .av-video-card video { transition: none; }
     }

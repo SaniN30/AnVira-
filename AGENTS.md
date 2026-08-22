@@ -552,6 +552,47 @@ crossfading two-layer player wired in `core.js`'s
 `<source>` per slot, and add any new clip to the `PLAYLIST` array
 there so every slot picks it up.
 
+## Video playlist cycling — guard against re-entrant crossfade (2026-08 — polish pass 3)
+
+`initVideoPlaylists()`'s poll loop (150ms) checks "near end of clip"
+and fires `crossfade()`, which pauses/swaps `active`/`standby` inside
+a 620ms `setTimeout`. That condition stays true for several poll ticks
+before the swap actually happens, so without a guard the poll fires
+`crossfade()` multiple times per transition — the second call's
+timeout pauses the *newly active* (just-swapped-in) video instead of
+the old one, permanently freezing every slot at `currentTime: 0`
+after the first transition. Fixed by a `transitioning` flag set at
+the start of `crossfade()` and cleared at the end of its timeout,
+checked by the poll before re-firing. If videos ever freeze again
+after one loop, suspect a reintroduced re-entrancy path here first —
+reproduce via `chrome-devtools-axi eval` polling `paused`/`currentTime`
+on `document.querySelectorAll('video')` across a full clip duration,
+not just a single snapshot (the freeze only appears after the first
+crossfade completes).
+
+## Type system — Manrope replaces DM Sans, Spectral folded into Cormorant italic (2026-08 — polish pass 3)
+
+To match the Aurelia reference more closely and stay within a 3-family
+budget (Cormorant Garamond / Manrope / DM Mono), `DM Sans` was replaced
+site-wide with `Manrope` for UI/body text, and the one `Spectral` italic
+rule (micro/attribution) now uses `Cormorant Garamond` italic instead.
+The Google Fonts `<link>` on every page was updated to match (Manrope
+400/500/600/700, Cormorant now includes 500, Spectral dropped). If you
+add new UI copy, use `Manrope`, not `DM Sans` — the old family is no
+longer loaded. `--gold` was also nudged from `#B08D4F` to `#B99A6B` to
+sit closer to Aurelia's sampled accent color.
+
+## `.av-sketch-bg` pencil-sketch texture — visibility (2026-08 — polish pass 3)
+
+The reusable `.av-sketch-bg::before` backdrop was tiling `repeat-x`
+only (leaving vertical gaps in tall sections) at low opacity (`.5`
+outer × `.35` SVG stroke ≈ 0.17 effective) — effectively invisible
+against the warm cream background. Now tiles both axes (`repeat`) at
+higher opacity (`.9` outer × `.6` stroke). It's dense photo grids
+(e.g. gallery.html's `#pd-gallery`) that still visually crowd it out
+in the tile area itself — that's inherent to a wall-to-wall image
+grid, not a bug; the texture reads in the surrounding page margins.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
