@@ -243,7 +243,11 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
 (function initVideoPlaylists() {
   const PLAYLIST = [
     'assets/video/villa-terrace-firepit-story.mp4',
-    'assets/video/valley-terrace-golden-hour.mp4'
+    'assets/video/valley-terrace-golden-hour.mp4',
+    'assets/video/terrace-dusk-firepit.mp4',
+    'assets/video/terrace-daytime-valley.mp4',
+    'assets/video/living-room-evening.mp4',
+    'assets/video/bedroom-valley-view.mp4'
   ].map(img);
   if (PLAYLIST.length < 2) return;
 

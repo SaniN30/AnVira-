@@ -593,6 +593,38 @@ higher opacity (`.9` outer × `.6` stroke). It's dense photo grids
 in the tile area itself — that's inherent to a wall-to-wall image
 grid, not a bug; the texture reads in the surrounding page margins.
 
+## `.cta` must stay `display: inline-block` (2026-08 — mobile-first pass)
+
+`.cta` is applied to `<a>` tags sitewide. An anchor's default display
+is `inline`, and vertical margin/padding on an inline box doesn't
+affect layout — it only extends the paint area — so a `.cta` link
+immediately following a text block will visually paint over that
+block's last line by its own `padding-top` even though the boxes
+don't actually overlap in the layout. Reproduced on villa.html's
+"Featured — quick facts" card at desktop width before this was fixed.
+If a new `.cta` variant ever loses this `display: inline-block`
+(e.g. a scoped override), expect the same silent paint-overlap bug.
+
+## Testing scroll-reveal/lazy content with chrome-devtools-axi
+
+`.fi`/`.fi.vis` (IntersectionObserver fade-up), `.ep-aside.pre`/`.in`
+(a second, separate reveal class used by the plan-a-stay/villa aside),
+and native `loading="lazy"` images (gallery.html's 37 photos) all only
+resolve once the real viewport has scrolled past them. `screenshot
+--full-page` does not scroll-and-wait for any of this — it can show
+blank cream boxes where images belong, sections still at `opacity:0`,
+and (separately) duplicate the sticky header at a wrong stitch
+boundary. None of that reflects a real user's experience. Before
+trusting a full-page capture, force-reveal
+(`document.querySelectorAll('.fi').forEach(el=>el.classList.add('vis'))`,
+same for `.ep-aside.pre`→`.in`) and scroll to `body.scrollHeight` and
+back to trigger lazy images, then re-screenshot. Also: `position:fixed`
+elements (`#sticky-book`, `#float-wa`, the off-canvas `#menu` drawer)
+can appear to overlap unrelated content in a full-page stitch or make
+`document.documentElement.scrollWidth` read wider than the viewport —
+verify with a real single-viewport screenshot at the actual scroll
+position (and `getBoundingClientRect`) before treating either as a bug.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 

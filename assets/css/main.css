@@ -54,6 +54,7 @@
       font-family: 'Manrope', sans-serif;
       font-weight: 400;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     ::-webkit-scrollbar { width: 3px; }
@@ -61,28 +62,41 @@
     ::-webkit-scrollbar-thumb { background: var(--border-mid); }
 
     /* ── Cursor ──────────────────────────────────────────────── */
+    /* ── Custom cursor — brass jaali mark with a magnetic trail ──
+       A thin diamond (not a circle) echoes the site's dot-grid/jaali
+       motif and star dividers; mix-blend-mode keeps it legible over
+       both the dark hero and the Lime Wash body. The ring trails the
+       true pointer by a short linear delay (dot stays glued to the
+       cursor) for a deliberate, weighted "magnetic" feel rather than
+       an instant 1:1 follow. */
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 30px; height: 30px;
+      width: 26px; height: 26px;
       border: 1px solid #FFFFFF;
-      border-radius: 50%; pointer-events: none;
+      transform-origin: center;
+      pointer-events: none;
       display: flex; align-items: center; justify-content: center;
       opacity: 0;
       transition: width .35s var(--lux), height .35s var(--lux),
                   border-color .3s ease, background .3s ease,
-                  margin .35s var(--lux), opacity .25s ease;
+                  margin .35s var(--lux), opacity .25s ease,
+                  transform .18s linear;
       will-change: transform;
       mix-blend-mode: difference;
+      rotate: 45deg;
     }
     /* Stay hidden until the first real mousemove, so a stale ring
        never flashes at (0,0) before the cursor has actually moved. */
     #cursor-ring.active, #cursor-dot.active { opacity: 1; }
     #cursor-ring.on {
-      width: 52px; height: 52px; margin: -11px 0 0 -11px;
-      background: rgba(255,255,255,.16);
+      width: 58px; height: 58px; margin: -16px 0 0 -16px;
+      background: rgba(255,255,255,.14);
+      border-color: rgba(255,255,255,.7);
     }
     #cursor-label {
-      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+      rotate: -45deg;
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 13px; letter-spacing: .04em;
       color: #FFFFFF; opacity: 0; font-weight: 300;
       transition: opacity .3s ease;
     }
@@ -238,7 +252,9 @@
 
     #burger {
       background: none; border: none;
-      display: flex; flex-direction: column; gap: 5px; padding: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 5px; padding: 4px;
+      width: 44px; height: 44px;
     }
     .bl {
       display: block; height: 1px; background: rgba(250,248,243,.92);
@@ -271,6 +287,8 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1.9rem, 4vw, 3.2rem);
       font-weight: 300; line-height: 1.2;
+      padding: .35em 0;
+      min-height: 44px; box-sizing: border-box;
       color: var(--text); text-decoration: none;
       transform: translateX(40px); opacity: 0;
       transition: transform .5s var(--lux), opacity .45s ease, color .25s ease;
@@ -556,6 +574,7 @@
       max-width: 440px; margin-top: .55rem; color: var(--text);
     }
     .cta {
+      display: inline-block;
       font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
       background: var(--text); color: var(--bg); border: none;
       padding: 14px 32px; font-weight: 300;
@@ -882,7 +901,7 @@
     /* ── Sticky mobile book bar ────────────────────────────── */
     #sticky-book {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 700;
-      background: var(--text); padding: 1rem 1.5rem;
+      background: var(--text); padding: .5rem 1.5rem;
       display: none; align-items: center; justify-content: center;
       border-top: 1px solid rgba(168,124,69,.18);
       transform: translateY(100%); transition: transform .5s var(--lux);
@@ -891,7 +910,8 @@
     #sticky-book a {
       font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
       color: var(--bg); text-decoration: none; font-weight: 300;
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; min-height: 44px;
     }
     #sticky-book svg { width: 14px; height: 14px; fill: var(--wa); flex-shrink: 0; }
     @media (max-width: 768px) {
@@ -953,7 +973,7 @@
       color: var(--mid); margin-bottom: 5px; font-weight: 500;
     }
     .bw-input {
-      width: 100%; height: 42px;
+      width: 100%; height: 44px;
       font-family: 'Manrope', sans-serif; font-size: 13.5px;
       color: var(--text); background: var(--bg);
       border: 1px solid var(--rule); border-radius: 2px;
@@ -1054,13 +1074,14 @@
     .mpc-send {
       flex: 1; background: var(--wa); color: #FAF8F3; border: none;
       font-size: 10.5px; letter-spacing: .24em; text-transform: uppercase;
-      padding: 13px 14px; font-weight: 500; border-radius: 1px;
+      padding: 13px 14px; min-height: 44px; font-weight: 500; border-radius: 1px;
       transition: filter .25s ease;
     }
     .mpc-send:hover { filter: brightness(1.07); }
     .mpc-cancel {
       background: none; border: none; font-size: 11px; letter-spacing: .24em;
       text-transform: uppercase; color: var(--mid); padding: 12px 8px;
+      min-height: 44px;
       transition: color .25s ease;
     }
     .mpc-cancel:hover { color: var(--text); }
@@ -1225,7 +1246,9 @@
 
       /* Inquiry: stack */
       #inquiry { flex-direction: column; }
-      footer { flex-direction: column; gap: 1rem; }
+      footer { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .fl { gap: .25rem 1.5rem; }
+      .fa { display: inline-flex; align-items: center; min-height: 44px; }
 
       /* Lead popup → bottom sheet on mobile */
       #lead-popup-wrap { align-items: flex-end; }
@@ -1279,11 +1302,16 @@
         mask-image: linear-gradient(to right, black 80%, transparent 100%);
       }
       #pd-gallery-tabs::-webkit-scrollbar { display: none; }
-      .gal-tab { white-space: nowrap; flex-shrink: 0; }
+      .gal-tab {
+        white-space: nowrap; flex-shrink: 0;
+        padding: 13px 14px; min-height: 44px;
+        display: inline-flex; align-items: center;
+      }
 
       /* Local guide map links: full tap area */
       .lg-map-link {
-        display: flex; width: 100%; padding: .6rem 0;
+        display: flex; align-items: center; width: 100%;
+        padding: .9rem 0; min-height: 44px; box-sizing: border-box;
         font-size: .75rem;
       }
     }
@@ -1377,7 +1405,8 @@
       .ep-hero { padding-bottom: 0; }
       .ep-hero-book #bw { flex-direction: column; align-items: stretch; gap: .8rem; }
       .ep-hero-book .bw-field { flex-basis: auto; }
-      .ep-hero-book .cta { width: 100%; text-align: center; }
+      .ep-hero-book .bw-input { height: 44px; padding: 4px 2px; }
+      .ep-hero-book .cta { width: 100%; text-align: center; min-height: 44px; }
     }
     /* Homepage-only quick availability bar — larger fields than the
        .ep-hero-book pattern it's based on, since item 6 of the cosmetic
@@ -1672,7 +1701,10 @@
     .rv-rating input { position: absolute; opacity: 0; pointer-events: none; }
     .rv-rating label {
       font-size: 1.7rem; line-height: 1; color: var(--rule);
-      padding: 2px 4px; cursor: pointer; transition: color .25s ease, transform .25s var(--lux);
+      padding: 9px 8px; min-width: 44px; min-height: 44px;
+      box-sizing: border-box;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: color .25s ease, transform .25s var(--lux);
     }
     .rv-rating label:hover { transform: translateY(-2px); }
     /* fill stars up to the hovered/checked one (markup order: input,label,input,label…) */
@@ -1754,10 +1786,12 @@
     }
     #lead-popup-wrap.show #lead-popup { transform: translateY(0); opacity: 1; }
     #lead-popup-close {
-      position: absolute; top: 1rem; right: 1.1rem;
+      position: absolute; top: .6rem; right: .7rem;
       background: none; border: none;
       font-size: 1.2rem; color: var(--mid);
-      line-height: 1; padding: 4px 8px;
+      line-height: 1;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer; transition: color .2s ease;
     }
     #lead-popup-close:hover { color: var(--text); }
@@ -1934,10 +1968,20 @@
     @media (hover: none) {
       /* iOS Safari zooms the page when a focused field is under 16px */
       .bw-input { font-size: 16px; }
-      /* 44px-minimum touch targets: invisible padding, identical look */
-      #pd-map-link, .bw-call, .fa, .ep-crumb a {
+      /* 44px-minimum touch targets: invisible padding, identical look.
+         Not used inside .ep-aside-links (a flex column with `gap`) —
+         gap adds to author margins rather than collapsing with them,
+         so a negative margin here would eat into the gap and can
+         overlap the next flex sibling (bw-call, bw-email stacked in
+         that container hit exactly this). Give flex-gap children real
+         padding instead, below. */
+      #pd-map-link, .fa, .ep-crumb a, #nav-logo {
         padding-top: 12px; padding-bottom: 12px;
         margin-top: -12px; margin-bottom: -12px;
+      }
+      .ep-aside-links .bw-call,
+      .ep-aside-links .bw-email {
+        padding-top: 10px; padding-bottom: 10px;
       }
       #lb-close { padding: 14px 18px; top: .6rem; right: .6rem; }
       #lb-prev, #lb-next { padding: 2.2rem 1.4rem; }
@@ -2000,6 +2044,38 @@
       border-radius: 3px;
     }
     .ep-section-dark::before { background: var(--gold); opacity: .55; }
+    /* ── Villa hero — text + framed image, avoids a blank dark band ── */
+    .ep-hero-split {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+    .ep-hero-split-text { flex: 1 1 480px; min-width: 0; }
+    .ep-hero-split-img {
+      flex: 0 1 380px; align-self: stretch;
+      max-width: 380px; min-height: 220px;
+      overflow: hidden; border-radius: 3px;
+      border: 1px solid var(--dark-border);
+    }
+    .ep-hero-split-img img {
+      width: 100%; height: 100%; min-height: 220px;
+      object-fit: cover; display: block;
+    }
+    @media (max-width: 900px) {
+      .ep-hero-split { flex-direction: column; align-items: stretch; }
+      .ep-hero-split-img { max-width: none; flex-basis: auto; height: 260px; }
+    }
+    /* subtle interactive tilt on hover/tap — perspective, not flat scale */
+    .av-tilt-img { perspective: 900px; transition: transform .5s var(--lux); }
+    .av-tilt-img img { transition: transform .5s var(--lux), filter .5s ease; }
+    .av-tilt-img:hover img,
+    .av-tilt-img:focus-within img {
+      transform: scale(1.045) rotate3d(1, -1, 0, 2deg);
+      filter: brightness(1.04);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .av-tilt-img, .av-tilt-img img { transition: none; }
+      .av-tilt-img:hover img, .av-tilt-img:focus-within img { transform: none; filter: none; }
+    }
     .ep-section-dark .pd-amen-tag {
       color: var(--dark-text);
       border-color: var(--dark-border);
