@@ -605,6 +605,61 @@ don't actually overlap in the layout. Reproduced on villa.html's
 If a new `.cta` variant ever loses this `display: inline-block`
 (e.g. a scoped override), expect the same silent paint-overlap bug.
 
+## Custom cursor (`#cursor-ring`) — never combine individual `rotate:` with a JS `transform:` (2026-08)
+
+`#cursor-ring` used the CSS individual `rotate: 45deg` property (to make
+a diamond) alongside `core.js` setting `style.transform =
+translate(...)` every `mousemove`. Per the CSS Transforms spec,
+individual transform properties (`translate`/`rotate`/`scale`) compose
+with the `transform` property around the SAME transform-origin, in a
+fixed order — the rotation ends up applied to the whole translate
+vector from the element's static near-(0,0) position out to the
+mouse, not to the box in place. In practice this flings the ring far
+off-screen (hundreds of px away) whenever the mouse is anywhere but
+very close to the origin, leaving only the plain `#cursor-dot` visibly
+"stuck" wherever the ring last rendered before the math blew up —
+this is what read as a broken/stuck cursor mark overlapping page
+content. Fixed by removing `rotate: 45deg` from CSS and instead
+appending `rotate(45deg)` inside the same `transform:` string JS
+already sets. If the diamond ever needs to rotate/scale again, keep
+that transform in the one JS-driven `transform` property — never
+split it across an individual CSS transform property and a
+JS-assigned `transform`.
+
+## `.ep-main` first-child spacing — nested sections lose their gap (2026-08)
+
+`.ep-section` relies on `.ep-section:first-child { margin-top: 0;
+padding-top: 0; }` so the very first section on a page doesn't get
+extra top spacing. On villa.html, `#amenities` is visually the second
+block on the page (right after the `#story` section) but it's the
+FIRST child of `<article>` (itself nested inside `.ep-main`, a sibling
+of `#story` at the `.ep-wrap` level) — so the first-child rule zeroed
+its spacing even though a previous section renders directly above it.
+This produced a real 0px gap (not just a small one) between whatever
+ends `#story` (the "Featured — quick facts" card) and `#amenities`
+below it, at every viewport width. Fixed with `margin-top:
+var(--space-4)` on `.ep-main` itself. If a future section is wrapped
+one level deeper than its visual predecessor (nested in `<article>`,
+a grid, etc.), check whether `:first-child`/`:last-child` spacing
+rules are silently zeroing it out — the bug won't show as "no spacing
+at all" in casual review, it shows as exactly 0px between two
+unrelated-looking elements.
+
+## Villa hero stacked photo deck (`.ep-hero-stack`, 2026-08)
+
+villa.html's hero replaced a single static image with 4 layered photo
+cards (absolute-positioned, each offset/rotated via `--x`/`--y`/`--r`
+custom properties set inline per card). Desktop: hovering/focusing the
+`.ep-hero-stack` container fans the cards further apart via a scaled
+version of the same custom properties. `@media (max-width: 900px)`
+collapses this to a plain horizontal scroll-snap carousel (`position:
+static`, `transform: none !important`, `scroll-snap-align: center`) —
+don't reintroduce the absolute/rotated layout below 900px, it doesn't
+degrade safely on narrow viewports. `prefers-reduced-motion: reduce`
+disables the card transition entirely. Reuse this pattern (custom
+props + hover-spread + mobile-collapse-to-carousel) for any future
+multi-image hero slot instead of a new one-off.
+
 ## Testing scroll-reveal/lazy content with chrome-devtools-axi
 
 `.fi`/`.fi.vis` (IntersectionObserver fade-up), `.ep-aside.pre`/`.in`
