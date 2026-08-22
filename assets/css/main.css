@@ -1967,10 +1967,20 @@
     @media (hover: none) {
       /* iOS Safari zooms the page when a focused field is under 16px */
       .bw-input { font-size: 16px; }
-      /* 44px-minimum touch targets: invisible padding, identical look */
-      #pd-map-link, .bw-call, .bw-email, .fa, .ep-crumb a, #nav-logo {
+      /* 44px-minimum touch targets: invisible padding, identical look.
+         Not used inside .ep-aside-links (a flex column with `gap`) —
+         gap adds to author margins rather than collapsing with them,
+         so a negative margin here would eat into the gap and can
+         overlap the next flex sibling (bw-call, bw-email stacked in
+         that container hit exactly this). Give flex-gap children real
+         padding instead, below. */
+      #pd-map-link, .fa, .ep-crumb a, #nav-logo {
         padding-top: 12px; padding-bottom: 12px;
         margin-top: -12px; margin-bottom: -12px;
+      }
+      .ep-aside-links .bw-call,
+      .ep-aside-links .bw-email {
+        padding-top: 10px; padding-bottom: 10px;
       }
       #lb-close { padding: 14px 18px; top: .6rem; right: .6rem; }
       #lb-prev, #lb-next { padding: 2.2rem 1.4rem; }
