@@ -2328,6 +2328,15 @@
     .home-gal-grid .av-video-card:hover img.av-video-poster { transform: scale(1.06); }
     @media (max-width: 900px) { .home-gal-grid { grid-template-columns: repeat(2, 1fr); } }
 
+    /* Per-card scroll reveal + cursor tilt — .fi's own transition
+       shorthand would otherwise clobber the card's box-shadow
+       transition (later rule, same property), so restate both here. */
+    .home-gal-grid a.fi, .home-gal-grid .av-video-card.fi {
+      transition: opacity .9s ease, transform .9s var(--lux), box-shadow .5s var(--lux);
+      transform-style: preserve-3d;
+    }
+    .home-gal-grid .gal-tilt-reset { transition: transform .5s var(--lux) !important; }
+
     /* ── Villa page: quick-facts featured card ────────────────────── */
     .villa-feature-card {
       border: 1px solid var(--dark-border); border-radius: 6px; padding: 1.8rem 2rem;

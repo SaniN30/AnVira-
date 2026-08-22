@@ -241,7 +241,7 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
    crossfading between two stacked <video> layers so a clip ending
    never shows a blank frame before the next one starts. ─────────── */
 (function initVideoPlaylists() {
-  const PLAYLIST = [
+  const FULL_PLAYLIST = [
     'assets/video/villa-terrace-firepit-story.mp4',
     'assets/video/valley-terrace-golden-hour.mp4',
     'assets/video/terrace-dusk-firepit.mp4',
@@ -249,12 +249,19 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     'assets/video/living-room-evening.mp4',
     'assets/video/bedroom-valley-view.mp4'
   ].map(img);
-  if (PLAYLIST.length < 2) return;
+  // villa-terrace-firepit-story.mp4 carries a burned-in title card
+  // ("The Luxury of Earned Silence...") sized for the large
+  // .av-video-frame hero slot — it reads as broken/overflowing stray
+  // text when it cycles into the small .av-video-card gallery tiles,
+  // so those tiles get a playlist with that one clip excluded.
+  const CARD_PLAYLIST = FULL_PLAYLIST.filter(p => !p.endsWith('villa-terrace-firepit-story.mp4'));
+  if (FULL_PLAYLIST.length < 2) return;
 
   document.querySelectorAll('.av-video-frame, .av-video-card').forEach(wrap => {
     const vA = wrap.querySelector('video');
     if (!vA) return;
 
+    const PLAYLIST = wrap.classList.contains('av-video-card') ? CARD_PLAYLIST : FULL_PLAYLIST;
     const srcEl = vA.querySelector('source');
     const startFile = (srcEl ? srcEl.getAttribute('src') : vA.getAttribute('src') || '').split('/').pop();
     let idx = PLAYLIST.findIndex(p => p.endsWith(startFile));
@@ -307,5 +314,33 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
         crossfade();
       }
     }, 150);
+  });
+})();
+
+/* ── Homepage gallery-highlight cards: cursor-driven 3D tilt.
+   Desktop + fine pointer only (skips touch); a no-op under
+   prefers-reduced-motion. Scroll-reveal (the .fi/.vis stagger set in
+   index.html) always runs regardless — this only adds the tilt. ── */
+(function initGalleryTilt() {
+  const cards = document.querySelectorAll('.home-gal-grid a, .home-gal-grid .av-video-card');
+  if (!cards.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const MAX_TILT = 9;
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      card.classList.remove('gal-tilt-reset');
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rotY = (px - 0.5) * MAX_TILT * 2;
+      const rotX = (0.5 - py) * MAX_TILT * 2;
+      card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.classList.add('gal-tilt-reset');
+      card.style.transform = '';
+    });
   });
 })();
