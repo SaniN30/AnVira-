@@ -83,7 +83,6 @@
                   transform .18s linear;
       will-change: transform;
       mix-blend-mode: difference;
-      rotate: 45deg;
     }
     /* Stay hidden until the first real mousemove, so a stale ring
        never flashes at (0,0) before the cursor has actually moved. */
@@ -1451,7 +1450,7 @@
 
     .ep-wrap { max-width: 1180px; margin: 0 auto; padding: calc(var(--space-6) + 60px) var(--pad-x) var(--space-6); }
     .ep-aside-links { display: flex; flex-direction: column; gap: .35rem; margin-top: 1rem; }
-    .ep-main { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; }
+    .ep-main { display: grid; grid-template-columns: minmax(0,1fr) 360px; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; margin-top: var(--space-4); }
     /* Dedicated booking page has no calendar column — the aside centers alone */
     .ep-main-no-cal { grid-template-columns: minmax(0,1fr); justify-items: center; }
     .ep-main-no-cal .ep-aside { position: static; max-width: 480px; width: 100%; max-height: none; overflow-y: visible; }
@@ -2061,8 +2060,53 @@
       object-fit: cover; display: block;
     }
     @media (max-width: 900px) {
-      .ep-hero-split { flex-direction: column; align-items: stretch; }
+      .ep-hero-split { flex-direction: column; align-items: stretch; justify-content: flex-start; }
+      .ep-hero-split-text { flex: 0 1 auto; }
       .ep-hero-split-img { max-width: none; flex-basis: auto; height: 260px; }
+    }
+
+    /* ── Villa hero — stacked photo cards (desktop: hover-spread deck;
+       mobile: horizontal scroll-snap carousel) ── */
+    .ep-hero-stack {
+      position: relative;
+      flex: 0 1 380px; align-self: stretch;
+      max-width: 380px; min-height: 320px;
+    }
+    .ep-hero-stack-card {
+      position: absolute; inset: 0;
+      border-radius: 3px; overflow: hidden;
+      border: 1px solid var(--dark-border);
+      box-shadow: 0 16px 40px rgba(0,0,0,.28);
+      transform: translate(var(--x), var(--y)) rotate(var(--r));
+      z-index: var(--z);
+      transition: transform .5s var(--lux), box-shadow .5s var(--lux);
+      will-change: transform;
+    }
+    .ep-hero-stack-card img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .ep-hero-stack:hover .ep-hero-stack-card,
+    .ep-hero-stack:focus-within .ep-hero-stack-card {
+      transform: translate(calc(var(--x) * 2.1), calc(var(--y) * 2.1)) rotate(calc(var(--r) * 1.15));
+      box-shadow: 0 22px 54px rgba(0,0,0,.34);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ep-hero-stack-card { transition: none; }
+    }
+    @media (max-width: 900px) {
+      .ep-hero-stack {
+        max-width: none; min-height: 0; height: 280px;
+        display: flex; gap: .9rem; overflow-x: auto;
+        scroll-snap-type: x mandatory; scroll-padding-inline: 9vw;
+        -webkit-overflow-scrolling: touch;
+      }
+      .ep-hero-stack-card {
+        position: static; inset: auto;
+        transform: none !important; box-shadow: 0 10px 28px rgba(0,0,0,.22);
+        flex: 0 0 82vw; scroll-snap-align: center;
+      }
+      .ep-hero-stack:hover .ep-hero-stack-card,
+      .ep-hero-stack:focus-within .ep-hero-stack-card { transform: none; }
     }
     /* subtle interactive tilt on hover/tap — perspective, not flat scale */
     .av-tilt-img { perspective: 900px; transition: transform .5s var(--lux); }

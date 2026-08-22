@@ -13,7 +13,7 @@ const dot  = document.getElementById('cursor-dot');
 if (!isTouchDevice && ring && dot) {
   document.addEventListener('mousemove', e => {
     const x = e.clientX, y = e.clientY;
-    ring.style.transform = `translate(${x - 18}px, ${y - 18}px)`;
+    ring.style.transform = `translate(${x - 18}px, ${y - 18}px) rotate(45deg)`;
     dot.style.transform  = `translate(${x - 2}px,  ${y - 2}px)`;
     ring.classList.add('active');
     dot.classList.add('active');
