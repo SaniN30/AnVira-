@@ -344,3 +344,57 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     });
   });
 })();
+
+/* ── Villa hero photo stack — fan the corner deck out to fill the
+   dark hero panel, then collapse back. Desktop mouse users get it on
+   hover (CSS-only, see main.css). Touch devices at the same
+   (>900px) breakpoint have no hover, so tap/Enter toggles a
+   `.is-spread` class instead. Everyone also gets a single auto-play
+   showcase the first time the stack scrolls into view, so the
+   interaction is discoverable without requiring a hover/tap at all.
+   prefers-reduced-motion skips both the auto-play and the toggle
+   animation and instead shows the fanned-out layout permanently via
+   `.is-spread-static`, so reduced motion still surfaces the photos
+   instead of just leaving them hidden behind one another. ── */
+(function initVillaHeroStack() {
+  const stack = document.getElementById('villa-hero-stack');
+  if (!stack) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    stack.classList.add('is-spread-static');
+    return;
+  }
+
+  let manuallyToggled = false;
+
+  if (window.matchMedia('(hover: none) and (min-width: 901px)').matches) {
+    stack.setAttribute('role', 'button');
+    stack.setAttribute('tabindex', '0');
+    stack.setAttribute('aria-pressed', 'false');
+    stack.setAttribute('aria-label', 'Expand villa photo gallery');
+    const toggleSpread = () => {
+      manuallyToggled = true;
+      const spread = stack.classList.toggle('is-spread');
+      stack.setAttribute('aria-pressed', String(spread));
+    };
+    stack.addEventListener('click', toggleSpread);
+    stack.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSpread(); }
+    });
+  }
+
+  const showcaseObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      showcaseObs.unobserve(stack);
+      stack.classList.add('is-spread');
+      stack.setAttribute('aria-pressed', 'true');
+      setTimeout(() => {
+        if (manuallyToggled || stack.matches(':hover, :focus-within')) return;
+        stack.classList.remove('is-spread');
+        stack.setAttribute('aria-pressed', 'false');
+      }, 1800);
+    });
+  }, { threshold: 0.4 });
+  showcaseObs.observe(stack);
+})();

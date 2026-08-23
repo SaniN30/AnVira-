@@ -649,16 +649,35 @@ unrelated-looking elements.
 
 villa.html's hero replaced a single static image with 4 layered photo
 cards (absolute-positioned, each offset/rotated via `--x`/`--y`/`--r`
-custom properties set inline per card). Desktop: hovering/focusing the
-`.ep-hero-stack` container fans the cards further apart via a scaled
-version of the same custom properties. `@media (max-width: 900px)`
+custom properties set inline per card). `@media (max-width: 900px)`
 collapses this to a plain horizontal scroll-snap carousel (`position:
 static`, `transform: none !important`, `scroll-snap-align: center`) —
 don't reintroduce the absolute/rotated layout below 900px, it doesn't
-degrade safely on narrow viewports. `prefers-reduced-motion: reduce`
-disables the card transition entirely. Reuse this pattern (custom
-props + hover-spread + mobile-collapse-to-carousel) for any future
-multi-image hero slot instead of a new one-off.
+degrade safely on narrow viewports.
+
+Above 900px the deck fans out into a 2x2 quadrant grid that fills the
+dark hero panel (each card's `top`/`left`/`right`/`bottom` — not
+`transform`, so the corner-stack's `--x`/`--y`/`--r` transform can
+still hold the resting tilt — animate to `0/54%` combinations, one
+combo per `nth-child`, staggered via `transition-delay`), then
+collapses back to the corner stack. Three triggers share the same
+`.is-spread` CSS block: real `:hover`/`:focus-within` (mouse), a
+`.is-spread` class toggled by tap/Enter on touch devices at this
+breakpoint (`initVillaHeroStack()` in `core.js` adds `role="button"`
++ the click/keydown handler only when `matchMedia('(hover: none) and
+(min-width: 901px)')` matches — e.g. iPad landscape, which has no
+hover), and a one-time `IntersectionObserver` auto-showcase that
+spreads-then-collapses the first time the stack scrolls into view on
+any pointer type, so the interaction is discoverable without a
+hover/tap. `prefers-reduced-motion: reduce` skips both the toggle
+handlers and the auto-showcase and instead adds `.is-spread-static`
+once, permanently — same quadrant CSS, just reached by a third class
+rather than hover/`.is-spread`, so reduced-motion users still see all
+four photos instead of the animation being disabled outright with
+photos left hidden behind each other. Reuse this pattern (quadrant
+inset positions + shared hover/tap/auto-showcase/reduced-motion-static
+class group + mobile-collapse-to-carousel) for any future multi-image
+hero slot instead of a new one-off.
 
 ## Testing scroll-reveal/lazy content with chrome-devtools-axi
 
@@ -724,6 +743,30 @@ first `chrome-devtools-axi` call, and sanity-check
 `chrome-devtools-axi eval "(() => location.href)()"` after `open` to
 confirm you're on your own port before trusting any screenshot or
 `getBoundingClientRect` result.
+
+A registered `ServiceWorker` (Phase 3's PWA offline caching) will serve
+a stale `assets/css/main.css`/`assets/js/*.js` from its cache even
+after a hard reload once it's installed once for `localhost` in a
+chrome-devtools-axi session — a CSS rule that verifiably parses
+correctly in `document.styleSheets` cssRules can still fail to apply
+visually for this reason, which reads exactly like a specificity bug
+but isn't one. If a change doesn't show up despite the served file
+(checked via `curl`) being correct, check
+`navigator.serviceWorker.getRegistrations()` before debugging CSS
+specificity — `rs.forEach(r=>r.unregister())` plus `caches.keys()` /
+`caches.delete()` clears it. Also: this repo is checked out into
+multiple parallel Treehouse worktrees, and a stray local dev server
+left running from a previous session (e.g. `python3 -m http.server
+8765`) may have `cwd` in a *different* worktree — check
+`lsof -p <pid> | grep cwd` (or just start your own server on a free
+port) rather than assuming a server already listening on a familiar
+port is serving your current checkout. A shared default
+chrome-devtools-axi browser session can also already be driven by a
+concurrent agent in another worktree/lane — if navigations or DOM
+state change out from under you unexpectedly, set
+`CHROME_DEVTOOLS_AXI_SESSION` to a unique name to get an isolated
+browser instance instead of assuming you have exclusive control of
+the default one.
 
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
