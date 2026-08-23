@@ -2106,12 +2106,15 @@
       .ep-hero-split-img { max-width: none; flex-basis: auto; height: 260px; }
     }
 
-    /* ── Villa hero — stacked photo cards (desktop: hover-spread deck;
-       mobile: horizontal scroll-snap carousel) ── */
+    /* ── Villa hero — stacked photo cards. Desktop: hover / tap-toggle
+       (.is-spread) / one-time scroll-into-view showcase fan the four
+       cards out into quadrants that fill the dark hero panel, then
+       collapse back to the corner stack. Mobile (<=900px): horizontal
+       scroll-snap carousel, unaffected by the spread classes. ── */
     .ep-hero-stack {
       position: relative;
-      flex: 0 1 380px; align-self: stretch;
-      max-width: 380px; min-height: 320px;
+      flex: 1 1 460px; align-self: stretch;
+      max-width: 460px; min-height: 380px;
     }
     .ep-hero-stack-card {
       position: absolute; inset: 0;
@@ -2120,17 +2123,39 @@
       box-shadow: 0 16px 40px rgba(0,0,0,.28);
       transform: translate(var(--x), var(--y)) rotate(var(--r));
       z-index: var(--z);
-      transition: transform .5s var(--lux), box-shadow .5s var(--lux);
+      transition: transform .6s var(--lux), top .6s var(--lux), left .6s var(--lux),
+        right .6s var(--lux), bottom .6s var(--lux), box-shadow .5s var(--lux);
       will-change: transform;
     }
     .ep-hero-stack-card img {
       width: 100%; height: 100%; object-fit: cover; display: block;
     }
-    .ep-hero-stack:hover .ep-hero-stack-card,
-    .ep-hero-stack:focus-within .ep-hero-stack-card {
-      transform: translate(calc(var(--x) * 2.1), calc(var(--y) * 2.1)) rotate(calc(var(--r) * 1.15));
-      box-shadow: 0 22px 54px rgba(0,0,0,.34);
+    @media (min-width: 901px) {
+      .ep-hero-stack:hover .ep-hero-stack-card,
+      .ep-hero-stack:focus-within .ep-hero-stack-card,
+      .ep-hero-stack.is-spread .ep-hero-stack-card,
+      .ep-hero-stack.is-spread-static .ep-hero-stack-card {
+        transform: rotate(var(--r)) scale(1);
+        box-shadow: 0 24px 60px rgba(0,0,0,.36);
+      }
+      .ep-hero-stack:hover .ep-hero-stack-card:nth-child(1),
+      .ep-hero-stack:focus-within .ep-hero-stack-card:nth-child(1),
+      .ep-hero-stack.is-spread .ep-hero-stack-card:nth-child(1),
+      .ep-hero-stack.is-spread-static .ep-hero-stack-card:nth-child(1) { top: 0; left: 0; right: 54%; bottom: 54%; }
+      .ep-hero-stack:hover .ep-hero-stack-card:nth-child(2),
+      .ep-hero-stack:focus-within .ep-hero-stack-card:nth-child(2),
+      .ep-hero-stack.is-spread .ep-hero-stack-card:nth-child(2),
+      .ep-hero-stack.is-spread-static .ep-hero-stack-card:nth-child(2) { top: 0; left: 54%; right: 0; bottom: 54%; transition-delay: .05s; }
+      .ep-hero-stack:hover .ep-hero-stack-card:nth-child(3),
+      .ep-hero-stack:focus-within .ep-hero-stack-card:nth-child(3),
+      .ep-hero-stack.is-spread .ep-hero-stack-card:nth-child(3),
+      .ep-hero-stack.is-spread-static .ep-hero-stack-card:nth-child(3) { top: 54%; left: 0; right: 54%; bottom: 0; transition-delay: .1s; }
+      .ep-hero-stack:hover .ep-hero-stack-card:nth-child(4),
+      .ep-hero-stack:focus-within .ep-hero-stack-card:nth-child(4),
+      .ep-hero-stack.is-spread .ep-hero-stack-card:nth-child(4),
+      .ep-hero-stack.is-spread-static .ep-hero-stack-card:nth-child(4) { top: 54%; left: 54%; right: 0; bottom: 0; transition-delay: .15s; }
     }
+    .ep-hero-stack[role="button"] { cursor: pointer; outline-offset: 6px; }
     @media (prefers-reduced-motion: reduce) {
       .ep-hero-stack-card { transition: none; }
     }
