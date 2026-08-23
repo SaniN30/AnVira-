@@ -365,12 +365,15 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     return;
   }
 
+  let manuallyToggled = false;
+
   if (window.matchMedia('(hover: none) and (min-width: 901px)').matches) {
     stack.setAttribute('role', 'button');
     stack.setAttribute('tabindex', '0');
     stack.setAttribute('aria-pressed', 'false');
     stack.setAttribute('aria-label', 'Expand villa photo gallery');
     const toggleSpread = () => {
+      manuallyToggled = true;
       const spread = stack.classList.toggle('is-spread');
       stack.setAttribute('aria-pressed', String(spread));
     };
@@ -385,8 +388,11 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
       if (!entry.isIntersecting) return;
       showcaseObs.unobserve(stack);
       stack.classList.add('is-spread');
+      stack.setAttribute('aria-pressed', 'true');
       setTimeout(() => {
-        if (!stack.matches(':hover, :focus-within')) stack.classList.remove('is-spread');
+        if (manuallyToggled || stack.matches(':hover, :focus-within')) return;
+        stack.classList.remove('is-spread');
+        stack.setAttribute('aria-pressed', 'false');
       }, 1800);
     });
   }, { threshold: 0.4 });
