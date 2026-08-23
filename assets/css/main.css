@@ -1382,7 +1382,7 @@
     }
     .ep-hero-book .bw-input::-webkit-calendar-picker-indicator { filter: invert(1); opacity: .7; }
     .ep-hero-book .bw-input:focus { border-color: var(--gold); box-shadow: none; }
-    .ep-hero-book .cta {
+    .ep-hero-book #bw .cta {
       flex: 0 0 auto; width: auto; margin-top: 0;
       background: var(--olive); color: var(--dark-text);
       padding: 12px 26px; white-space: nowrap;
@@ -1511,11 +1511,29 @@
     .ep-price-amt  { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 300; font-style: italic; color: var(--text); line-height: 1.2; }
     .ep-price-note { font-size: 11.5px; color: var(--mid); margin-top: 6px; line-height: 1.6; }
     .ep-price-min  { font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--gold-text); margin-top: 8px; letter-spacing: .06em; }
-    .ep-incl { margin-top: 1rem; border-top: 1px solid var(--rule); padding-top: .9rem; }
-    .ep-incl-title { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; font-weight: 500; }
-    .ep-incl li { font-size: 13px; line-height: 1.9; color: var(--mid); list-style: none; padding-left: 16px; position: relative; }
-    .ep-incl li::before { content: '—'; position: absolute; left: 0; color: var(--gold); }
-    .ep-incl li.x::before { content: '+'; }
+    /* Tariff card — Aurelia treatment: italic serif sub-headings, a thin
+       inset brass rule (matching .ep-section::before), and small diamond
+       accents instead of dash/plus bullets. "On request" items use a
+       hollow diamond + slightly muted italic to read as optional. */
+    .ep-incl { margin-top: 1.2rem; position: relative; padding-top: 1.1rem; }
+    .ep-incl::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 45%; height: 1px; background: var(--gold); opacity: .4; transform: scaleY(.5);
+    }
+    .ep-incl-title {
+      font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400;
+      font-size: 1.02rem; color: var(--text); margin-bottom: .6rem;
+    }
+    .ep-incl li {
+      font-size: 13px; line-height: 1.95; color: var(--mid); list-style: none;
+      padding-left: 18px; position: relative;
+    }
+    .ep-incl li::before {
+      content: '◆'; position: absolute; left: 0; top: 1px;
+      font-size: 7px; color: var(--gold);
+    }
+    .ep-incl li.x { font-style: italic; color: var(--faint); }
+    .ep-incl li.x::before { content: '◇'; color: var(--gold); opacity: .75; }
 
     /* Local guide */
     .lg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3) var(--space-4); }

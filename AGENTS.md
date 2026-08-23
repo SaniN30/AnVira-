@@ -680,6 +680,51 @@ can appear to overlap unrelated content in a full-page stitch or make
 verify with a real single-viewport screenshot at the actual scroll
 position (and `getBoundingClientRect`) before treating either as a bug.
 
+## `#bw .cta` id-scoped `width:100%` silently wins over class-scoped overrides (2026-08)
+
+`#bw .cta { width: 100%; ... }` (assets/css/main.css, the standalone
+detail-page booking widget's submit button) has higher specificity
+than any `.some-class .cta` override, including
+`.ep-hero-book .cta`/`.home-bw .cta` (the floating dark booking bars'
+button styling), regardless of source order — an id always beats any
+number of classes. On plan-a-stay.html this stretched the "Check
+Availability" button to the full flex-row width at ≥901px (nowrap
+kicks in there), overflowing hundreds of px past the bar. `.home-bw`
+was unaffected only because its form's id is `home-bw`, not `bw`.
+Fixed by scoping the hero-book override to `.ep-hero-book #bw .cta`.
+If a booking-bar button or other `#bw`-scoped control ever looks
+wrong only on wider desktop widths, check for this id-vs-class
+specificity collision before re-deriving the flex layout from
+scratch — and if a new `.home-bw`-style bar is ever added, make sure
+its form id isn't `bw`, or it inherits the same trap.
+
+## Tariff card — `.ep-incl`/`.ep-incl-title` (Aurelia treatment, 2026-08)
+
+The "Your Stay" card's Included/On Request lists (shared by
+villa.html, plan-a-stay.html, and contact.html's "Stayed with us?"
+via the same `.ep-incl-title` class) use Cormorant Garamond italic
+sub-headings, a thin inset brass rule (`.ep-incl::before`, same
+pattern as `.ep-section::before`), and diamond bullets — solid ◆ for
+included, hollow ◇ + italic for on-request — instead of dash/plus
+list markers. Reuse this pattern for any future included/optional
+feature list instead of reintroducing plain bullets.
+
+## Testing with chrome-devtools-axi in this multi-worktree setup — always set `CHROME_DEVTOOLS_AXI_SESSION`
+
+Multiple crewmate agents can run in parallel across sibling
+`AnVira-ad2cbf/<n>/AnVira` worktrees, each starting its own local
+static file server on its own port. `chrome-devtools-axi` defaults to
+a single shared browser session (`CHROME_DEVTOOLS_AXI_SESSION=default`)
+— without an explicit unique session name, one agent's `open`/`resize`/
+`emulate` calls can hijack another agent's active tab and browser
+state mid-task, so a screenshot can silently show a *different*
+worktree's stale HTML/CSS on a *different* port. Always
+`export CHROME_DEVTOOLS_AXI_SESSION=<task-specific-name>` before the
+first `chrome-devtools-axi` call, and sanity-check
+`chrome-devtools-axi eval "(() => location.href)()"` after `open` to
+confirm you're on your own port before trusting any screenshot or
+`getBoundingClientRect` result.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
