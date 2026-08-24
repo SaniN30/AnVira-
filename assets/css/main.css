@@ -2241,6 +2241,28 @@
     .ep-hero-book { bottom: -50px; }
     @media (max-width: 900px) { .ep-hero-book { margin-top: 0; } }
 
+    /* Mobile hero — the bottom-anchored caption above assumes a full,
+       stable 100vh. Real phones rarely give it that: Safari's address
+       bar can eat 80-140px of visual height, and shorter devices have
+       less to begin with. When the caption's content (eyebrow, title,
+       two-line subtitle, location, both CTAs) needs more room than
+       that shrunken viewport leaves below the fixed header, it grows
+       upward past the header's top edge — the header is fixed and
+       opaque, so it simply paints over the eyebrow/title/first lines
+       of the subtitle, leaving only the tail of the subtitle, the
+       location line and the CTAs crammed into the remaining space
+       looking like they overlap. Anchor with both `top` (clearing the
+       fixed header) and `bottom`, bottom-align the content within
+       that safe box, and size the hero off the real visible viewport
+       instead of the nominal one. */
+    @media (max-width: 900px) {
+      .ep-hero { height: 100dvh; min-height: 100dvh; }
+      .ep-hero-caption {
+        top: 5.5rem; bottom: 1.6rem;
+        display: flex; flex-direction: column; justify-content: flex-end;
+      }
+    }
+
     /* Story photo — arch/oval top (Aurelia signature shape), not a plain circle */
     .ep-story-media img {
       width: 300px; height: 380px; border-radius: 999px 999px 8px 8px;
