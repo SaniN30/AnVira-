@@ -796,6 +796,22 @@ caption ever looks cramped/overlapping again on mobile only, reproduce
 at a **short height** (375×560, not just 375×812) before re-deriving
 this from scratch.
 
+This fix (and the mobile booking-bar/hero-CTA margin fix that removed
+`.ep-hero-caption`'s extra 1.2rem side padding at 768px) is scoped to
+`.ep-hero`, which only `index.html` and `plan-a-stay.html` use.
+`villa.html`'s hero is a different component (`.ep-hero-split` — the
+photo-stack hero, no CTAs/booking card) and was unaffected. It had its
+own separate mobile gutter mismatch: `#villa-page-hero` is an
+`.ep-section-dark` sitting directly in `<main>` (not inside `.ep-wrap`),
+so its own card-style side padding (`clamp(1.4rem, 4vw, 2.6rem)`) was
+acting as the page gutter there instead of matching `.ep-wrap`'s
+`var(--pad-x)` gutter used by `#story` and everything below — a few px
+of drift on narrow phones between the hero's left/right edge and the
+content beneath it. Fixed with a `#villa-page-hero`-scoped override
+pinning it to `var(--pad-x)`, without touching `.ep-section-dark`'s
+padding generally (other instances like `#amenities` sit inside
+`.ep-wrap` already and intentionally keep a smaller card inset).
+
 ## `chrome-devtools-axi resize` vs `emulate --viewport` — resize alone does not give a real mobile viewport
 
 `chrome-devtools-axi resize <w> <h>` echoes back the requested

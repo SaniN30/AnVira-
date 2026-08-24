@@ -2089,6 +2089,13 @@
     }
     .ep-section-dark::before { background: var(--gold); opacity: .55; }
     /* ── Villa hero — text + framed image, avoids a blank dark band ── */
+    /* #villa-page-hero sits directly in <main>, not inside .ep-wrap, so its
+       own .ep-section-dark padding acts as the page gutter here — align it
+       to --pad-x (the same gutter .ep-wrap uses for #story and below) so
+       the hero's left/right edge doesn't drift from the content beneath it
+       on mobile. Other .ep-section-dark instances (e.g. #amenities) sit
+       inside .ep-wrap already and keep their smaller card-inset padding. */
+    #villa-page-hero { padding-left: var(--pad-x); padding-right: var(--pad-x); }
     .ep-hero-split {
       display: flex; align-items: flex-end; justify-content: space-between;
       gap: clamp(2rem, 5vw, 4rem);
