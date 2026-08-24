@@ -881,6 +881,28 @@ either card's captions look wrong again, verify with real screenshots
 across the full clip duration, not a single frame — a scrim that looks
 fine at t=0 can still fail at a different point in the loop.
 
+Follow-up (2026-08): the `.av-video-play` circular play-icon badge on
+`.av-video-card` (homepage gallery-highlight grid) was removed
+entirely per captain feedback — it read as an unwanted "video player
+sign" over the card. The `.av-video-tag` ("Watch") text badge stays as
+the card-level playing-video indicator. Separately, `.home-gal-grid a,
+.home-gal-grid .av-video-card` forces every tile (including the video)
+into a shared `aspect-ratio: 3/4`, but the wired clip
+(`valley-terrace-golden-hour.mp4`) and its poster are native 9:16
+portrait — a default-centered `object-fit: cover` crop trims equally
+off top and bottom, cutting the clip's burned-in title caption off at
+the card's top edge. Fixed with `object-position: center top` on
+`.av-video-card video, .av-video-card img.av-video-poster` (rather
+than giving the card its own aspect-ratio, which would have broken
+row-height alignment with the plain photo tiles in the same
+`repeat(4,1fr)` grid row) — anchoring the crop to the top means zero
+pixels are ever trimmed off the top of the source frame, so a
+burned-in caption anywhere near the top is never clipped, only the
+excess at the bottom is. If another clip is ever wired to this card
+with a differently-placed caption (e.g. bottom-anchored text), verify
+its specific framing with real screenshots across a full loop before
+assuming the same top-anchor still fits.
+
 ## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
 
 `.ep-section::before` (the 60%-width top accent line) and
