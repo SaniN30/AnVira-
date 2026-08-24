@@ -796,6 +796,22 @@ caption ever looks cramped/overlapping again on mobile only, reproduce
 at a **short height** (375×560, not just 375×812) before re-deriving
 this from scratch.
 
+This fix (and the mobile booking-bar/hero-CTA margin fix that removed
+`.ep-hero-caption`'s extra 1.2rem side padding at 768px) is scoped to
+`.ep-hero`, which only `index.html` and `plan-a-stay.html` use.
+`villa.html`'s hero is a different component (`.ep-hero-split` — the
+photo-stack hero, no CTAs/booking card) and was unaffected. It had its
+own separate mobile gutter mismatch: `#villa-page-hero` is an
+`.ep-section-dark` sitting directly in `<main>` (not inside `.ep-wrap`),
+so its own card-style side padding (`clamp(1.4rem, 4vw, 2.6rem)`) was
+acting as the page gutter there instead of matching `.ep-wrap`'s
+`var(--pad-x)` gutter used by `#story` and everything below — a few px
+of drift on narrow phones between the hero's left/right edge and the
+content beneath it. Fixed with a `#villa-page-hero`-scoped override
+pinning it to `var(--pad-x)`, without touching `.ep-section-dark`'s
+padding generally (other instances like `#amenities` sit inside
+`.ep-wrap` already and intentionally keep a smaller card inset).
+
 ## `chrome-devtools-axi resize` vs `emulate --viewport` — resize alone does not give a real mobile viewport
 
 `chrome-devtools-axi resize <w> <h>` echoes back the requested
@@ -816,6 +832,46 @@ instead of waiting it out (or clicking it) skips the `page.classList
 `opacity:0`. Wait out the real timers (~4s) or add `page.show` yourself
 after removing it, and always neutralize the lead popup too, or a
 "blank/broken" screenshot is just this, not a real bug.
+
+## Background-video clips all carry burned-in title/caption slates, not just one (2026-08)
+
+`initVideoPlaylists()` in `core.js` previously excluded only
+`villa-terrace-firepit-story.mp4` from the small `.av-video-card`
+playlist on the assumption it was the only clip with a burned-in
+title card ("The Luxury of Earned Silence..."). It isn't — every clip
+in `assets/video/` is a produced highlight reel carrying multiple
+caption/title overlays throughout its runtime (not just an opening
+slate), confirmed by scrubbing `terrace-daytime-valley.mp4` and
+`valley-terrace-golden-hour.mp4` frame-by-frame. There is no
+guaranteed caption-free window to seek into. The fix that shipped:
+every video slot now (a) starts playback ~2.6s in via a `#t=` media
+fragment + `loadedmetadata` seek fallback (`TITLE_SLATE_SECONDS` in
+`core.js`) to skip the worst opening title, and (b) `.av-video-card`
+carries a permanent gradient scrim + centered `.av-video-play` icon
+(main.css) so any caption that surfaces mid-loop reads as an
+intentional "watch the trailer" tile instead of broken overlapping
+text. If more clips are added to `PLAYLIST` in `core.js`, assume they
+also carry captions unless verified otherwise.
+
+## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
+
+`.ep-section::before` (the 60%-width top accent line) and
+`.ep-section-dark::before` both already claim the element's one
+`::before` pseudo-element. Adding `.av-sketch-bg` (which also sets
+`content`/`position`/`background` on `::before`) to the same element
+does not layer the two backgrounds — CSS resolves `::before` as a
+single box, cascading property-by-property, so the sketch pattern's
+`inset:0` wins over the accent line's explicit `width:60%;height:1px`
+in ways that make the result invisible or wrong. Villa.html's dark
+hero panel (`#villa-page-hero`) needed the sketch texture *and* kept
+its accent line by giving the sketch pattern its own real DOM node
+(`.villa-hero-sketch`, absolute/inset:0/z-index:0, first child of the
+section) instead of a shared `::before`; the section's flex-item
+children (`.ep-hero-split-text`, `.ep-hero-stack`) got explicit
+`position:relative;z-index:1` to guarantee they paint above it. Reuse
+this "dedicated layer div" pattern for any future background texture
+on an element that's also `.ep-section`/`.ep-section-dark` — never
+add `.av-sketch-bg` directly to one.
 
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
