@@ -2409,6 +2409,13 @@
     .av-video-frame img.av-video-poster { z-index: 1; transition: opacity .5s ease; }
     .av-video-frame video { z-index: 2; }
     .av-video-frame.loaded img.av-video-poster { opacity: 0; }
+    /* Same burned-in-caption risk as .av-video-card — this clip also
+       carries its own title/caption overlays throughout, so keep a
+       consistent scrim across the whole frame rather than none at all. */
+    .av-video-frame::before {
+      content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background: linear-gradient(180deg, rgba(18,33,26,.5) 0%, rgba(18,33,26,.38) 35%, rgba(18,33,26,.38) 65%, rgba(18,33,26,.55) 100%);
+    }
     @media (max-width: 900px) { .av-video-frame { width: 220px; margin: 0 auto; } }
 
     /* Small square/landscape video card variant — used in the gallery
@@ -2421,12 +2428,13 @@
     .av-video-card video { z-index: 2; transition: transform .6s var(--lux); }
     .av-video-card.loaded img.av-video-poster { opacity: 0; }
     /* Source clips are produced highlight reels carrying their own
-       burned-in captions throughout (not just an opening slate), so a
-       permanent scrim keeps caption text subdued instead of competing
-       with the WATCH tag/play icon at every scroll position. */
+       burned-in captions throughout (not just an opening slate, and not
+       only top/bottom — mid-frame text appears too), so the scrim must
+       stay strong across the ENTIRE card, not just top/bottom gradient
+       stops, or burned-in text collides with the WATCH tag/play icon. */
     .av-video-card::before {
       content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
-      background: linear-gradient(180deg, rgba(18,33,26,.4) 0%, rgba(18,33,26,.08) 32%, rgba(18,33,26,.08) 60%, rgba(18,33,26,.5) 100%);
+      background: linear-gradient(180deg, rgba(18,33,26,.55) 0%, rgba(18,33,26,.4) 28%, rgba(18,33,26,.4) 50%, rgba(18,33,26,.85) 78%, rgba(18,33,26,.9) 100%);
     }
     .av-video-card .av-video-play {
       position: absolute; z-index: 4; top: 50%; left: 50%; transform: translate(-50%,-50%);

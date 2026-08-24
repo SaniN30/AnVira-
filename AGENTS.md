@@ -495,6 +495,17 @@ in `assets/css/main.css` and `core.js` (`canplay` → adds `.loaded`, fading
 the `<img class="av-video-poster">` fallback). Reuse these classes for any
 future video slot instead of hand-rolling new markup.
 
+## Favicon (2026-08)
+
+`brand/favicon-{16,32,192}.png` and `brand/apple-touch-icon.png` are cropped
+from the "AV" monogram mark in `brand/logo-transparent.png` (top ~500x500
+square, via `sips --cropOffset`/`--cropToHeightWidth`/`-z`, not a hand-drawn
+asset) — regenerate from that source if the logo changes rather than
+re-exporting from `logo.png` (opaque background, wrong for a favicon). Every
+page's `<head>` links all three `rel="icon"` sizes plus
+`rel="apple-touch-icon"`; `index.html`'s CSP already allows these under
+`img-src 'self'`.
+
 ## Page generation & CSP
 
 `index.html` is the only page carrying a `Content-Security-Policy` meta tag.
@@ -852,6 +863,23 @@ carries a permanent gradient scrim + centered `.av-video-play` icon
 intentional "watch the trailer" tile instead of broken overlapping
 text. If more clips are added to `PLAYLIST` in `core.js`, assume they
 also carry captions unless verified otherwise.
+
+Follow-up (2026-08): the original `.av-video-card::before` scrim's
+middle band (opacity .08) was too weak — burned-in captions at
+mid-clip and end-of-clip frames still read clearly and, worse, the
+bottom-of-card captions collided directly with the `.av-video-tag`
+("Watch") badge pinned at `bottom:10px`. Strengthened to a stronger,
+more consistent gradient (.55 top / .4 middle / .82-.9 bottom, ramping
+darker earlier — from 50% instead of 60%) so the badge/play-icon zone
+stays reliably legible regardless of which frame is showing. Verified
+by sampling screenshots across a full 8s loop per clip (all clips are
+8s) at both desktop and mobile card sizes. `.av-video-frame` (the tall
+story-section clip, `villa-terrace-firepit-story.mp4`) had NO scrim at
+all and needed the same treatment added from scratch — its captions
+were badly clipped/illegible against the bare video before this. If
+either card's captions look wrong again, verify with real screenshots
+across the full clip duration, not a single frame — a scrim that looks
+fine at t=0 can still fail at a different point in the loop.
 
 ## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
 
