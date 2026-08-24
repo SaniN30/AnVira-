@@ -1601,7 +1601,11 @@
     }
     @media (max-width: 768px) {
       .ep-hero { height: 72svh; min-height: 420px; }
-      .ep-hero-caption { padding: 0 1.2rem 2rem; }
+      /* left/right stay at 0 so the caption's inset matches var(--pad-x)
+         on .ep-hero-caption itself — the same gutter .home-bw/.ep-hero-book
+         use below it; an extra side padding here made the hero text/CTAs
+         sit inset further than the booking bar's outer edge on mobile. */
+      .ep-hero-caption { padding: 0 0 2rem; }
       .lg-grid { grid-template-columns: 1fr; }
       .ep-stats { gap: var(--space-3); }
       .ep-wrap { padding: var(--space-4) var(--pad-x); }
@@ -2089,7 +2093,17 @@
       display: flex; align-items: flex-end; justify-content: space-between;
       gap: clamp(2rem, 5vw, 4rem);
     }
-    .ep-hero-split-text { flex: 1 1 480px; min-width: 0; }
+    .ep-hero-split-text { flex: 1 1 480px; min-width: 0; position: relative; z-index: 1; }
+    /* Own background layer, not .av-sketch-bg's ::before — #villa-page-hero
+       already owns ::before for the .ep-section/.ep-section-dark top accent
+       rule (60%-width gold line), and a second ::before rule on the same
+       element would fight it for content/position/background rather than
+       layer on top (see AGENTS.md's CSS id/class reuse note). */
+    .villa-hero-sketch {
+      position: absolute; inset: 0; z-index: 0; opacity: .5; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='300' viewBox='0 0 600 300'%3E%3Cg fill='none' stroke='%23A87C45' stroke-width='1.1' opacity='0.6'%3E%3Cpath d='M0 220 Q 80 180 160 210 T 320 195 T 480 215 T 600 190'/%3E%3Cpath d='M0 250 Q 100 210 200 240 T 400 225 T 600 235'/%3E%3Cpath d='M40 60 L 90 10 L 140 60 Z'/%3E%3Cpath d='M420 90 L 470 30 L 520 90 Z'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat; background-size: 600px 300px;
+    }
     .ep-hero-split-img {
       flex: 0 1 380px; align-self: stretch;
       max-width: 380px; min-height: 220px;
@@ -2112,7 +2126,7 @@
        collapse back to the corner stack. Mobile (<=900px): horizontal
        scroll-snap carousel, unaffected by the spread classes. ── */
     .ep-hero-stack {
-      position: relative;
+      position: relative; z-index: 1;
       flex: 1 1 460px; align-self: stretch;
       max-width: 460px; min-height: 380px;
     }
@@ -2129,6 +2143,31 @@
     }
     .ep-hero-stack-card img {
       width: 100%; height: 100%; object-fit: cover; display: block;
+      animation: av-kenburns 16s ease-in-out infinite alternate;
+    }
+    .ep-hero-stack-card:nth-child(1) img { animation-delay: 0s; }
+    .ep-hero-stack-card:nth-child(2) img { animation-delay: -4s; }
+    .ep-hero-stack-card:nth-child(3) img { animation-delay: -8s; }
+    .ep-hero-stack-card:nth-child(4) img { animation-delay: -12s; }
+    @keyframes av-kenburns {
+      0%   { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.09) translate(-1.5%, -1.5%); }
+    }
+    /* Staggered scroll-reveal for the four stack cards, keyed off the
+       parent .ep-section's own .fi/.vis toggle (core.js) rather than a
+       separate observer — matches the #pd-gallery stagger pattern. */
+    .ep-hero-stack-card {
+      opacity: 0; transition: transform .6s var(--lux), top .6s var(--lux), left .6s var(--lux),
+        right .6s var(--lux), bottom .6s var(--lux), box-shadow .5s var(--lux), opacity .8s ease;
+    }
+    .ep-hero-stack-card:nth-child(1) { transition-delay: .05s; }
+    .ep-hero-stack-card:nth-child(2) { transition-delay: .16s; }
+    .ep-hero-stack-card:nth-child(3) { transition-delay: .27s; }
+    .ep-hero-stack-card:nth-child(4) { transition-delay: .38s; }
+    .ep-section.vis .ep-hero-stack-card { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .ep-hero-stack-card img { animation: none; }
+      .ep-hero-stack-card { opacity: 1; transition: none; }
     }
     @media (min-width: 901px) {
       .ep-hero-stack:hover .ep-hero-stack-card,
@@ -2374,11 +2413,29 @@
     .av-video-card img.av-video-poster { z-index: 1; transition: opacity .5s ease, transform .6s var(--lux); }
     .av-video-card video { z-index: 2; transition: transform .6s var(--lux); }
     .av-video-card.loaded img.av-video-poster { opacity: 0; }
+    /* Source clips are produced highlight reels carrying their own
+       burned-in captions throughout (not just an opening slate), so a
+       permanent scrim keeps caption text subdued instead of competing
+       with the WATCH tag/play icon at every scroll position. */
+    .av-video-card::before {
+      content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background: linear-gradient(180deg, rgba(18,33,26,.4) 0%, rgba(18,33,26,.08) 32%, rgba(18,33,26,.08) 60%, rgba(18,33,26,.5) 100%);
+    }
+    .av-video-card .av-video-play {
+      position: absolute; z-index: 4; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(18,33,26,.5); border: 1px solid rgba(241,236,221,.55);
+      color: #FAF8F3; font-size: 13px; pointer-events: none;
+      transition: transform .4s var(--lux), background .4s ease;
+    }
+    .av-video-card:hover .av-video-play { transform: translate(-50%,-50%) scale(1.1); background: rgba(18,33,26,.7); }
     .av-video-card .av-video-tag {
-      position: absolute; z-index: 3; left: 10px; bottom: 10px;
+      position: absolute; z-index: 4; left: 10px; bottom: 10px;
       font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
       color: #FAF8F3; background: rgba(18,33,26,.55); padding: 4px 9px; border-radius: 2px;
     }
+    @media (prefers-reduced-motion: reduce) { .av-video-card .av-video-play { transition: none; } }
 
     /* ── Homepage: short story teaser (replaces the full prose block) ── */
     .home-teaser {
@@ -2447,6 +2504,38 @@
     /* ── Card hover lift — reused on any .fi card-like block that opts in ── */
     .av-card-hover { transition: transform .4s var(--lux), box-shadow .4s var(--lux); }
     .av-card-hover:hover { transform: translateY(-6px); box-shadow: 0 22px 50px rgba(23,37,26,.16); }
+
+    /* ── Staggered grid entrance — local-guide cards, contact method
+       cards, and amenity tags fade up one-by-one instead of as a
+       single flat block, keyed off the parent .ep-section's own
+       .fi/.vis toggle (core.js), same pattern as #pd-gallery img. ── */
+    .lg-item, .contact-method, .pd-amen-tag {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity .6s ease, transform .6s var(--lux);
+    }
+    .lg-grid .lg-item:nth-child(1) { transition-delay: .04s; }
+    .lg-grid .lg-item:nth-child(2) { transition-delay: .12s; }
+    .lg-grid .lg-item:nth-child(3) { transition-delay: .2s; }
+    .lg-grid .lg-item:nth-child(4) { transition-delay: .28s; }
+    .contact-methods .contact-method:nth-child(1) { transition-delay: .04s; }
+    .contact-methods .contact-method:nth-child(2) { transition-delay: .12s; }
+    .contact-methods .contact-method:nth-child(3) { transition-delay: .2s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(1) { transition-delay: .02s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(2) { transition-delay: .06s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(3) { transition-delay: .1s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(4) { transition-delay: .14s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(5) { transition-delay: .18s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(6) { transition-delay: .22s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(7) { transition-delay: .26s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(8) { transition-delay: .3s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(9) { transition-delay: .34s; }
+    .pd-amen-grid .pd-amen-tag:nth-child(10) { transition-delay: .38s; }
+    .ep-section.vis .lg-item,
+    .ep-section.vis .contact-method,
+    .ep-section.vis .pd-amen-tag { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .lg-item, .contact-method, .pd-amen-tag { opacity: 1; transform: none; transition: none; }
+    }
 
     @media (prefers-reduced-motion: reduce) {
       .home-gal-grid img { transition: none; }

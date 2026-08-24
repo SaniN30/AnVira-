@@ -249,12 +249,20 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     'assets/video/living-room-evening.mp4',
     'assets/video/bedroom-valley-view.mp4'
   ].map(img);
-  // villa-terrace-firepit-story.mp4 carries a burned-in title card
-  // ("The Luxury of Earned Silence...") sized for the large
-  // .av-video-frame hero slot — it reads as broken/overflowing stray
-  // text when it cycles into the small .av-video-card gallery tiles,
-  // so those tiles get a playlist with that one clip excluded.
-  const CARD_PLAYLIST = FULL_PLAYLIST.filter(p => !p.endsWith('villa-terrace-firepit-story.mp4'));
+  // Every clip in this set opens on a few frames of a burned-in title
+  // slate ("The Luxury of Earned Silence..."), not just
+  // villa-terrace-firepit-story.mp4 — it was previously assumed to be
+  // the only offender and excluded from the small .av-video-card
+  // playlist, but terrace-daytime-valley.mp4 (and likely the rest)
+  // carries the same slate and still surfaced it in the small gallery
+  // tile. Rather than maintain a per-clip exclusion list, every slot
+  // (large hero frame and small gallery tile alike) now starts
+  // playback past the slate via a #t= media fragment, with a
+  // loadedmetadata fallback that seeks past it for browsers that
+  // ignore the fragment on local/file-relative sources.
+  const TITLE_SLATE_SECONDS = 2.6;
+  const withStart = src => `${src}#t=${TITLE_SLATE_SECONDS}`;
+  const CARD_PLAYLIST = FULL_PLAYLIST;
   if (FULL_PLAYLIST.length < 2) return;
 
   document.querySelectorAll('.av-video-frame, .av-video-card').forEach(wrap => {
@@ -270,9 +278,12 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     vA.loop = false;
     vA.removeAttribute('loop');
     if (srcEl) srcEl.remove();
-    vA.src = PLAYLIST[idx];
+    vA.src = withStart(PLAYLIST[idx]);
     vA.load();
     vA.play().catch(() => {});
+    vA.addEventListener('loadedmetadata', () => {
+      if (vA.currentTime < TITLE_SLATE_SECONDS) vA.currentTime = TITLE_SLATE_SECONDS;
+    });
 
     const vB = vA.cloneNode(false);
     vB.removeAttribute('id');
@@ -287,9 +298,11 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     function armStandby() {
       const nextIdx = (activeIdx + 1) % PLAYLIST.length;
       standby.dataset.idx = String(nextIdx);
-      standby.src = PLAYLIST[nextIdx];
-      standby.currentTime = 0;
+      standby.src = withStart(PLAYLIST[nextIdx]);
       standby.load();
+      standby.addEventListener('loadedmetadata', () => {
+        if (standby.currentTime < TITLE_SLATE_SECONDS) standby.currentTime = TITLE_SLATE_SECONDS;
+      }, { once: true });
     }
     armStandby();
 
@@ -322,27 +335,59 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
    prefers-reduced-motion. Scroll-reveal (the .fi/.vis stagger set in
    index.html) always runs regardless — this only adds the tilt. ── */
 (function initGalleryTilt() {
-  const cards = document.querySelectorAll('.home-gal-grid a, .home-gal-grid .av-video-card');
+  const cards = document.querySelectorAll('.home-gal-grid a, .home-gal-grid .av-video-card, .av-card-hover:not(.ep-aside)');
   if (!cards.length) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  const MAX_TILT = 9;
   cards.forEach(card => {
+    const isImageCard = card.matches('.home-gal-grid a, .home-gal-grid .av-video-card');
+    const maxTilt = isImageCard ? 9 : 4;
+    const hoverScale = isImageCard ? 1.03 : 1.012;
     card.addEventListener('mousemove', e => {
       card.classList.remove('gal-tilt-reset');
       const r = card.getBoundingClientRect();
       const px = (e.clientX - r.left) / r.width;
       const py = (e.clientY - r.top) / r.height;
-      const rotY = (px - 0.5) * MAX_TILT * 2;
-      const rotX = (0.5 - py) * MAX_TILT * 2;
-      card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.03)`;
+      const rotY = (px - 0.5) * maxTilt * 2;
+      const rotX = (0.5 - py) * maxTilt * 2;
+      card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${hoverScale})`;
     });
     card.addEventListener('mouseleave', () => {
       card.classList.add('gal-tilt-reset');
       card.style.transform = '';
     });
   });
+})();
+
+/* ── Count-up for villa.html's Rooms/Guests/Baths stats — plays once
+   when scrolled into view; reduced-motion just shows the final value. */
+(function initCountUp() {
+  const nums = document.querySelectorAll('.pd-spec-n');
+  if (!nums.length) return;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      obs.unobserve(entry.target);
+      const el = entry.target;
+      const target = parseInt(el.textContent, 10);
+      if (Number.isNaN(target)) return;
+      if (reduce) { el.textContent = String(target); return; }
+
+      const DURATION = 900;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / DURATION, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = String(Math.round(target * eased));
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }, { threshold: 0.6 });
+  nums.forEach(el => obs.observe(el));
 })();
 
 /* ── Villa hero photo stack — fan the corner deck out to fill the

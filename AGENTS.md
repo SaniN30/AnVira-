@@ -817,6 +817,46 @@ instead of waiting it out (or clicking it) skips the `page.classList
 after removing it, and always neutralize the lead popup too, or a
 "blank/broken" screenshot is just this, not a real bug.
 
+## Background-video clips all carry burned-in title/caption slates, not just one (2026-08)
+
+`initVideoPlaylists()` in `core.js` previously excluded only
+`villa-terrace-firepit-story.mp4` from the small `.av-video-card`
+playlist on the assumption it was the only clip with a burned-in
+title card ("The Luxury of Earned Silence..."). It isn't — every clip
+in `assets/video/` is a produced highlight reel carrying multiple
+caption/title overlays throughout its runtime (not just an opening
+slate), confirmed by scrubbing `terrace-daytime-valley.mp4` and
+`valley-terrace-golden-hour.mp4` frame-by-frame. There is no
+guaranteed caption-free window to seek into. The fix that shipped:
+every video slot now (a) starts playback ~2.6s in via a `#t=` media
+fragment + `loadedmetadata` seek fallback (`TITLE_SLATE_SECONDS` in
+`core.js`) to skip the worst opening title, and (b) `.av-video-card`
+carries a permanent gradient scrim + centered `.av-video-play` icon
+(main.css) so any caption that surfaces mid-loop reads as an
+intentional "watch the trailer" tile instead of broken overlapping
+text. If more clips are added to `PLAYLIST` in `core.js`, assume they
+also carry captions unless verified otherwise.
+
+## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
+
+`.ep-section::before` (the 60%-width top accent line) and
+`.ep-section-dark::before` both already claim the element's one
+`::before` pseudo-element. Adding `.av-sketch-bg` (which also sets
+`content`/`position`/`background` on `::before`) to the same element
+does not layer the two backgrounds — CSS resolves `::before` as a
+single box, cascading property-by-property, so the sketch pattern's
+`inset:0` wins over the accent line's explicit `width:60%;height:1px`
+in ways that make the result invisible or wrong. Villa.html's dark
+hero panel (`#villa-page-hero`) needed the sketch texture *and* kept
+its accent line by giving the sketch pattern its own real DOM node
+(`.villa-hero-sketch`, absolute/inset:0/z-index:0, first child of the
+section) instead of a shared `::before`; the section's flex-item
+children (`.ep-hero-split-text`, `.ep-hero-stack`) got explicit
+`position:relative;z-index:1` to guarantee they paint above it. Reuse
+this "dedicated layer div" pattern for any future background texture
+on an element that's also `.ep-section`/`.ep-section-dark` — never
+add `.av-sketch-bg` directly to one.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
