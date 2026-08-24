@@ -768,6 +768,55 @@ state change out from under you unexpectedly, set
 browser instance instead of assuming you have exclusive control of
 the default one.
 
+## Mobile hero — fixed header can hide the bottom-anchored caption on short viewports (2026-08)
+
+`.ep-hero-caption` (used by `index.html` and `plan-a-stay.html`'s shared
+`.ep-hero`) is `position:absolute` anchored purely by `bottom:
+clamp(...)`, growing upward from that point with no `top` guard, inside
+a hero sized by the unconditional `.ep-hero { height:100vh; }` override.
+`#nav` is a separate `position:fixed` element painted on top of
+everything. On any real viewport shorter than the nominal device height
+— mobile Safari's address bar can claim 80–140px before the first
+scroll, and smaller/older phones simply have less height to begin with
+— the caption's stacked content (eyebrow, title, subtitle, location,
+both CTAs on the homepage) needs more room than is left below the
+header, so it rides up underneath the opaque fixed header instead of
+overflowing visibly. The eyebrow/title/early subtitle lines get painted
+over and disappear; what's left (subtitle tail, location, CTAs) reads
+as everything overlapping/crammed together — this is what a real
+iPhone Safari screenshot reported as broken hero spacing, and it does
+**not** reproduce with `chrome-devtools-axi resize` at a nominal
+375×812 (see the tool gotcha below) — it only shows up once the
+viewport height is genuinely short. Fixed with a `max-width:900px`
+override: `.ep-hero { height:100dvh; }` (tracks the real visible
+viewport) plus `.ep-hero-caption { top:5.5rem; bottom:1.6rem; display:
+flex; flex-direction:column; justify-content:flex-end; }` — bottom-
+aligned within a box that can never grow above the header. If the hero
+caption ever looks cramped/overlapping again on mobile only, reproduce
+at a **short height** (375×560, not just 375×812) before re-deriving
+this from scratch.
+
+## `chrome-devtools-axi resize` vs `emulate --viewport` — resize alone does not give a real mobile viewport
+
+`chrome-devtools-axi resize <w> <h>` echoes back the requested
+dimensions and *looks* like it worked, but it does not set the mobile
+UA/touch/device-pixel-ratio flags — `window.innerWidth` can silently
+stay at the browser's desktop default (observed: requested 375, actual
+500) and `matchMedia('(hover: none)')`/touch-only code paths never
+fire. Always use `chrome-devtools-axi emulate --viewport
+"375x812x3,mobile,touch"` for any real mobile-viewport testing on this
+site; verify with `eval "() => ({w:innerWidth,h:innerHeight})"` before
+trusting a screenshot. Separately, this site's `#intro` "click to
+enter" splash (auto-dismisses after ~2.8s, `intro.js`) and the
+lead-capture popup (`#lead-popup-wrap`, appears ~3.5s after load unless
+`localStorage.av_lead_captured` is set, `core.js`) both sit in front of
+every page on first load — force-removing `#intro` from the DOM
+instead of waiting it out (or clicking it) skips the `page.classList
+.add('show')` step `endIntro()` does, leaving `#page` stuck at
+`opacity:0`. Wait out the real timers (~4s) or add `page.show` yourself
+after removing it, and always neutralize the lead popup too, or a
+"blank/broken" screenshot is just this, not a real bug.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
