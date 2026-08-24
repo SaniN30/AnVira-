@@ -495,7 +495,7 @@ in `assets/css/main.css` and `core.js` (`canplay` → adds `.loaded`, fading
 the `<img class="av-video-poster">` fallback). Reuse these classes for any
 future video slot instead of hand-rolling new markup.
 
-## Favicon (2026-08)
+## Favicon (2026-08, recolored white-on-ink 2026-08)
 
 `brand/favicon-{16,32,192}.png` and `brand/apple-touch-icon.png` are cropped
 from the "AV" monogram mark in `brand/logo-transparent.png` (top ~500x500
@@ -505,6 +505,20 @@ re-exporting from `logo.png` (opaque background, wrong for a favicon). Every
 page's `<head>` links all three `rel="icon"` sizes plus
 `rel="apple-touch-icon"`; `index.html`'s CSP already allows these under
 `img-src 'self'`.
+
+The original crop was the brass/olive mark on a transparent background,
+which read as too low-contrast in a browser tab (especially dark tab
+bars). `favicon-{16,32,192}.png` (not `apple-touch-icon.png`, which is a
+different UI context — the iOS home-screen icon, left untouched) were
+regenerated with `/usr/bin/python3` + Pillow: recolor the existing
+cropped mark's RGB to solid white (keep its alpha channel), then
+composite that white mark onto a solid `--ink` (`#18181A`) rounded-square
+backing sized to the full icon. A plain white glyph alone would vanish
+against a light tab bar, so the dark backing — not just recoloring — is
+what makes it read on both light and dark tab chrome. Regenerate the
+same way (recolor + ink backing, from the existing favicon crop, not a
+fresh crop of the full logo which also carries the "ANVIRA" wordmark —
+illegible at 16–32px) if the mark or brand ink color ever changes.
 
 ## Page generation & CSP
 
@@ -902,6 +916,22 @@ excess at the bottom is. If another clip is ever wired to this card
 with a differently-placed caption (e.g. bottom-anchored text), verify
 its specific framing with real screenshots across a full loop before
 assuming the same top-anchor still fits.
+
+Follow-up (2026-08): the `.av-video-frame` scrim added above (uniform
+~40-50% dark wash across the whole frame) over-corrected — captain
+reported the whole clip now read as too dark/low-brightness on both
+index.html and villa.html. Since the caption risk is really only at
+the top/bottom edges (where this clip's burned-in title/subtitle
+overlays actually sit, confirmed by scrubbing frames), the fix was to
+concentrate the scrim there and drop it to near-nothing (`.12` opacity)
+across the middle 46% of the frame, rather than a flat wash:
+`linear-gradient(180deg, rgba(18,33,26,.4) 0%, rgba(18,33,26,.12) 22%,
+rgba(18,33,26,.12) 68%, rgba(18,33,26,.42) 100%)`. Same top/bottom-heavy
+principle as the `.av-video-card` scrim above, just tuned lighter since
+`.av-video-frame` has no badge to protect and most of its frame is
+plain scenery. If this clip's brightness is ever revisited, verify with
+real screenshots (not a single frame) at both desktop and mobile, on
+both pages that use `.av-video-frame`.
 
 ## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
 
