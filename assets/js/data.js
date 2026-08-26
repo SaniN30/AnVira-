@@ -143,15 +143,17 @@ const WA_NUMBER = '919807087087';
 const API_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzHjD3cKsgHmznDuc0V-GIfr1rMTAmFaKIZ9GMDaAP2TTSrKBtnBoNursfULudgsRIL/exec';
 
 /* Fire-and-forget logger — never blocks or breaks the guest flow.
-   Apps Script web apps require no CORS preflight when sent as text/plain. */
+   Apps Script web apps require no CORS preflight when sent as text/plain.
+   Returns a promise resolving to true/false (never rejects) so callers
+   that need a genuine success signal (e.g. conversion tracking) can opt in. */
 function logToSheet(type, payload) {
-  if (!API_ENDPOINT) return;
+  if (!API_ENDPOINT) return Promise.resolve(false);
   try {
-    fetch(API_ENDPOINT, {
+    return fetch(API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ type, ...payload }),
       keepalive: true,
-    }).catch(() => {});
-  } catch (_) { /* logging must never affect the guest */ }
+    }).then(() => true).catch(() => false);
+  } catch (_) { /* logging must never affect the guest */ return Promise.resolve(false); }
 }
