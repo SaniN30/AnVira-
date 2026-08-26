@@ -249,7 +249,8 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     'assets/video/terrace-dusk-firepit.mp4',
     'assets/video/terrace-daytime-valley.mp4',
     'assets/video/living-room-evening.mp4',
-    'assets/video/bedroom-valley-view.mp4'
+    'assets/video/bedroom-valley-view.mp4',
+    'assets/video/vid5.mp4'
   ].map(img);
   // Every clip in this set opens on a few frames of a burned-in title
   // slate ("The Luxury of Earned Silence..."), not just

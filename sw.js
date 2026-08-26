@@ -5,7 +5,7 @@
 'use strict';
 
 /* Bump on any asset change to retire the old cache. */
-const VERSION = 'anvira-chail-6';
+const VERSION = 'anvira-chail-7';
 
 const PRECACHE = [
   './',
