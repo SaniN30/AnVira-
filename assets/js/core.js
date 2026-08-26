@@ -249,7 +249,8 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
     'assets/video/terrace-dusk-firepit.mp4',
     'assets/video/terrace-daytime-valley.mp4',
     'assets/video/living-room-evening.mp4',
-    'assets/video/bedroom-valley-view.mp4'
+    'assets/video/bedroom-valley-view.mp4',
+    'assets/video/vid5.mp4'
   ].map(img);
   // Every clip in this set opens on a few frames of a burned-in title
   // slate ("The Luxury of Earned Silence..."), not just
@@ -267,7 +268,10 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
   const CARD_PLAYLIST = FULL_PLAYLIST;
   if (FULL_PLAYLIST.length < 2) return;
 
-  document.querySelectorAll('.av-video-frame, .av-video-card').forEach(wrap => {
+  // .av-video-card-native opts out of the shared crossfade playlist —
+  // each of those cards is pinned to one specific named clip and plays
+  // it directly (see index.html's gallery-highlight story sequence).
+  document.querySelectorAll('.av-video-frame, .av-video-card:not(.av-video-card-native)').forEach(wrap => {
     const vA = wrap.querySelector('video');
     if (!vA) return;
 

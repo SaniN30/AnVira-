@@ -957,6 +957,67 @@ promise (resolves `true`/`false`, never rejects) specifically so callers
 needing a genuine success signal can opt in; don't revert it to
 fire-and-forget without checking both call sites above.
 
+## `.av-video-card-native` — opting a video slot out of the shared crossfade playlist (2026-08)
+
+`initVideoPlaylists()` in `core.js` grabs every `.av-video-frame, .av-video-card`
+element and rewires its `<video>` to cycle through the site-wide shared
+`FULL_PLAYLIST`/`CARD_PLAYLIST` regardless of what `<source>` was authored in
+the HTML — see the existing note above this one. The homepage's
+`#gallery-highlight` "story sequence" (`.home-gal-story` — 4 grid cells, each
+wrapped in `.home-gal-step`, captioned "01 · Arrive" through "04 · Rest")
+needed each tile pinned to *one specific* clip instead of the shared rotation,
+so those 4 cards carry an additional `av-video-card-native` class and
+`initVideoPlaylists()`'s selector explicitly excludes
+`.av-video-card:not(.av-video-card-native)`. Reuse this opt-out pattern for
+any future slot that needs a fixed, non-cycling clip — don't hand-roll a
+separate wiring path. `.av-video-card-native` also carries its own
+`object-fit:cover` override (no letterbox) and, if you want the frame sized
+to the source's native 9:16 aspect instead of the shared 3:4 grid crop, add
+`aspect-ratio:9/16` scoped to `.home-gal-step > .av-video-card.av-video-card-native`
+— **not** a bare `.av-video-card` override, or every other video tile on the
+site inherits the same tall ratio.
+
+**Known trap:** giving `.fi` (the scroll-reveal fade class) to *both* a tall
+media element and a short caption sitting directly below it in the same flex
+column will visually overlap them before either has settled — `.fi`'s
+pre-reveal `translateY(24px)` is a real paint-time offset (`getBoundingClientRect`
+sees it), and 24px against a short gap is enough to paint over the sibling
+below. Symptom: an automated layout auditor (or a screenshot mid-scroll)
+reports "overlapping text" on the caption, and it gets worse (not better) the
+taller the media element is. Fix used here: drop `.fi` from the caption
+entirely (it's short-lived on screen anyway) rather than fighting the
+transform, and if the media element itself is unusually tall, add
+`.foo.fi { transform: none; }` to keep the opacity fade but drop the vertical
+travel.
+
+## `sw.js`'s `VERSION` — bump it whenever iterating live in a browser session (2026-08)
+
+The service worker's css/js strategy is stale-while-revalidate (see the
+earlier chrome-devtools-axi section above): a browser tab that registered the
+SW before your edit will keep running the OLD `main.css`/`core.js`/`sw.js`
+for at least one more load no matter how many times you save, because the
+cache is served instantly and only revalidated in the background. If you're
+iterating against a live browser session (Lavish, chrome-devtools-axi, a
+captain reviewing in real time) and change anything under `PRECACHE` (css,
+js, or a video/image referenced by cached pages), bump `VERSION` in `sw.js`
+in the same pass — otherwise "I fixed it" and "it still looks broken" can
+both be true at once, one request apart, and it reads exactly like a
+CSS-specificity bug instead of a caching one.
+
+## villa.html — no longer carries its own `.ep-aside` tariff box (2026-08)
+
+The "Your Stay" tariff/included-items aside (`ep-price`/`ep-incl` markup,
+same component `plan-a-stay.html` and `contact.html` use) was removed from
+`villa.html` per captain feedback — that content now lives only on
+`plan-a-stay.html`, the page every Book/Plan-a-Stay CTA site-wide already
+points to. `villa.html`'s `.ep-main` grid (`#story`'s sibling
+`#amenities`/`#local-guide` block) now carries an extra `ep-main-full` class
+forcing `grid-template-columns: minmax(0,1fr)` instead of the two-column
+`minmax(0,1fr) 360px` default, so `<article>` fills the row without an empty
+360px gap where the aside used to sit. If a future page drops its aside for
+the same reason, reuse `.ep-main-full` rather than re-deriving the
+single-column override.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
