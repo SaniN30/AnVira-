@@ -105,7 +105,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,600&family=Manrope:wght@400;500;600;700&family=DM+Mono:wght@400&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="./chail/anvira-terrace.webp" imagesrcset="./chail/anvira-terrace-640w.webp 640w, ./chail/anvira-terrace-1280w.webp 1280w, ./chail/anvira-terrace.webp 1872w" imagesizes="100vw" />
   <link rel="stylesheet" href="./assets/css/main.css" />
 </head>
@@ -166,9 +166,9 @@
         <img src="./chail/anvira-terrace.webp" srcset="./chail/anvira-terrace-640w.webp 640w, ./chail/anvira-terrace-1280w.webp 1280w, ./chail/anvira-terrace.webp 1872w" sizes="100vw" alt="Villa AnVira — Chail, Himachal Pradesh" />
         <div class="ep-hero-overlay"></div>
         <div class="ep-hero-caption">
-          <p class="ep-crumb ep-eyebrow"><span class="ep-star">&#9734;</span> A Private Hill Retreat <span class="ep-star">&#9734;</span></p>
-          <h1 id="pd-hero-name">Villa AnVira</h1>
-          <p class="ep-hero-sub">A pine-framed 7-bedroom estate above the Himalayan valley, held by a staff of four who know it intimately.</p>
+          <p class="ep-crumb ep-eyebrow fi"><span class="ep-star">&#9734;</span> A Private Hill Retreat <span class="ep-star">&#9734;</span></p>
+          <h1 id="pd-hero-name" class="fi" style="transition-delay:.1s">Villa AnVira</h1>
+          <p class="ep-hero-sub">A pine-framed 7-bedroom estate above the Himalayan valley, in Chail.</p>
           <div id="pd-hero-loc"><a href="https://www.google.com/maps/dir//Villa+AnVira+,+Chail,+Kufri+Rd,+Kandaghat,+Chail,+Himachal+Pradesh+173217/@29.6872837,75.9435921,8.4z/data=!4m8!4m7!1m0!1m5!1m1!1s0x390f8162e0bd3713:0xb48395c65f24bfa9!2m2!1d77.1870428!2d30.9700264?hl=en-US&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" data-cursor><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg> Chail, Himachal Pradesh</a></div>
           <div class="ep-hero-ctas" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem">
             <a class="cta ep-hero-cta" href="./villa.html" data-cursor>Discover the Villa</a>
@@ -195,6 +195,7 @@
 
     <div class="ep-wrap">
       <section class="ep-section fi home-teaser" id="story">
+        <div class="story-sketch" aria-hidden="true"></div>
         <div class="home-teaser-copy">
           <p class="ep-eyebrow ep-eyebrow-dark"><span class="ep-star">&#9734;</span> Villa AnVira, Chail <span class="ep-star">&#9734;</span></p>
           <h2 class="ep-sec-h">The luxury of earned silence</h2>
@@ -213,17 +214,43 @@
       <section class="ep-section fi" id="gallery-highlight">
         <p class="ep-eyebrow ep-eyebrow-dark"><span class="ep-star">&#9734;</span> A Glimpse of Villa AnVira <span class="ep-star">&#9734;</span></p>
         <p class="ep-sec-title">Gallery</p>
-        <div class="home-gal-grid">
-          <a class="fi" style="transition-delay:.05s" href="./gallery.html" data-cursor><img src="./chail/anvira-terrace-640w.webp" alt="Villa AnVira — terrace" loading="lazy" decoding="async" /></a>
-          <a class="fi" style="transition-delay:.15s" href="./gallery.html" data-cursor><img src="./chail/vansh-batra-chail-97c101-640w.webp" alt="Villa AnVira — living space" loading="lazy" decoding="async" /></a>
-          <div class="av-video-card fi" style="transition-delay:.25s">
-            <img class="av-video-poster" src="./chail/valley-video-poster.jpg" alt="" />
-            <video autoplay muted loop playsinline preload="metadata" poster="./chail/valley-video-poster.jpg" aria-label="Villa AnVira — valley terrace at golden hour, a loop">
-              <source src="./assets/video/valley-terrace-golden-hour.mp4" type="video/mp4" />
-            </video>
-            <span class="av-video-tag">Watch</span>
+        <div class="home-gal-grid home-gal-story">
+          <div class="home-gal-step">
+            <div class="av-video-card av-video-card-native fi" style="transition-delay:.05s">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="Villa AnVira — terrace, daytime valley view">
+                <source src="./assets/video/terrace-daytime-valley.mp4" type="video/mp4" />
+              </video>
+              <span class="av-video-tag">Watch</span>
+            </div>
+            <p class="home-gal-cap">01 · Arrive</p>
           </div>
-          <a class="fi" style="transition-delay:.35s" href="./gallery.html" data-cursor><img src="./chail/vansh-batra-chail-ea841b-640w.webp" alt="Villa AnVira — bedroom" loading="lazy" decoding="async" /></a>
+          <div class="home-gal-step">
+            <div class="av-video-card av-video-card-native fi" style="transition-delay:.15s">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="Villa AnVira — living room in the evening">
+                <source src="./assets/video/living-room-evening.mp4" type="video/mp4" />
+              </video>
+              <span class="av-video-tag">Watch</span>
+            </div>
+            <p class="home-gal-cap">02 · Settle in</p>
+          </div>
+          <div class="home-gal-step">
+            <div class="av-video-card av-video-card-native fi" style="transition-delay:.25s">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="Villa AnVira — evening at the villa">
+                <source src="./assets/video/vid5.mp4" type="video/mp4" />
+              </video>
+              <span class="av-video-tag">Watch</span>
+            </div>
+            <p class="home-gal-cap">03 · Evening</p>
+          </div>
+          <div class="home-gal-step">
+            <div class="av-video-card av-video-card-native fi" style="transition-delay:.35s">
+              <video autoplay muted loop playsinline preload="metadata" aria-label="Villa AnVira — bedroom, valley view">
+                <source src="./assets/video/bedroom-valley-view.mp4" type="video/mp4" />
+              </video>
+              <span class="av-video-tag">Watch</span>
+            </div>
+            <p class="home-gal-cap">04 · Rest</p>
+          </div>
         </div>
         <a class="cta cta-ghost" href="./gallery.html" data-cursor>View Gallery &mdash; 37 photographs</a>
       </section>

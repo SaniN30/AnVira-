@@ -267,7 +267,10 @@ document.querySelectorAll('.av-video-frame video, .av-video-card video').forEach
   const CARD_PLAYLIST = FULL_PLAYLIST;
   if (FULL_PLAYLIST.length < 2) return;
 
-  document.querySelectorAll('.av-video-frame, .av-video-card').forEach(wrap => {
+  // .av-video-card-native opts out of the shared crossfade playlist —
+  // each of those cards is pinned to one specific named clip and plays
+  // it directly (see index.html's gallery-highlight story sequence).
+  document.querySelectorAll('.av-video-frame, .av-video-card:not(.av-video-card-native)').forEach(wrap => {
     const vA = wrap.querySelector('video');
     if (!vA) return;
 
