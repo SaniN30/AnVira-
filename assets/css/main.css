@@ -2094,6 +2094,7 @@
       max-width: 480px; margin: 1.1rem 0 1.3rem;
     }
     .ep-hero-cta { text-decoration: none; }
+    .ep-hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
 
     /* ── Section headline — serif, Aurelia "More than just…" style ── */
     .ep-sec-h {
@@ -2346,6 +2347,10 @@
         top: 5.5rem; bottom: 1.6rem;
         display: flex; flex-direction: column; justify-content: flex-end;
       }
+      /* Tighter rhythm than desktop's 2rem gap — on a short mobile
+         viewport the CTA row should feel like the next beat in the
+         same stack, not a separately-anchored block. */
+      .ep-hero-ctas { margin-top: 1.4rem; gap: .7rem; }
     }
 
     /* Story photo — arch/oval top (Aurelia signature shape), not a plain circle */
