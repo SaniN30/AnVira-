@@ -207,6 +207,9 @@ function renderAvailability(p) {
   if (!form) return;
   form.addEventListener('submit', e => {
     e.preventDefault();
+    /* No genuine confirmation signal here (this just redirects with query
+       params to plan-a-stay.html) — fires on click as a fallback only. */
+    if (typeof gtag_report_conversion_form === 'function') gtag_report_conversion_form();
     const checkin  = document.getElementById('home-bw-in').value;
     const checkout = document.getElementById('home-bw-out').value;
     const guests   = document.getElementById('home-bw-guests').value;
@@ -420,7 +423,7 @@ document.getElementById('mpc-send').addEventListener('click', () => {
     guests: enquiry.guests,
     name: mpcName.value.trim() || enquiry.name,
     note: mpcNote.value.trim(),
-  });
+  }).then(ok => { if (ok && typeof gtag_report_conversion_form === 'function') gtag_report_conversion_form(); });
   const msg = encodeURIComponent(buildMessage());
   window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
 

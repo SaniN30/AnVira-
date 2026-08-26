@@ -923,6 +923,40 @@ this "dedicated layer div" pattern for any future background texture
 on an element that's also `.ep-section`/`.ep-section-dark` — never
 add `.av-sketch-bg` directly to one.
 
+## Google Ads conversion tracking — WhatsApp click + form submit (2026-08)
+
+`index.html`'s `Content-Security-Policy` meta tag has no `'unsafe-inline'`
+for `script-src` — every inline `<script>` block and every inline
+`onclick="..."` handler must be allow-listed individually by exact
+sha256 hash (`'sha256-...'` for `<script>` bodies, plus `'unsafe-hashes'`
++ a hash per distinct `onclick` attribute *value* — one hash per unique
+string, so 3 different `wa.me` hrefs sharing the same onclick template
+text collapse to one hash, but a differently-worded onclick needs its
+own). The other 4 pages carry no CSP meta tag and are unaffected. If you
+add/edit an inline script or onclick handler on `index.html`, recompute
+its hash (`hashlib.sha256(exact_content.encode()).digest()` → base64,
+where `exact_content` for an attribute is the HTML-entity-decoded value,
+e.g. `&#39;` → `'`) and update the CSP meta tag's `script-src`, or the
+browser silently drops the handler with a CSP console error that no
+static grep will surface.
+
+`gtag_report_conversion_whatsapp(url)` (fires on every `wa.me` link
+click) and `gtag_report_conversion_form(url)` (fires on confirmed
+enquiry/lead submission) are separate functions defined once per page,
+right after the base gtag.js snippet in `<head>` — deliberately not
+merged into one shared function, since Google Ads' account-UI snippet
+generator would give both the same name and the second definition would
+silently clobber the first. `gtag_report_conversion_form()` is called
+from `assets/js/core.js` (lead popup) and `assets/js/booking.js`
+(`#mpc-send`, `#home-bw`) only after `logToSheet()`'s returned promise
+resolves `true` — i.e. on confirmed submission, not on click — except
+`#home-bw`, which has no real confirmation signal (it just redirects to
+`plan-a-stay.html` with query params) and fires on click as a
+documented fallback. `logToSheet()` in `assets/js/data.js` returns that
+promise (resolves `true`/`false`, never rejects) specifically so callers
+needing a genuine success signal can opt in; don't revert it to
+fire-and-forget without checking both call sites above.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 

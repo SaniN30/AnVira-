@@ -218,7 +218,9 @@ function toISO(dt) {
     const phone = document.getElementById('lp-phone').value.trim();
     if (!name || !email) return;
     if (typeof logToSheet === 'function') {
-      logToSheet('lead', { name, email, phone, page: location.pathname });
+      logToSheet('lead', { name, email, phone, page: location.pathname }).then(ok => {
+        if (ok && typeof gtag_report_conversion_form === 'function') gtag_report_conversion_form();
+      });
     }
     localStorage.setItem('av_lead_captured', '1');
     closePopup();
