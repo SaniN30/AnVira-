@@ -514,8 +514,8 @@ copy/specs/images/availability, read at runtime by `booking.js`,
 `gallery.js`, and `estate.js`.
 
 Analytics: Google Ads gtag.js (conversion ID `AW-18140671098`) is loaded on
-every page; `assets/js/wa-tracking.js` delegates a `document` click listener
-for `a[href*="wa.me"]` and fires a `gtag('event','conversion',...)`. gtag's
+every page; see "Google Ads conversion tracking — WhatsApp click + form
+submit" below for how WhatsApp clicks and form submits are tracked. gtag's
 remarketing pixels hit arbitrary Google ccTLDs (e.g. `google.co.in`) that
 CSP intentionally does not whitelist — only the core conversion-tracking
 origins are allowed; the primary conversion signal still fires.

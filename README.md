@@ -53,7 +53,6 @@ assets/
   js/estate.js              Property page runtime — gallery, lightbox, booking panel slide-in
   js/gallery.js             Shared lightbox
   js/review.js              Review form → Google Apps Script → Google Sheet
-  js/wa-tracking.js          Google Ads conversion tracking on wa.me clicks
 
 tools/
   apps-script.gs            Google Apps Script backend — enquiry / waitlist / review logging
