@@ -975,6 +975,23 @@ e.g. `&#39;` → `'`) and update the CSP meta tag's `script-src`, or the
 browser silently drops the handler with a CSP console error that no
 static grep will surface.
 
+**Trap (2026-08, found+fixed):** every `wa.me` link/button site-wide
+(index/villa/contact/gallery/plan-a-stay/legal x3/arrive/reviews-submit
+— 10 pages) carries `onclick="return gtag_report_conversion_whatsapp(&#39;<href>&#39;);"`,
+delimited with the HTML entity `&#39;` rather than a literal quote so it
+can nest inside the double-quoted `onclick="..."` attribute. If the
+`href` text itself contains a literal apostrophe (e.g. the "I'd like to
+enquire..." WhatsApp message text), that apostrophe closes the JS string
+early — since HTML-entity decoding happens once, before the JS parses —
+producing a syntax error that silently no-ops the handler (link still
+navigates via its real `href`, but no conversion fires and no console
+warning is visible without an active JS debugger). The fix is a literal
+backslash in the HTML source before the apostrophe (`I\'d`, NOT an HTML
+entity) — decoding leaves a real `\'` for the JS parser to treat as an
+escaped quote. Grep any onclick value containing a raw `'` before
+trusting it fires, and re-verify with the live network-request check
+below rather than only reading the source.
+
 `gtag_report_conversion_whatsapp(url)` (fires on every `wa.me` link
 click) and `gtag_report_conversion_form(url)` (fires on confirmed
 enquiry/lead submission) are separate functions defined once per page,
@@ -982,15 +999,17 @@ right after the base gtag.js snippet in `<head>` — deliberately not
 merged into one shared function, since Google Ads' account-UI snippet
 generator would give both the same name and the second definition would
 silently clobber the first. `gtag_report_conversion_form()` is called
-from `assets/js/core.js` (lead popup) and `assets/js/booking.js`
-(`#mpc-send`, `#home-bw`) only after `logToSheet()`'s returned promise
-resolves `true` — i.e. on confirmed submission, not on click — except
-`#home-bw`, which has no real confirmation signal (it just redirects to
+from `assets/js/core.js` (lead popup), `assets/js/booking.js`
+(`#mpc-send`, `#home-bw`), and `assets/js/review.js` (`#rv-form`) only
+after a genuine success signal (`logToSheet()`'s resolved promise, or —
+for `#rv-form`'s no-`API_ENDPOINT` branch — the WhatsApp handoff itself)
+— i.e. on confirmed submission, not on click — except `#home-bw`, which
+has no real confirmation signal (it just redirects to
 `plan-a-stay.html` with query params) and fires on click as a
 documented fallback. `logToSheet()` in `assets/js/data.js` returns that
 promise (resolves `true`/`false`, never rejects) specifically so callers
 needing a genuine success signal can opt in; don't revert it to
-fire-and-forget without checking both call sites above.
+fire-and-forget without checking all call sites above.
 
 ## `.av-video-card-native` — opting a video slot out of the shared crossfade playlist (2026-08)
 
