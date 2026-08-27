@@ -495,16 +495,29 @@ in `assets/css/main.css` and `core.js` (`canplay` → adds `.loaded`, fading
 the `<img class="av-video-poster">` fallback). Reuse these classes for any
 future video slot instead of hand-rolling new markup.
 
-## Favicon (2026-08)
+## Favicon (2026-08, recolored white-on-ink)
 
-`brand/favicon-{16,32,192}.png` and `brand/apple-touch-icon.png` are cropped
-from the "AV" monogram mark in `brand/logo-transparent.png` (top ~500x500
-square, via `sips --cropOffset`/`--cropToHeightWidth`/`-z`, not a hand-drawn
-asset) — regenerate from that source if the logo changes rather than
-re-exporting from `logo.png` (opaque background, wrong for a favicon). Every
-page's `<head>` links all three `rel="icon"` sizes plus
-`rel="apple-touch-icon"`; `index.html`'s CSP already allows these under
-`img-src 'self'`.
+`brand/favicon-{16,32,192}.png` and `brand/apple-touch-icon.png` are the "AV"
+monogram mark cropped from `brand/logo-transparent.png` (top ~500x500 square,
+via `sips --cropOffset`/`--cropToHeightWidth`/`-z`, not a hand-drawn asset).
+The mark itself is now recolored solid white and baked onto an opaque
+rounded-square Ink (`#18181A`) backdrop at every size — a straight white
+mark on the site's own transparent/cream background was tested and found
+nearly invisible in light-themed browser tab chrome (the dominant case);
+only the dark-chrome case read fine. The ink backdrop fixes that without
+reverting to the original brass color. Regenerate via ImageMagick/PIL if
+either becomes available; this pass used two from-scratch Node scripts
+(`recolor-png.js` — decode/unfilter/recolor RGB→white keep alpha/re-encode;
+`make-icon.js` — composite the white mark onto an antialiased rounded-rect
+ink fill) since neither ImageMagick nor Python PIL/pip was available in this
+sandboxed Nix shell — only stdlib `zlib` for PNG inflate/deflate. Both
+scripts only handle 8-bit RGBA (colorType 6), non-interlaced PNGs; verify
+`sips -g all <file>` matches that before reusing them on a different source.
+If the logo changes, regenerate the white-mark crop from
+`brand/logo-transparent.png` (not `logo.png`, which has an opaque background)
+and re-run both scripts rather than hand-editing pixels. Every page's
+`<head>` links all three `rel="icon"` sizes plus `rel="apple-touch-icon"`;
+`index.html`'s CSP already allows these under `img-src 'self'`.
 
 ## Page generation & CSP
 
