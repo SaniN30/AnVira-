@@ -63,6 +63,7 @@
       window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, '_blank', 'noopener,noreferrer');
       form.style.display = 'none';
       doneEl.style.display = '';
+      if (typeof gtag_report_conversion_form === 'function') gtag_report_conversion_form();
       return;
     }
 
@@ -78,6 +79,7 @@
       if (!data.success) { errEl.textContent = data.error || 'Something went wrong. Please try again.'; return; }
       form.style.display = 'none';
       doneEl.style.display = '';
+      if (typeof gtag_report_conversion_form === 'function') gtag_report_conversion_form();
     } catch {
       errEl.textContent = 'Network error. Please check your connection and try again.';
     } finally {
