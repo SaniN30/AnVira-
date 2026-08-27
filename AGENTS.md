@@ -519,6 +519,12 @@ and re-run both scripts rather than hand-editing pixels. Every page's
 `<head>` links all three `rel="icon"` sizes plus `rel="apple-touch-icon"`;
 `index.html`'s CSP already allows these under `img-src 'self'`.
 
+A white-on-ink recolor of `favicon-{16,32,192}.png` was tried for tab
+visibility but rejected — a solo white recolor reads as nearly invisible
+on light tab backgrounds, the common case. A corrected color (readable on
+both light and dark tab chrome) is being handled separately; don't
+recolor these files without checking that work first.
+
 ## Page generation & CSP
 
 `index.html` is the only page carrying a `Content-Security-Policy` meta tag.
@@ -915,6 +921,22 @@ excess at the bottom is. If another clip is ever wired to this card
 with a differently-placed caption (e.g. bottom-anchored text), verify
 its specific framing with real screenshots across a full loop before
 assuming the same top-anchor still fits.
+
+Follow-up (2026-08): the `.av-video-frame` scrim added above (uniform
+~40-50% dark wash across the whole frame) over-corrected — captain
+reported the whole clip now read as too dark/low-brightness on both
+index.html and villa.html. Since the caption risk is really only at
+the top/bottom edges (where this clip's burned-in title/subtitle
+overlays actually sit, confirmed by scrubbing frames), the fix was to
+concentrate the scrim there and drop it to near-nothing (`.12` opacity)
+across the middle 46% of the frame, rather than a flat wash:
+`linear-gradient(180deg, rgba(18,33,26,.4) 0%, rgba(18,33,26,.12) 22%,
+rgba(18,33,26,.12) 68%, rgba(18,33,26,.42) 100%)`. Same top/bottom-heavy
+principle as the `.av-video-card` scrim above, just tuned lighter since
+`.av-video-frame` has no badge to protect and most of its frame is
+plain scenery. If this clip's brightness is ever revisited, verify with
+real screenshots (not a single frame) at both desktop and mobile, on
+both pages that use `.av-video-frame`.
 
 ## `.av-sketch-bg`'s `::before` collides with `.ep-section`/`.ep-section-dark`'s own `::before` — never combine on one element
 

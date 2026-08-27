@@ -2454,11 +2454,14 @@
     .av-video-frame video { z-index: 2; }
     .av-video-frame.loaded img.av-video-poster { opacity: 0; }
     /* Same burned-in-caption risk as .av-video-card — this clip also
-       carries its own title/caption overlays throughout, so keep a
-       consistent scrim across the whole frame rather than none at all. */
+       carries its own title/caption overlays throughout, so keep the
+       scrim concentrated at the top/bottom edges (where those overlays
+       sit) instead of uniformly darkening the whole frame — a flat
+       ~40-50% scrim across the entire clip read as "too dark" even
+       though no single frame's caption needed that much coverage. */
     .av-video-frame::before {
       content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
-      background: linear-gradient(180deg, rgba(18,33,26,.14) 0%, rgba(18,33,26,.06) 35%, rgba(18,33,26,.06) 65%, rgba(18,33,26,.18) 100%);
+      background: linear-gradient(180deg, rgba(18,33,26,.4) 0%, rgba(18,33,26,.12) 22%, rgba(18,33,26,.12) 68%, rgba(18,33,26,.42) 100%);
     }
     @media (max-width: 900px) { .av-video-frame { width: 220px; margin: 0 auto; } }
 
