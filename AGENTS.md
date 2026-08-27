@@ -495,7 +495,7 @@ in `assets/css/main.css` and `core.js` (`canplay` → adds `.loaded`, fading
 the `<img class="av-video-poster">` fallback). Reuse these classes for any
 future video slot instead of hand-rolling new markup.
 
-## Favicon (2026-08, recolored white-on-ink 2026-08)
+## Favicon (2026-08)
 
 `brand/favicon-{16,32,192}.png` and `brand/apple-touch-icon.png` are cropped
 from the "AV" monogram mark in `brand/logo-transparent.png` (top ~500x500
@@ -506,19 +506,11 @@ page's `<head>` links all three `rel="icon"` sizes plus
 `rel="apple-touch-icon"`; `index.html`'s CSP already allows these under
 `img-src 'self'`.
 
-The original crop was the brass/olive mark on a transparent background,
-which read as too low-contrast in a browser tab (especially dark tab
-bars). `favicon-{16,32,192}.png` (not `apple-touch-icon.png`, which is a
-different UI context — the iOS home-screen icon, left untouched) were
-regenerated with `/usr/bin/python3` + Pillow: recolor the existing
-cropped mark's RGB to solid white (keep its alpha channel), then
-composite that white mark onto a solid `--ink` (`#18181A`) rounded-square
-backing sized to the full icon. A plain white glyph alone would vanish
-against a light tab bar, so the dark backing — not just recoloring — is
-what makes it read on both light and dark tab chrome. Regenerate the
-same way (recolor + ink backing, from the existing favicon crop, not a
-fresh crop of the full logo which also carries the "ANVIRA" wordmark —
-illegible at 16–32px) if the mark or brand ink color ever changes.
+A white-on-ink recolor of `favicon-{16,32,192}.png` was tried for tab
+visibility but rejected — a solo white recolor reads as nearly invisible
+on light tab backgrounds, the common case. A corrected color (readable on
+both light and dark tab chrome) is being handled separately; don't
+recolor these files without checking that work first.
 
 ## Page generation & CSP
 
