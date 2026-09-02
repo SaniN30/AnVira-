@@ -960,6 +960,18 @@ add `.av-sketch-bg` directly to one.
 
 ## Google Ads conversion tracking — WhatsApp click + form submit (2026-08)
 
+`index.html`'s CSP `script-src-elem` directive (added 2026-09 after Google
+Ads flagged tag measurement as CSP-blocked) mirrors `script-src`'s
+`'self'`/hashes/`'unsafe-hashes'` entries plus the Google tag domains from
+https://developers.google.com/tag-platform/security/guides/csp
+(`googletagmanager.com`, `googleadservices.com`, `www.google.com`,
+`pagead2.googlesyndication.com`, `googleads.g.doubleclick.net`) — keep it
+in sync with `script-src` whenever that directive's hashes change, since
+`script-src-elem` governs `<script>` elements (including inline ones) once
+present and does not fall back to `script-src`. `img-src`/`connect-src`
+also carry the same Google tag domains; `frame-src` is
+`https://www.googletagmanager.com` only.
+
 `index.html`'s `Content-Security-Policy` meta tag has no `'unsafe-inline'`
 for `script-src` — every inline `<script>` block and every inline
 `onclick="..."` handler must be allow-listed individually by exact
