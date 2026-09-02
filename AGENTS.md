@@ -968,9 +968,12 @@ https://developers.google.com/tag-platform/security/guides/csp
 `pagead2.googlesyndication.com`, `googleads.g.doubleclick.net`) — keep it
 in sync with `script-src` whenever that directive's hashes change, since
 `script-src-elem` governs `<script>` elements (including inline ones) once
-present and does not fall back to `script-src`. `img-src`/`connect-src`
-also carry the same Google tag domains; `frame-src` is
-`https://www.googletagmanager.com` only.
+present and does not fall back to `script-src`. `img-src` additionally
+allows `googletagmanager.com`, `google.com`, `googleadservices.com`, and
+`google-analytics.com`; `connect-src` allows those four plus
+`pagead2.googlesyndication.com` and `analytics.google.com` (the two
+`connect-src`-only entries are for XHR/beacon calls that have no image
+counterpart); `frame-src` is `https://www.googletagmanager.com` only.
 
 `index.html`'s `Content-Security-Policy` meta tag has no `'unsafe-inline'`
 for `script-src` — every inline `<script>` block and every inline
