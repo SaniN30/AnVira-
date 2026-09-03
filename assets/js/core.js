@@ -11,10 +11,14 @@ const img = path => ASSET_BASE + path;
 const ring = document.getElementById('cursor-ring');
 const dot  = document.getElementById('cursor-dot');
 if (!isTouchDevice && ring && dot) {
+  /* Translate offset is always half the ring's base 24px box (12px);
+     the `.on` hover-state grow to 54px is handled purely by CSS
+     negative margin (see main.css) so the box stays centered on this
+     same translated point without the offset itself ever jumping. */
   document.addEventListener('mousemove', e => {
     const x = e.clientX, y = e.clientY;
-    ring.style.transform = `translate(${x - 18}px, ${y - 18}px) rotate(45deg)`;
-    dot.style.transform  = `translate(${x - 2}px,  ${y - 2}px)`;
+    ring.style.transform = `translate(${x - 12}px, ${y - 12}px)`;
+    dot.style.transform  = `translate(${x - 3}px, ${y - 3}px)`;
     ring.classList.add('active');
     dot.classList.add('active');
     const el = document.elementFromPoint(x, y);

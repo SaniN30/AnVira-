@@ -1087,6 +1087,26 @@ forcing `grid-template-columns: minmax(0,1fr)` instead of the two-column
 the same reason, reuse `.ep-main-full` rather than re-deriving the
 single-column override.
 
+## Custom cursor (`#cursor-ring`/`#cursor-dot`) — 1:1 tracking, no mix-blend-mode (2026-09)
+
+The cursor was redesigned to drop two things that caused the captain-flagged
+"not optimal" feel: a `transition: transform .18s linear` on `#cursor-ring`
+(a real, perceptible drag behind the pointer — removed; only
+width/height/margin/background/opacity are eased now, never `transform`,
+so position is always set 1:1 per mousemove frame in `core.js`), and
+`mix-blend-mode: difference` for contrast (unreliable — it can fail to
+composite over `<video>` in some engines, and gives unpredictable/flickering
+contrast over busy multi-colour photos). Contrast is now guaranteed by
+drawing every stroke twice — a light `border`/`background` plus a dark
+`box-shadow` ring around it — so at least one layer reads against any
+background regardless of blend compositing. The ring's hover-state grow
+(24px → 54px on `[data-cursor]`) is done via CSS negative `margin`, not by
+changing the JS translate offset, so the box stays centered on the same
+translated point through the whole size transition instead of jumping — if
+this cursor is ever restyled again, keep that split (JS always translates
+by half the *base* box size; CSS margin alone handles the "on" state grow)
+or the resize will visibly snap sideways for the ~0.22s transition.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 
