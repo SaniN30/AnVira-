@@ -62,57 +62,65 @@
     ::-webkit-scrollbar-thumb { background: var(--border-mid); }
 
     /* ── Cursor ──────────────────────────────────────────────── */
-    /* ── Custom cursor — brass jaali mark with a magnetic trail ──
-       A thin diamond (not a circle) echoes the site's dot-grid/jaali
-       motif and star dividers; mix-blend-mode keeps it legible over
-       both the dark hero and the Lime Wash body. The ring trails the
-       true pointer by a short linear delay (dot stays glued to the
-       cursor) for a deliberate, weighted "magnetic" feel rather than
-       an instant 1:1 follow. */
+    /* ── Custom cursor — brass ring, dual-stroke for guaranteed
+       contrast on every background ─────────────────────────────
+       Position is set directly per mousemove frame in core.js with
+       no CSS transition on `transform` — the ring/dot track the real
+       pointer 1:1, with zero drag/trail. Visibility no longer relies
+       on mix-blend-mode (which silently fails to composite over
+       <video> in several engines, and gives unpredictable contrast
+       over busy multi-colour photos) — instead every stroke is drawn
+       twice, once dark and once light, via layered box-shadow, so at
+       least one layer always reads against any hue/lightness behind
+       it. Only size/opacity/color (not position) are eased. */
     #cursor-ring {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 26px; height: 26px;
-      border: 1px solid #FFFFFF;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 1.5px solid #FAF8F3;
+      box-shadow: 0 0 0 1.5px rgba(24,24,26,.9);
       transform-origin: center;
       pointer-events: none;
       display: flex; align-items: center; justify-content: center;
       opacity: 0;
-      transition: width .35s var(--lux), height .35s var(--lux),
-                  border-color .3s ease, background .3s ease,
-                  margin .35s var(--lux), opacity .25s ease,
-                  transform .18s linear;
+      transition: width .22s var(--lux), height .22s var(--lux),
+                  margin .22s var(--lux), background .2s ease, opacity .2s ease;
       will-change: transform;
-      mix-blend-mode: difference;
     }
     /* Stay hidden until the first real mousemove, so a stale ring
        never flashes at (0,0) before the cursor has actually moved. */
     #cursor-ring.active, #cursor-dot.active { opacity: 1; }
+    /* JS always translates by half the *base* 24px box (12px) so the
+       pointer offset never has to jump when `.on` toggles — the grow
+       to 54px is done purely by this negative margin, staying
+       centered on the same translated point while width/height/margin
+       animate together. */
     #cursor-ring.on {
-      width: 58px; height: 58px; margin: -16px 0 0 -16px;
-      background: rgba(255,255,255,.14);
-      border-color: rgba(255,255,255,.7);
+      width: 54px; height: 54px; margin: -15px 0 0 -15px;
+      background: rgba(250,248,243,.16);
     }
     #cursor-label {
-      rotate: -45deg;
       font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: 13px; letter-spacing: .04em;
-      color: #FFFFFF; opacity: 0; font-weight: 300;
-      transition: opacity .3s ease;
+      font-size: 12px; letter-spacing: .04em;
+      color: #FAF8F3; opacity: 0; font-weight: 300;
+      text-shadow: 0 0 5px rgba(24,24,26,.85), 0 0 1px rgba(24,24,26,.9);
+      transition: opacity .2s ease;
     }
     #cursor-ring.on #cursor-label { opacity: 1; }
     #cursor-dot {
       position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 5px; height: 5px;
-      background: #FFFFFF; border-radius: 50%;
+      width: 6px; height: 6px;
+      background: #FAF8F3; border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(24,24,26,.9);
       pointer-events: none; will-change: transform;
-      mix-blend-mode: difference;
-      opacity: 0; transition: opacity .25s ease;
+      opacity: 0; transition: opacity .2s ease;
     }
+    #cursor-ring.on ~ #cursor-dot { opacity: 0; }
     @media (hover: none), (pointer: coarse) {
       #cursor-ring, #cursor-dot { display: none !important; }
     }
     @media (prefers-reduced-motion: reduce) {
-      #cursor-ring, #cursor-dot { transition: none; }
+      #cursor-ring, #cursor-dot { transition: opacity .2s ease; }
     }
 
     /* ── Intro (brand logo reveal on cream) ─────────────────── */
