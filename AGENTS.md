@@ -1107,6 +1107,31 @@ this cursor is ever restyled again, keep that split (JS always translates
 by half the *base* box size; CSS margin alone handles the "on" state grow)
 or the resize will visibly snap sideways for the ~0.22s transition.
 
+## Reviews/rating snippet duplicated near CTAs on index.html and villa.html (2026-09 — SEO/UX pass)
+
+The 4.3-star Google rating badge + 2 named testimonials (`.google-rating-badge`,
+`.ep-reviews`/`.testi-card` — CSS already existed, originally only used on
+`contact.html`'s "Guest Voices" section) is now duplicated directly above the
+`#inquiry` CTA block on both `index.html` and `villa.html`, since a
+booking-conversion trust signal needs to sit where a guest actually decides to
+enquire, not only on the dedicated Contact page. `contact.html` keeps its own
+copy — don't consolidate into one shared partial without a templating layer,
+this is still a hand-authored static site (see "Page generation & CSP" above).
+If the real Google rating or testimonial copy in `assets/js/data.js` /
+`contact.html` ever changes, update all three copies together.
+
+`villa.html` also gained a `#faq` section (`<details>`/`<summary>`, styled via
+`.faq-item`/`.faq-list` in `main.css`) between `#local-guide` and `#inquiry` —
+minimum stay, pet policy, included vs. paid add-ons, and parking/check-in
+times, linking to `legal/cancellation.html` rather than repeating it. Reuse
+this pattern for any future FAQ entries instead of duplicating policy text.
+
+Note: `legal/terms.html` states check-in at 2:00 PM but
+`arrive/villa-anvira.html` shows 1:00 PM — a pre-existing inconsistency, not
+introduced by this pass. The FAQ answer and README follow `legal/terms.html`
+(the binding policy) as the source of truth; reconcile `arrive/villa-anvira.html`
+separately if this is ever revisited.
+
 *AnVira Private Estates — Internal Development Document*
 *Based on ideasV2.md — Version 2.0, June 2026*
 

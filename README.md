@@ -25,9 +25,9 @@ AnVira is a single-property direct-booking site for Villa AnVira. Guests book di
 Static, hand-authored HTML/CSS/JS. No framework, no build step, deployable anywhere. See [AGENTS.md](AGENTS.md) for how the pages relate to `assets/js/data.js` and why there's no generator step.
 
 ```
-/                             Home — hero, story teaser, gallery highlight, WhatsApp CTA
-/villa.html                   Villa — full story, stats, amenities, local guide, pricing
-/gallery.html                 Gallery — full filterable photo grid + lightbox
+/                             Home — hero, story teaser, gallery highlight, Guest Voices, WhatsApp CTA
+/villa.html                   Villa — full story, stats, amenities, local guide, FAQ, Guest Voices
+/gallery.html                 Gallery — full filterable photo grid + lightbox (37 photos)
 /plan-a-stay.html             Plan a Stay — booking widget, Message Preview Card
 /contact.html                 Contact — map, contact methods, Guest Voices reviews
 /estates/villa-anvira.html    Redirect stub → / (kept for old bookmarks/QR codes)
@@ -139,10 +139,9 @@ Setup guide: `tools/APPS_SCRIPT_SETUP.md`
 
 | Font | Use |
 |------|-----|
-| Cormorant Garamond | Estate name, hero headings (italic) |
-| DM Sans | Body copy, UI labels |
+| Cormorant Garamond | Estate name, hero headings, micro/attribution (italic) |
+| Manrope | Body copy, UI labels |
 | DM Mono | Stats strip, prices, tags |
-| Spectral | Pull-quotes, eyebrow labels |
 
 ### Motion Principles
 
@@ -166,6 +165,14 @@ Unhurried but precise — every animation has a purpose and an end.
 - All external links use `rel="noopener noreferrer"`
 - Form inputs validated client-side before submission (phone regex, word count, required fields)
 - No credentials in source — the Apps Script URL is a public, parameterless endpoint
+
+---
+
+## SEO
+
+- `sitemap.xml` lists every indexable page (home, villa, gallery, plan-a-stay, reviews/submit, and the three legal pages); `robots.txt` blocks the private/internal ones (see Security above).
+- `index.html`'s `<head>` carries a `LodgingBusiness` JSON-LD block (name, address, geo, telephone, amenities, aggregate rating) — keep it in sync with on-page content, since it must only describe facts the page itself shows.
+- Every page sets a unique `<title>`, meta description, canonical URL, and Open Graph / Twitter Card tags.
 
 ---
 

@@ -1547,6 +1547,24 @@
        inset brass rule (matching .ep-section::before), and small diamond
        accents instead of dash/plus bullets. "On request" items use a
        hollow diamond + slightly muted italic to read as optional. */
+    /* ── FAQ accordion ──────────────────────────────────────── */
+    .faq-list { margin-top: 1.4rem; display: flex; flex-direction: column; gap: .1rem; }
+    .faq-item { border-top: 1px solid var(--rule); padding: 1.1rem 0; }
+    .faq-item:last-child { border-bottom: 1px solid var(--rule); }
+    .faq-item summary {
+      font-family: 'Manrope', sans-serif; font-weight: 500; font-size: .98rem;
+      color: var(--text); cursor: pointer; list-style: none; display: flex;
+      align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+'; font-size: 1.1rem; color: var(--gold); flex-shrink: 0;
+      transition: transform .3s var(--lux);
+    }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item p { margin-top: .8rem; font-size: 13px; line-height: 1.9; color: var(--mid); max-width: 640px; }
+    .faq-item p a { color: var(--gold); }
+
     .ep-incl { margin-top: 1.2rem; position: relative; padding-top: 1.1rem; }
     .ep-incl::before {
       content: ''; position: absolute; top: 0; left: 0;
